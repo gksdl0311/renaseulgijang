@@ -1,0 +1,173 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import repertoire from "../../../data/repertoire.json";
+---
+
+<BaseLayout lang="en" current="repertoire" title="Repertoire | Rena Seulgi Jang">
+  <section class="repertoire-page">
+    <p class="repertoire-intro">Selected roles and concert repertoire.</p>
+
+    <div class="rep-grid">
+      {repertoire.columns.map((column) => (
+        <section class="rep-column">
+          <h2 class="rep-column-title">{column.title}</h2>
+
+          {column.sections.map((section) => (
+            <div class="rep-section">
+              <h3 class="rep-section-title">{section.title}</h3>
+
+              <div class="rep-list">
+                {section.items.map((item) => (
+                  <div class="rep-line">
+                    {item.role ? (
+                      <>
+                        <span class="role">{item.role}</span>
+                        <span class="work"><em>{item.work}</em></span>
+                        {item.composer && <span class="composer">{item.composer}</span>}
+                      </>
+                    ) : item.work ? (
+                      <>
+                        {item.composer && <span class="role">{item.composer}</span>}
+                        <span class="work"><em>{item.work}</em></span>
+                      </>
+                    ) : (
+                      <span class="text">{item.text}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+      ))}
+    </div>
+  </section>
+
+  <style>
+    .repertoire-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 0 44px;
+    }
+
+    .repertoire-intro {
+      margin: 0 0 34px;
+      text-align: center;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 17px;
+      line-height: 1.6;
+      color: #6a6a6a;
+    }
+
+    .rep-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+
+    .rep-column-title {
+      margin: 0 0 24px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #d9d9d9;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: #111111;
+      line-height: 1.2;
+    }
+
+    .rep-section {
+      margin-bottom: 34px;
+    }
+
+    .rep-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .rep-section-title {
+      margin: 0 0 16px;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 17px;
+      font-weight: 400;
+      color: #3f3f3f;
+      line-height: 1.4;
+    }
+
+    .rep-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .rep-line {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: #2f2f2f;
+    }
+
+    .role {
+      min-width: 110px;
+      font-weight: 600;
+      color: #222222;
+      flex-shrink: 0;
+    }
+
+    .work {
+      color: #2f2f2f;
+    }
+
+    .work em {
+      font-style: italic;
+    }
+
+    .composer,
+    .text {
+      color: #6a6a6a;
+    }
+
+    @media (max-width: 900px) {
+      .repertoire-page {
+        padding-top: 10px;
+      }
+
+      .rep-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+
+      .repertoire-intro {
+        margin-bottom: 28px;
+        font-size: 16px;
+      }
+
+      .rep-column-title {
+        font-size: 21px;
+      }
+
+      .rep-line {
+        font-size: 16px;
+        gap: 8px;
+      }
+
+      .role {
+        min-width: 92px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .rep-line {
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .role {
+        min-width: 0;
+      }
+    }
+  </style>
+</BaseLayout>

@@ -1,0 +1,96 @@
+{
+  "intro": "Selected repertoire based on performed roles and recent programme work.",
+  "columns": [
+    {
+      "title": "Opera",
+      "sections": [
+        {
+          "title": "Stage roles",
+          "items": [
+            {
+              "role": "Adina",
+              "work": "L’elisir d’amore",
+              "composer": "Donizetti"
+            },
+            {
+              "role": "Mimì",
+              "work": "La bohème",
+              "composer": "Puccini"
+            },
+            {
+              "role": "Susanna",
+              "work": "Le nozze di Figaro",
+              "composer": "Mozart"
+            },
+            {
+              "role": "Marcellina",
+              "work": "Le nozze di Figaro",
+              "composer": "Mozart"
+            },
+            {
+              "role": "Fiordiligi",
+              "work": "Così fan tutte",
+              "composer": "Mozart"
+            }
+          ]
+        },
+        {
+          "title": "Scenes",
+          "items": [
+            {
+              "text": "Gilda"
+            },
+            {
+              "text": "Rusalka"
+            },
+            {
+              "text": "Norina"
+            },
+            {
+              "text": "Lodoletta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Concert and Oratorio",
+      "sections": [
+        {
+          "title": "Oratorio",
+          "items": [
+            {
+              "composer": "Verdi",
+              "work": "Messa da Requiem"
+            },
+            {
+              "composer": "Mendelssohn",
+              "work": "Psalm 95 and Psalm 42"
+            },
+            {
+              "composer": "Beethoven",
+              "work": "Symphony No. 9"
+            }
+          ]
+        },
+        {
+          "title": "20th Century and Contemporary",
+          "items": [
+            {
+              "composer": "Schönberg",
+              "work": "Pierrot Lunaire"
+            }
+          ]
+        },
+        {
+          "title": "Lied",
+          "items": [
+            {
+              "text": "Schubert (selected programme)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

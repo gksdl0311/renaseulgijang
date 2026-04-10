@@ -1,0 +1,84 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const photos = [
+  {
+    src: "/gallery/rena-portrait.jpg",
+    alt: "Rena Seulgi Jang portrait",
+    caption: "Portrait",
+  },
+];
+---
+
+<BaseLayout lang="en" current="gallery" title="Gallery | Rena Seulgi Jang">
+  <section class="wrap">
+    <header class="hero">
+      <h1>Gallery</h1>
+      <p class="sub">Selected photos.</p>
+    </header>
+
+    <div class="grid">
+      {photos.map((p) => (
+        <figure class="card">
+          <a href={p.src} target="_blank" rel="noopener">
+            <img src={p.src} alt={p.alt} loading="lazy" />
+          </a>
+          {p.caption ? <figcaption>{p.caption}</figcaption> : null}
+        </figure>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1rem 4rem;
+  }
+
+  .hero h1 {
+    margin: 0;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    letter-spacing: 0.2px;
+  }
+
+  .sub {
+    margin: 0.75rem 0 2rem;
+    opacity: 0.85;
+    line-height: 1.6;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+  }
+
+  .card {
+    grid-column: span 12;
+    max-width: 640px;
+    margin: 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.12);
+  }
+
+  a {
+    display: block;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  figcaption {
+    padding: 0.75rem 0.9rem 0.9rem;
+    opacity: 0.85;
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+</style>

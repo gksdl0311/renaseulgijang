@@ -1,0 +1,124 @@
+---
+import BaseLayout from "../../../../../layouts/BaseLayout.astro";
+
+const images = [
+  "portrait-01.JPG",
+  "portrait-02.JPG",
+  "portrait-03.JPG",
+  "portrait-04.JPG",
+  "portrait-05.JPG",
+];
+---
+
+<BaseLayout lang="en" current="media" title="Photo (Portrait) | Rena Seulgi Jang">
+  <section class="portrait-page">
+    <div class="portrait-masonry">
+      {images.map((image, index) => (
+        <figure class="portrait-item">
+          <img
+            src={`/media/photo/portrait/${image}`}
+            alt={`Portrait photograph ${index + 1} of Rena Seulgi Jang`}
+            loading="lazy"
+          />
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <style>
+    .portrait-page {
+      padding: 2rem 0 5rem;
+       max-width: 900px;
+  margin: 0 auto;
+    }
+
+    .portrait-masonry {
+  column-count: 3;        
+  column-gap: 1rem;
+}
+
+.portrait-item {
+  margin: 0 0 1rem;
+  break-inside: avoid;
+}
+
+.portrait-item img {
+  display: block;
+  width: 100%;
+  height: auto;             
+  object-fit: contain;    
+}
+
+    @media (max-width: 1000px) {
+  .portrait-masonry {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .portrait-masonry {
+    column-count: 1;
+  }
+
+      .portrait-item {
+        margin-bottom: 1rem;
+      }
+    }
+
+    .portrait-page {
+  padding: 2rem 0 5rem;
+  animation: pageFade 0.7s ease both;
+}
+
+.portrait-item {
+  margin: 0 0 1rem;
+  break-inside: avoid;
+  opacity: 0;
+  transform: translateY(22px);
+  animation: galleryReveal 0.8s ease forwards;
+}
+
+.portrait-item:nth-child(1) { animation-delay: 0.08s; }
+.portrait-item:nth-child(2) { animation-delay: 0.16s; }
+.portrait-item:nth-child(3) { animation-delay: 0.24s; }
+.portrait-item:nth-child(4) { animation-delay: 0.32s; }
+.portrait-item:nth-child(5) { animation-delay: 0.40s; }
+.portrait-item:nth-child(6) { animation-delay: 0.48s; }
+.portrait-item:nth-child(7) { animation-delay: 0.56s; }
+.portrait-item:nth-child(8) { animation-delay: 0.64s; }
+
+.portrait-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.45s ease, opacity 0.35s ease, filter 0.35s ease;
+}
+
+.portrait-item:hover img {
+  transform: translateY(-4px) scale(1.015);
+  filter: brightness(1.02);
+}
+
+@keyframes galleryReveal {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pageFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+  </style>
+  
+</BaseLayout>

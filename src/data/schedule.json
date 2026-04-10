@@ -1,0 +1,23 @@
+{
+  "upcoming": [
+    {
+      "date": "2026-07-01",
+      "title": "Opera Studio Performance",
+      "venue": "Universität der Künste Berlin",
+      "city": "Berlin",
+      "country": "Germany",
+      "link": "",
+      "ticketLink": ""
+    }
+  ],
+  "past": [
+    {
+      "date": "2025-12-01",
+      "title": "Liederabend",
+      "venue": "",
+      "city": "Berlin",
+      "country": "Germany",
+      "link": ""
+    }
+  ]
+}

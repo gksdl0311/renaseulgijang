@@ -1,0 +1,280 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout lang="en" current="media" title="Photo | Rena Seulgi Jang">
+  <section class="photo-page">
+
+
+    <div class="photo-grid">
+      <!-- top left -->
+      <a class="portrait-card reveal-card reveal-left" href="/en/media/photo/portrait/">
+        <div class="photo-image-wrap portrait-image-wrap">
+          <img
+            src="/media/photo/portrait-cover.jpg"
+            alt="Portrait gallery"
+            class="photo-image"
+          />
+          <div class="photo-overlay"></div>
+        </div>
+      </a>
+
+      <!-- top right -->
+      <div class="onstage-copy reveal-text reveal-text-right">
+        <h2>Onstage</h2>
+        <p>Performance and production photography</p>
+      </div>
+
+      <!-- bottom left -->
+      <div class="portrait-copy reveal-text reveal-text-left">
+        <h2>Portrait</h2>
+        <p>Studio and editorial imagery</p>
+      </div>
+
+      <!-- bottom right -->
+      <a class="onstage-card reveal-card reveal-right" href="/en/media/photo/onstage/">
+        <div class="photo-image-wrap onstage-image-wrap">
+          <img
+            src="/media/photo/onstage-cover.jpg"
+            alt="Onstage gallery"
+            class="photo-image"
+          />
+          <div class="photo-overlay"></div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <style>
+    .photo-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 0 80px;
+    }
+
+    .photo-intro {
+      margin: 0 0 34px;
+      text-align: center;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 17px;
+      line-height: 1.6;
+      color: #6a6a6a;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        "portrait-image onstage-copy"
+        "portrait-copy onstage-image";
+      row-gap: 8px;
+      column-gap: 48px;
+      align-items: start;
+    }
+
+    .portrait-card {
+      grid-area: portrait-image;
+    }
+
+    .onstage-copy {
+      grid-area: onstage-copy;
+      padding-top: 0;
+      border-top: none;
+      margin: 0;
+    }
+
+    .portrait-copy {
+      grid-area: portrait-copy;
+      padding-top: 14px;
+      border-top: 1px solid #d9d9d9;
+    }
+
+    .onstage-card {
+      grid-area: onstage-image;
+      padding-top: 14px;
+      border-top: 1px solid #d9d9d9;
+      transform: translateY(-450px);
+    }
+
+    .portrait-card,
+    .onstage-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .photo-image-wrap {
+      position: relative;
+      overflow: hidden;
+      background: #f3f3f3;
+      height: 520px;
+    }
+
+    .photo-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease, filter 0.3s ease;
+    }
+
+    .photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.14) 0%,
+        rgba(0, 0, 0, 0.04) 32%,
+        rgba(0, 0, 0, 0.02) 100%
+      );
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .portrait-copy h2,
+    .onstage-copy h2 {
+      margin: 0 0 6px;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: #111111;
+    }
+
+    .portrait-copy p,
+    .onstage-copy p {
+      margin: 0;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #6a6a6a;
+    }
+
+    .portrait-card:hover .photo-image,
+    .onstage-card:hover .photo-image {
+      transform: scale(1.03);
+      filter: brightness(0.98);
+    }
+
+    .portrait-card:hover .photo-overlay,
+    .onstage-card:hover .photo-overlay {
+      opacity: 0.75;
+    }
+
+ .reveal-card {
+  opacity: 0;
+  animation-duration: 1s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: forwards;
+  will-change: opacity, transform;
+}
+
+.reveal-left {
+  animation-name: portraitReveal;
+  animation-delay: 0.08s;
+}
+
+.reveal-right {
+  animation-name: onstageReveal;
+  animation-delay: 0.22s;
+}
+
+.reveal-text {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: textReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: opacity, transform;
+}
+
+.reveal-text-left {
+  animation-delay: 0.18s;
+}
+
+.reveal-text-right {
+  animation-delay: 0.32s;
+}
+
+@keyframes portraitReveal {
+  from {
+    opacity: 0;
+    transform: translateY(36px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes onstageReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-410px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-450px) scale(1);
+  }
+}
+
+@keyframes textReveal {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-card,
+      .reveal-text {
+        opacity: 1;
+        transform: none;
+        animation: none;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .photo-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "portrait-image"
+          "portrait-copy"
+          "onstage-copy"
+          "onstage-image";
+        row-gap: 20px;
+        column-gap: 0;
+      }
+
+      .photo-image-wrap {
+        height: 380px;
+      }
+
+      .onstage-card {
+        transform: none;
+      }
+
+      .portrait-copy h2,
+      .onstage-copy h2 {
+        font-size: 24px;
+      }
+
+      .photo-intro {
+        margin-bottom: 24px;
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .photo-page {
+        padding: 28px 0 56px;
+      }
+
+      .photo-image-wrap {
+        height: 300px;
+      }
+    }
+  </style>
+</BaseLayout>

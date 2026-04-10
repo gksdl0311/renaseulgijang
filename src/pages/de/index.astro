@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout lang="de" current="home" title="Rena Seulgi Jang | Sopran">
+  <section class="coming">
+    <p class="label">SOPRAN</p>
+    <h1>Rena Seulgi Jang</h1>
+
+    <p class="text">
+      Diese Website wird derzeit auf Deutsch vorbereitet.
+      <br />
+      Bitte besuchen Sie in der Zwischenzeit die englische Version.
+    </p>
+
+    <p class="note">Vielen Dank für Ihre Geduld.</p>
+  </section>
+
+  <style>
+    .coming {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .label {
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-bottom: 0.6rem;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      margin-bottom: 1.2rem;
+    }
+
+    .text {
+      max-width: 38ch;
+      font-size: 1.05rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .note {
+      font-size: 0.9rem;
+      opacity: 0.6;
+    }
+  </style>
+</BaseLayout>

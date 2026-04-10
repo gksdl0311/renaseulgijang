@@ -1,0 +1,176 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import scheduleData from "../../../data/schedule.json";
+
+const title = "Schedule | Rena Seulgi Jang";
+
+const upcoming = [...scheduleData.upcoming].sort(
+  (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+);
+
+const past = [...scheduleData.past].sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+);
+
+const formatDate = (dateString) =>
+  new Date(dateString).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+---
+
+<BaseLayout title={title} lang="en">
+  <section class="schedule-page">
+
+
+    <section class="schedule-section">
+      <h2 class="section-title">Upcoming</h2>
+
+      {upcoming.length === 0 ? (
+        <p class="empty-state">No upcoming engagements at the moment.</p>
+      ) : (
+        <div class="schedule-list">
+          {upcoming.map((event) => (
+            <article class="schedule-item">
+              <div class="schedule-date">{formatDate(event.date)}</div>
+              <div class="schedule-details">
+                <h3>{event.title}</h3>
+                <p>{event.venue}, {event.city}</p>
+                {event.role && <p>{event.role}</p>}
+                {event.programme && <p>{event.programme}</p>}
+                {event.link && (
+                  <p>
+                    <a href={event.link} target="_blank" rel="noopener noreferrer">
+                      More information
+                    </a>
+                  </p>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+
+    <section class="schedule-section">
+      <h2 class="section-title">Past</h2>
+
+      {past.length === 0 ? (
+        <p class="empty-state">No past engagements listed yet.</p>
+      ) : (
+        <div class="schedule-list">
+          {past.map((event) => (
+            <article class="schedule-item">
+              <div class="schedule-date">{formatDate(event.date)}</div>
+              <div class="schedule-details">
+                <h3>{event.title}</h3>
+                <p>{event.venue}, {event.city}</p>
+                {event.role && <p>{event.role}</p>}
+                {event.programme && <p>{event.programme}</p>}
+                {event.link && (
+                  <p>
+                    <a href={event.link} target="_blank" rel="noopener noreferrer">
+                      More information
+                    </a>
+                  </p>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  </section>
+
+  <style>
+    .schedule-page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 20px 0 40px;
+    }
+
+    .page-title {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 32px;
+      font-weight: 400;
+      margin: 0 0 32px;
+      color: #111111;
+      text-align: center;
+    }
+
+    .schedule-section {
+      margin-bottom: 48px;
+    }
+
+    .section-title {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 22px;
+      font-weight: 400;
+      margin: 0 0 20px;
+      color: #111111;
+      border-bottom: 1px solid #d9d9d9;
+      padding-bottom: 8px;
+    }
+
+    .schedule-list {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .schedule-item {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .schedule-date {
+      font-size: 14px;
+      color: #6f6f6f;
+      padding-top: 2px;
+    }
+
+    .schedule-details h3 {
+      margin: 0 0 8px;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: #111111;
+    }
+
+    .schedule-details p {
+      margin: 0 0 6px;
+      color: #4f4f4f;
+      line-height: 1.6;
+    }
+
+    .schedule-details a {
+      color: #111111;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .empty-state {
+      color: #6f6f6f;
+      margin: 0;
+    }
+
+    @media (max-width: 700px) {
+      .schedule-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .page-title {
+        font-size: 28px;
+      }
+
+      .schedule-details h3 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</BaseLayout>

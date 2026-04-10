@@ -1,0 +1,307 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+
+const videos = [
+  {
+    id: "SQX4s5lqAqM",
+    title: "Porgy and Bess: My man's gone now",
+  },
+  {
+    id: "KlVq2Q6wltc",
+    title: "La Bohème: Sì, mi chiamano Mimì",
+  },
+  {
+    id: "HypvYrBaCMU",
+    title: 'Massenet: "Je suis encore tout étourdie" [Manon]',
+  },
+];
+---
+
+<BaseLayout lang="en" current="media" title="Video | Rena Seulgi Jang">
+  <section class="video-page">
+    <div class="video-section">
+      <div class="video-container">
+        <button class="nav prev" type="button" aria-label="Previous video">‹</button>
+
+        <div class="video-track">
+          {videos.map((video, i) => (
+            <div class={`video-item ${i === 0 ? "active" : ""}`}>
+              <a
+                class="video-link"
+                href={`https://www.youtube.com/watch?v=${video.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={video.title}
+              >
+                <div class="video-preview">
+                  <img
+                    class="video-thumb"
+                    src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
+                    alt={video.title}
+                  />
+
+                  <iframe
+                    class="video-iframe"
+                    src={`https://www.youtube.com/embed/${video.id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${video.id}&modestbranding=1&playsinline=1&rel=0`}
+                    title={video.title}
+                    loading="lazy"
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                  ></iframe>
+
+                  <div class="play-button"></div>
+
+                  <div class="video-overlay">
+                    <p>{video.title}</p>
+                  </div>
+                </div>
+              </a>
+            </div>
+          ))}
+        </div>
+
+        <button class="nav next" type="button" aria-label="Next video">›</button>
+      </div>
+
+      <div class="video-counter">1 / {videos.length}</div>
+    </div>
+  </section>
+
+  <style>
+    .video-page {
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .video-section {
+      max-width: 980px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .video-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .video-track {
+      position: relative;
+      min-height: 560px;
+    }
+
+    .video-item {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .video-item.active {
+      position: relative;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .video-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .video-preview {
+      position: relative;
+      width: 100%;
+      height: 560px;
+      overflow: hidden;
+      border-radius: 4px;
+      background: #111;
+    }
+
+    .video-thumb,
+    .video-iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      object-fit: cover;
+      display: block;
+    }
+
+    .video-thumb {
+      z-index: 1;
+      transition: opacity 0.35s ease, transform 0.45s ease;
+      filter: brightness(0.92);
+    }
+
+    .video-iframe {
+      z-index: 2;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .video-link:hover .video-thumb,
+    .video-link:focus-visible .video-thumb {
+      opacity: 0;
+      transform: scale(1.02);
+    }
+
+    .video-link:hover .video-iframe,
+    .video-link:focus-visible .video-iframe {
+      opacity: 1;
+    }
+
+    .video-preview::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.08));
+      pointer-events: none;
+    }
+
+    .video-overlay {
+      position: absolute;
+      left: 1.25rem;
+      right: 1.25rem;
+      bottom: 1.25rem;
+      z-index: 4;
+      text-align: left;
+      color: white;
+    }
+
+    .video-overlay p {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 68px;
+      height: 68px;
+      transform: translate(-50%, -50%);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.42);
+      z-index: 4;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .play-button::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 53%;
+      transform: translate(-50%, -50%);
+      border-style: solid;
+      border-width: 11px 0 11px 17px;
+      border-color: transparent transparent transparent white;
+    }
+
+    .video-link:hover .play-button,
+    .video-link:focus-visible .play-button {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.94);
+    }
+
+    .nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 5;
+      border: none;
+      background: rgba(0, 0, 0, 0.35);
+      color: white;
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 1.7rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav.prev {
+      left: 1rem;
+    }
+
+    .nav.next {
+      right: 1rem;
+    }
+
+    .video-counter {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #8a8a8a;
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 768px) {
+      .video-page {
+        padding: 2rem 1rem 4rem;
+      }
+
+      .video-track,
+      .video-preview {
+        height: 260px;
+        min-height: 260px;
+      }
+
+      .video-overlay p {
+        font-size: 0.86rem;
+      }
+
+      .nav {
+        width: 38px;
+        height: 38px;
+        font-size: 1.3rem;
+      }
+
+      .play-button {
+        width: 52px;
+        height: 52px;
+      }
+
+      .play-button::before {
+        border-width: 8px 0 8px 13px;
+      }
+    }
+  </style>
+
+  <script>
+    const items = document.querySelectorAll(".video-item");
+    const counter = document.querySelector(".video-counter");
+    const nextBtn = document.querySelector(".nav.next");
+    const prevBtn = document.querySelector(".nav.prev");
+
+    let index = 0;
+
+    function updateCarousel() {
+      items.forEach((item, i) => {
+        item.classList.toggle("active", i === index);
+      });
+
+      if (counter) {
+        counter.textContent = `${index + 1} / ${items.length}`;
+      }
+    }
+
+    nextBtn?.addEventListener("click", () => {
+      index = (index + 1) % items.length;
+      updateCarousel();
+    });
+
+    prevBtn?.addEventListener("click", () => {
+      index = (index - 1 + items.length) % items.length;
+      updateCarousel();
+    });
+
+    updateCarousel();
+  </script>
+</BaseLayout>

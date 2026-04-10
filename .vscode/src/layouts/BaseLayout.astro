@@ -1,0 +1,157 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout lang="en" current="home" title="Rena Seulgi Jang | Soprano">
+  <section class="hero">
+    <div class="copy">
+      <p class="kicker">Soprano</p>
+      <h1>Rena Seulgi Jang</h1>
+      <p class="lead">
+        Opera singer based in Berlin. Selected repertoire, media, and performance updates.
+      </p>
+
+      <div class="cta">
+        <a class="btn primary" href="/en/media/">Media</a>
+        <a class="btn" href="/en/cv/">CV</a>
+        <a class="btn" href="/en/gallery/">Gallery</a>
+      </div>
+    </div>
+
+    <div class="portrait">
+      <img src="/gallery/rena-portrait.jpg" alt="Rena Seulgi Jang portrait" />
+    </div>
+  </section>
+
+  <section class="cards">
+    <a class="card" href="/en/biography/">
+      <h2>Biography</h2>
+      <p>Background, training, and artistic focus.</p>
+    </a>
+
+    <a class="card" href="/en/schedule/">
+      <h2>Schedule</h2>
+      <p>Upcoming performances and past highlights.</p>
+    </a>
+
+    <a class="card" href="/en/repertoire/">
+      <h2>Repertoire</h2>
+      <p>Roles and concert works in progress.</p>
+    </a>
+  </section>
+
+  <style>
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 2rem;
+      align-items: center;
+      padding: 1.25rem 0 2.25rem;
+    }
+
+    .kicker {
+      margin: 0 0 0.5rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      opacity: 0.75;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 4.2vw, 3.6rem);
+      margin: 0 0 0.9rem;
+    }
+
+    .lead {
+      font-size: 1.05rem;
+      max-width: 44ch;
+      margin-bottom: 1.4rem;
+    }
+
+    .cta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(18, 18, 18, 0.14);
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    .btn.primary {
+      background: rgba(18, 18, 18, 0.92);
+      color: #fff;
+      border-color: rgba(18, 18, 18, 0.92);
+    }
+
+    .portrait {
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(18, 18, 18, 0.10);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .portrait img {
+      width: 100%;
+      height: 520px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1rem;
+      padding-top: 1rem;
+    }
+
+    .card {
+      grid-column: span 4;
+      display: block;
+      padding: 1.1rem 1.1rem 1.2rem;
+      border-radius: 18px;
+      border: 1px solid rgba(18, 18, 18, 0.10);
+      background: rgba(255, 255, 255, 0.55);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 160ms ease, border-color 160ms ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(18, 18, 18, 0.18);
+    }
+
+    .card h2 {
+      margin: 0 0 0.35rem;
+      font-size: 1.25rem;
+    }
+
+    .card p {
+      margin: 0;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 860px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .portrait img {
+        height: 420px;
+      }
+
+      .card {
+        grid-column: span 12;
+      }
+    }
+  </style>
+</BaseLayout>

@@ -1,0 +1,200 @@
+---
+import BaseLayout from "../../../../../layouts/BaseLayout.astro";
+
+const images = Array.from({ length: 30 }, (_, i) =>
+  `onstage-${String(i + 1).padStart(2, "0")}.JPG`
+);
+---
+
+<BaseLayout lang="en" current="media" title="Photo (Onstage) | Rena Seulgi Jang">
+  <section class="onstage-page">
+    <div class="onstage-masonry">
+      {images.map((image, index) => (
+        <figure class="onstage-item">
+          <div class="onstage-frame">
+            <img
+              src={`/media/photo/onstage/${image}`}
+              alt={`Onstage photograph ${index + 1} of Rena Seulgi Jang`}
+              loading="lazy"
+              data-full={`/media/photo/onstage/${image}`}
+            />
+          </div>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+  </div>
+
+  <style>
+    .onstage-page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 2rem 0 5rem;
+      animation: pageFade 0.7s ease both;
+    }
+
+    .onstage-masonry {
+      column-count: 3;
+      column-gap: 1rem;
+    }
+
+    .onstage-item {
+      margin: 0 0 1rem;
+      break-inside: avoid;
+      opacity: 0;
+      transform: translateY(22px);
+      animation: galleryReveal 0.8s ease forwards;
+      cursor: zoom-in;
+    }
+
+    .onstage-item:nth-child(1) { animation-delay: 0.04s; }
+    .onstage-item:nth-child(2) { animation-delay: 0.08s; }
+    .onstage-item:nth-child(3) { animation-delay: 0.12s; }
+    .onstage-item:nth-child(4) { animation-delay: 0.16s; }
+    .onstage-item:nth-child(5) { animation-delay: 0.20s; }
+    .onstage-item:nth-child(6) { animation-delay: 0.24s; }
+    .onstage-item:nth-child(7) { animation-delay: 0.28s; }
+    .onstage-item:nth-child(8) { animation-delay: 0.32s; }
+    .onstage-item:nth-child(9) { animation-delay: 0.36s; }
+    .onstage-item:nth-child(10) { animation-delay: 0.40s; }
+    .onstage-item:nth-child(11) { animation-delay: 0.44s; }
+    .onstage-item:nth-child(12) { animation-delay: 0.48s; }
+
+    .onstage-frame {
+      overflow: hidden;
+    }
+
+    .onstage-item img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: transform 0.45s ease, filter 0.35s ease;
+      cursor: zoom-in;
+    }
+
+    .onstage-item:hover img {
+      transform: translateY(-4px) scale(1.015);
+      filter: brightness(1.02);
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      z-index: 999;
+      padding: 2rem;
+      cursor: zoom-out;
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .lightbox-img {
+      max-width: 90vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transform: scale(0.96);
+      transition: transform 0.35s ease;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+    }
+
+    .lightbox.active .lightbox-img {
+      transform: scale(1);
+    }
+
+    @keyframes galleryReveal {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pageFade {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 1000px) {
+      .onstage-masonry {
+        column-count: 2;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .onstage-page {
+        padding: 1.5rem 0 3rem;
+      }
+
+      .onstage-masonry {
+        column-count: 1;
+        column-gap: 0;
+      }
+
+      .onstage-item {
+        margin-bottom: 1rem;
+      }
+
+      .lightbox {
+        padding: 1rem;
+      }
+
+      .lightbox-img {
+        max-width: 94vw;
+        max-height: 88vh;
+      }
+    }
+  </style>
+
+  <script>
+    const galleryImages = document.querySelectorAll(".onstage-item img");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+
+    galleryImages.forEach((img) => {
+      img.addEventListener("click", () => {
+        if (!lightbox || !lightboxImg) return;
+
+        lightboxImg.src = img.dataset.full || img.src;
+        lightboxImg.alt = img.alt || "";
+        lightbox.classList.add("active");
+        lightbox.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      });
+    });
+
+    lightbox?.addEventListener("click", () => {
+      lightbox.classList.remove("active");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && lightbox?.classList.contains("active")) {
+        lightbox.classList.remove("active");
+        lightbox.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+    });
+  </script>
+</BaseLayout>

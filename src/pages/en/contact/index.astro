@@ -1,0 +1,70 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout lang="en" current="contact" title="Contact | Rena Seulgi Jang">
+
+
+
+ <section class="contact">
+  <p class="contact-intro">
+    For professional enquiries, collaborations, or recital opportunities, please get in touch.
+  </p>
+
+  <div class="contact-block">
+    <p class="contact-label">Email</p>
+    <a href="mailto:renajang.official@gmail.com" class="contact-email">
+      renajang.official@gmail.com
+    </a>
+  </div>
+
+  <p class="contact-note">
+    Representation details will be added in due course.
+  </p>
+</section>
+
+ <style>
+ .contact {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px 0 60px;
+  text-align: center;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.contact-intro {
+  font-size: 18px;
+  line-height: 1.7;
+  color: #2f2f2f;
+  margin-bottom: 36px;
+}
+
+.contact-block {
+  margin-bottom: 30px;
+}
+
+.contact-label {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: #8a8a8a;
+  margin-bottom: 8px;
+}
+
+.contact-email {
+  font-size: 20px;
+  color: #111;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.contact-email:hover {
+  opacity: 0.6;
+}
+
+.contact-note {
+  font-size: 14px;
+  color: #8a8a8a;
+  margin-top: 20px;
+}
+</style>
+</BaseLayout>

@@ -1,0 +1,301 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout lang="en" current="biography" title="Biography | Rena Seulgi Jang">
+  <section class="bio-video">
+    <div class="video-frame">
+      <iframe
+        src="https://www.youtube.com/embed/WYXIK4-Rm4c?autoplay=1&mute=1&loop=1&playlist=WYXIK4-Rm4c&controls=0&modestbranding=1&rel=0&playsinline=1"
+        title="Rena Seulgi Jang performance"
+        loading="lazy"
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </section>
+
+  <section class="bio">
+    <div class="bio-heading-row">
+      <h1 class="bio-title">Rena Seulgi Jang</h1>
+
+      <span class="bio-pronunciation">[ˈɹeɪ.nɑ ˈsɯl.ɡi dʒɑːŋ]</span>
+
+      <span class="bio-guide">(ray-nah seul-gee jahng)</span>
+
+      <button
+        class="audio-button"
+        type="button"
+        aria-label="Play pronunciation of Rena Seulgi Jang"
+        title="Play pronunciation"
+      >
+        <svg
+          class="audio-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <polygon points="11 5 6 9 3 9 3 15 6 15 11 19 11 5"></polygon>
+          <path d="M15 9.5a4 4 0 0 1 0 5"></path>
+          <path d="M17.5 7a7.5 7.5 0 0 1 0 10"></path>
+        </svg>
+      </button>
+    </div>
+
+    <p>
+      Rena Seulgi Jang is a South Korean soprano currently based in Berlin. She is pursuing her
+      Master’s degree in Opera at the Universität der Künste Berlin under the guidance of Deborah
+      York.
+    </p>
+
+    <p>
+      She previously studied voice performance at Seoul National University, where she graduated
+      with honours as one of the top students of her class. She was also a member of the Korea
+      National Opera Studio as a Young Artist, further developing her artistic and stage
+      experience.
+    </p>
+
+    <p>
+      Rena has appeared as a soprano soloist in major concert works including Verdi’s
+      <em>Messa da Requiem</em> and Mendelssohn’s <em>Psalm 95</em> and <em>Psalm 42</em>, and has
+      performed contemporary repertoire such as Schönberg’s <em>Pierrot Lunaire</em>. Her recent
+      engagements include performances with Symphonia Berlin and appearances at the
+      Kaiser-Wilhelm-Gedächtniskirche and Universität der Künste Berlin.
+    </p>
+
+    <p>
+      On the operatic stage, her repertoire includes roles such as Adina
+      (<em>L’elisir d’amore</em>), Mimì (<em>La bohème</em>), Susanna and Marcellina
+      (<em>Le nozze di Figaro</em>), and Fiordiligi (<em>Così fan tutte</em>), reflecting both
+      lyrical sensitivity and technical versatility.
+    </p>
+
+    <p>
+      A prizewinner of several competitions, including First Prize at the Pavarotti Voice
+      Competition, Rena has also been awarded multiple scholarships recognising her artistic
+      potential.
+    </p>
+
+    <p>
+      She continues to develop her career through concert, operatic, and interdisciplinary projects
+      across Germany and Korea.
+    </p>
+  </section>
+
+  <script>
+    const button = document.querySelector(".audio-button");
+
+    function chooseVoice() {
+      const voices = window.speechSynthesis.getVoices();
+
+      return (
+        voices.find(
+          (voice) =>
+            voice.lang === "en-GB" &&
+            /siri|serena|samantha|karen|female/i.test(voice.name)
+        ) ||
+        voices.find((voice) => voice.lang === "en-GB") ||
+        voices.find((voice) => voice.lang === "en-US") ||
+        voices.find((voice) => voice.lang.startsWith("en")) ||
+        null
+      );
+    }
+
+    function speakName() {
+      if (!("speechSynthesis" in window)) return;
+
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance("Ray-nah Seul-gee Jahng");
+      utterance.lang = "en-GB";
+      utterance.rate = 0.78;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+
+      const selectedVoice = chooseVoice();
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    if (button) {
+      button.addEventListener("click", speakName);
+    }
+
+    if ("speechSynthesis" in window && window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+  </script>
+
+  <style>
+    :global(main) {
+      padding-top: 0 !important;
+    }
+
+    .bio-video {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-top: 0;
+      margin-bottom: 22px;
+      line-height: 0;
+    }
+
+    .video-frame {
+      position: relative;
+      width: 100%;
+      height: 34vh;
+      min-height: 220px;
+      max-height: 360px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .video-frame iframe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 220%;
+      height: 220%;
+      transform: translate(-50%, -50%);
+      border: 0;
+      pointer-events: none;
+    }
+
+    .video-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0) 72%,
+        rgba(247, 247, 247, 0.96) 100%
+      );
+      pointer-events: none;
+    }
+
+    .bio {
+      max-width: 760px;
+      margin: 0 auto;
+      padding-top: 0;
+    }
+
+    .bio-heading-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 0 0 30px;
+    }
+
+    .bio-title {
+      margin: 0;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 32px;
+      font-weight: 400;
+      color: #111111;
+      line-height: 1.2;
+    }
+
+    .bio-pronunciation,
+    .bio-guide {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: #6a6a6a;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .audio-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: #6a6a6a;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .audio-button:hover {
+      color: #111111;
+    }
+
+    .audio-button:focus-visible {
+      outline: 1px solid #bdbdbd;
+      outline-offset: 4px;
+      border-radius: 50%;
+    }
+
+    .audio-icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    .bio p {
+      margin: 0 0 18px;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 17px;
+      line-height: 1.8;
+      color: #2f2f2f;
+    }
+
+    @media (max-width: 700px) {
+      .bio-video {
+        margin-bottom: 18px;
+      }
+
+      .video-frame {
+        height: 24vh;
+        min-height: 170px;
+        max-height: 230px;
+      }
+
+      .video-frame iframe {
+        width: 260%;
+        height: 260%;
+      }
+
+      .bio {
+        max-width: 100%;
+      }
+
+      .bio-heading-row {
+        gap: 8px;
+        margin-bottom: 24px;
+      }
+
+      .bio-title {
+        width: 100%;
+        text-align: center;
+        font-size: 28px;
+      }
+
+      .bio-pronunciation,
+      .bio-guide {
+        font-size: 13px;
+      }
+
+      .bio p {
+        font-size: 16px;
+      }
+    }
+
+    :global(main) {
+  padding-top: 0 !important;
+}
+  </style>
+</BaseLayout>

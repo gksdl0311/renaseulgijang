@@ -1,0 +1,140 @@
+---
+return Astro.redirect("/en/");
+
+const title = "Rena Seulgi Jang | Soprano";
+---
+
+<BaseLayout title={title} lang="en">
+  <section class="hero" aria-label="Homepage hero">
+    <div class="hero-inner">
+      <div class="soprano reveal r1">Soprano</div>
+
+      <figure class="portrait-wrap reveal r2">
+        <img
+          class="portrait"
+          src="/hero/portrait.jpg"
+          alt="Portrait of Rena Seulgi Jang"
+          loading="eager"
+          decoding="async"
+        />
+      </figure>
+
+      <div class="name reveal r3">Rena Seulgi Jang</div>
+    </div>
+  </section>
+
+<style>
+  .hero {
+    min-height: calc(100vh - 110px);
+    display: grid;
+    place-items: start center;
+    padding: 10px 12px 34px;
+    background: #ffffff;
+  }
+
+  .hero-inner {
+    width: min(620px, 92vw);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .soprano {
+    font-family: "Times New Roman", Times, serif;
+    letter-spacing: 0.32em;
+    font-size: 11px;
+    color: #777777;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .portrait-wrap {
+    width: 100%;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    border: none;
+    outline: none;
+  }
+
+  .portrait {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    display: block;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    filter: grayscale(100%) contrast(1.03);
+  }
+
+  .name {
+    margin-top: 18px;
+    font-family: "Times New Roman", Times, serif;
+    letter-spacing: 0.04em;
+    font-size: 20px;
+    color: #111111;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(6px);
+    animation: fadeUp 0.7s ease forwards;
+  }
+
+  .r1 { animation-delay: 0.12s; }
+  .r2 { animation-delay: 0.30s; }
+  .r3 { animation-delay: 0.50s; }
+
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 960px) {
+    .hero {
+      min-height: auto;
+      padding: 16px 10px 26px;
+    }
+
+    .hero-inner {
+      width: min(460px, 94vw);
+    }
+
+    .portrait {
+      max-width: 420px;
+    }
+
+    .name {
+      font-size: 18px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .soprano {
+      margin-bottom: 12px;
+      font-size: 10px;
+    }
+
+    .portrait {
+      max-width: 320px;
+    }
+
+    .name {
+      margin-top: 14px;
+      font-size: 16px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+</BaseLayout>
