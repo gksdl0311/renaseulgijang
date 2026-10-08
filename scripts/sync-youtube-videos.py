@@ -77,11 +77,11 @@ def parse_page(items):
             node = wrapper.get("content", {})
         if not isinstance(node, dict):
             raise ValueError("An uploads item has malformed renderer content.")
-        # Inspect each uploads-grid entry rather than recursively finding only
-        # known videos: new lockupViewModel/gridVideoRenderer formats must fail
-        # closed, so they can never be silently omitted from a complete list.
+        # Inspect each uploads-grid entry so unsupported formats cannot be
+        # silently omitted. Both public video formats were verified against
+        # official channel responses; other content types still fail closed.
         renderer_keys = {key for key in node if key.endswith(("Renderer", "ViewModel"))}
-        if renderer_keys not in ({"videoRenderer"}, {"continuationItemRenderer"}):
+        if renderer_keys not in ({"videoRenderer"}, {"lockupViewModel"}, {"continuationItemRenderer"}):
             raise ValueError(f"Unsupported uploads renderer {', '.join(sorted(renderer_keys)) or 'unknown'}; no partial catalogue was saved.")
         if "videoRenderer" in node:
             renderer = node["videoRenderer"]
@@ -89,6 +89,18 @@ def parse_page(items):
                 raise ValueError("An upload has a malformed video renderer.")
             video_id = renderer.get("videoId", "")
             title = text(renderer.get("title", {})).strip()
+        elif "lockupViewModel" in node:
+            renderer = node["lockupViewModel"]
+            if not isinstance(renderer, dict) or renderer.get("contentType") != "LOCKUP_CONTENT_TYPE_VIDEO":
+                raise ValueError("An uploads lockup is not a verified video content type.")
+            metadata = renderer.get("metadata", {})
+            metadata = metadata.get("lockupMetadataViewModel", {}) if isinstance(metadata, dict) else {}
+            title_value = metadata.get("title", {}) if isinstance(metadata, dict) else {}
+            if not isinstance(title_value, dict) or not isinstance(title_value.get("content"), str):
+                raise ValueError("An upload lockup has no supported canonical title.")
+            video_id = renderer.get("contentId", "")
+            title = title_value["content"].strip()
+        if "videoRenderer" in node or "lockupViewModel" in node:
             if not isinstance(video_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id) or not title:
                 raise ValueError("An upload has an invalid video ID or missing canonical title.")
             videos.append({"id": video_id, "title": title})
