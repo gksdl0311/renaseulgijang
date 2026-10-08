@@ -27,11 +27,14 @@ jobs:
         id: catalogue
         run: |
           python3 - <<'PY'
+          import importlib.util
+          import json
           import os
           from pathlib import Path
           import re
           import subprocess
           import sys
+          from urllib.parse import urlsplit
 
           result = subprocess.run(
               [sys.executable, "scripts/sync-youtube-videos.py", "--output",
@@ -50,6 +53,44 @@ jobs:
                   diagnostic = "The helper rejected an API/client configuration response; detailed values were omitted."
               diagnostic = diagnostic[:2000].replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
               print(f"::error title=Public YouTube catalogue collection failed::{diagnostic}")
+              if diagnostic == "Could not refresh public channel metadata: Unsupported uploads renderer lockupViewModel; no partial catalogue was saved.":
+                  try:
+                      sys.dont_write_bytecode = True
+                      spec = importlib.util.spec_from_file_location("youtube_metadata", "scripts/sync-youtube-videos.py")
+                      helper = importlib.util.module_from_spec(spec)
+                      spec.loader.exec_module(helper)
+                      html = helper.fetch(helper.CHANNEL_URL + "?hl=en&gl=US")
+                      initial = helper.assigned_json_maps(html, r"(?:var\s+ytInitialData\s*=|window\[['\"]ytInitialData['\"]\]\s*=)\s*")[0]
+                      tabs = initial["contents"]["twoColumnBrowseResultsRenderer"]["tabs"]
+                      tab = next(item["tabRenderer"] for item in tabs if item.get("tabRenderer", {}).get("selected"))
+                      tab_url = tab["endpoint"]["commandMetadata"]["webCommandMetadata"]["url"]
+                      if not urlsplit(tab_url).path.rstrip("/").endswith("/videos"):
+                          raise ValueError("Selected tab is not public uploads")
+                      items = tab["content"]["richGridRenderer"]["contents"]
+                      node = next(item["richItemRenderer"]["content"]["lockupViewModel"] for item in items
+                                  if isinstance(item.get("richItemRenderer", {}).get("content", {}).get("lockupViewModel"), dict))
+                      metadata = node.get("metadata", {})
+                      lockup_metadata = metadata.get("lockupMetadataViewModel", {})
+                      title = lockup_metadata.get("title", {})
+                      # Only public schema keys and canonical video/title fields;
+                      # never serialize tracking, endpoints, or client context.
+                      evidence = {
+                          "nodeKeys": sorted(node),
+                          "contentId": node.get("contentId") if isinstance(node.get("contentId"), str) else None,
+                          "contentType": node.get("contentType") if isinstance(node.get("contentType"), str) else None,
+                          "metadataKeys": sorted(metadata),
+                          "lockupMetadataViewModelKeys": sorted(lockup_metadata),
+                          "titleKeys": sorted(title) if isinstance(title, dict) else [],
+                          "titleType": type(title).__name__,
+                          "titleValues": {key: title[key] for key in ("content", "simpleText", "text")
+                                          if isinstance(title, dict) and isinstance(title.get(key), str)},
+                          "runsText": [run["text"] for run in title.get("runs", [])
+                                       if isinstance(run, dict) and isinstance(run.get("text"), str)] if isinstance(title, dict) else [],
+                      }
+                      message = json.dumps(evidence, ensure_ascii=False).replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+                      print(f"::notice title=Public YouTube renderer specimen::{message}")
+                  except Exception as error:
+                      print(f"::notice title=Public YouTube renderer specimen::Public schema capture unavailable ({type(error).__name__}); raw response details omitted.")
               raise SystemExit(result.returncode)
           print(result.stdout, end="")
           PY
