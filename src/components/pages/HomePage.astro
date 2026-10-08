@@ -1,0 +1,119 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import type { Language } from "../../i18n";
+import { sitePath } from "../../site-paths";
+
+interface Props { lang: Language }
+const { lang } = Astro.props;
+const copy = {
+  en: { voice: "Soprano", name: "Rena Seulgi Jang", hero: "Rena Seulgi Jang, soprano", portrait: "Portrait of Rena Seulgi Jang" },
+  de: { voice: "Sopran", name: "Rena Seulgi Jang", hero: "Rena Seulgi Jang, Sopran", portrait: "Porträt von Rena Seulgi Jang" },
+  ko: { voice: "소프라노", name: "레나 슬기 장", hero: "소프라노 레나 슬기 장", portrait: "레나 슬기 장의 프로필 사진" },
+}[lang];
+---
+
+<BaseLayout title={`Rena Seulgi Jang | ${copy.voice}`} lang={lang}>
+  <section class="hero" aria-label={copy.hero}>
+    <div class="hero-inner">
+      <div class="soprano reveal r1">{copy.voice}</div>
+
+      <figure class="portrait-wrap reveal r2">
+        <img
+          class="portrait"
+          src={sitePath("hero/portrait.jpg")}
+          alt={copy.portrait}
+          width="1638"
+          height="2048"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </figure>
+
+      <h1 class="name reveal r3">{copy.name}</h1>
+    </div>
+  </section>
+
+  <style>
+    .hero {
+      min-height: calc(100vh - 120px);
+      display: grid;
+      place-items: start center;
+      padding: 36px 12px 34px;
+      background: #ffffff;
+    }
+
+    .hero-inner {
+      width: min(480px, 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .soprano {
+      font-family: "Times New Roman", Times, serif;
+      letter-spacing: 0.22em;
+      font-size: 12px;
+      color: #6f6f6f;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+
+    .portrait-wrap {
+      width: 100%;
+      margin: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    .portrait {
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+      display: block;
+      filter: grayscale(100%) contrast(1.02);
+    }
+
+    .name {
+      margin: 18px 0 0;
+      font-family: "Times New Roman", Times, serif;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      font-size: 20px;
+      line-height: 1.4;
+      color: #111111;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(6px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    .r1 { animation-delay: 0.12s; }
+    .r2 { animation-delay: 0.3s; }
+    .r3 { animation-delay: 0.5s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 960px) {
+      .hero { min-height: auto; padding: 24px 0 26px; }
+      .portrait { max-width: 360px; }
+      .soprano { font-size: 14px; letter-spacing: 0.18em; }
+      .name { font-size: 20px; }
+    }
+
+    @media (max-width: 420px) {
+      .soprano { margin-bottom: 14px; }
+      .name { margin-top: 14px; }
+      .portrait { max-width: 300px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { animation: none; opacity: 1; transform: none; }
+    }
+  </style>
+</BaseLayout>

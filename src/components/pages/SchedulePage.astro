@@ -1,0 +1,278 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import scheduleData from "../../data/schedule.json";
+import type { Language } from "../../i18n";
+
+interface Props {
+  lang?: Language;
+}
+
+interface ScheduleEvent {
+  date: string;
+  title: string;
+  venue?: string;
+  city?: string;
+  country?: string;
+  role?: string;
+  programme?: string;
+  link?: string;
+  ticketLink?: string;
+  time?: string;
+}
+
+const { lang = "en" } = Astro.props;
+const translations = {
+  en: {
+    title: "Schedule",
+    upcoming: "Upcoming",
+    past: "Past",
+    noUpcoming: "No upcoming engagements at the moment.",
+    noPast: "No past engagements listed yet.",
+    more: "More information",
+    time: "Time",
+    locale: "en-GB",
+    eventTitles: {
+      "Opera Studio Performance": "Opera Studio Performance",
+      "Liederabend": "Liederabend",
+      "Innenansichten — crescendo Festival Closing Concert": "Innenansichten — crescendo Festival Closing Concert",
+      "Durch Opernarien: Frieden und Einheit in Korea erträumt — Concert for Peace in Korea": "Durch Opernarien: Frieden und Einheit in Korea erträumt — Concert for Peace in Korea",
+      "Verdi: Requiem — ORATORIO": "Verdi: Requiem — ORATORIO",
+      "Schachmatt — Opera Workshop": "Schachmatt — Opera Workshop",
+      "nirgend_anders — Junge Norddeutsche Philharmonie": "nirgend_anders — Junge Norddeutsche Philharmonie",
+    },
+    cities: { Berlin: "Berlin", Hamburg: "Hamburg", Stade: "Stade" },
+    countries: { Germany: "Germany" },
+  },
+  de: {
+    title: "Termine",
+    upcoming: "Kommende Termine",
+    past: "Vergangene Auftritte",
+    noUpcoming: "Derzeit sind keine weiteren Auftritte angekündigt.",
+    noPast: "Bisher sind keine vergangenen Auftritte aufgeführt.",
+    more: "Weitere Informationen",
+    time: "Uhrzeit",
+    locale: "de-DE",
+    eventTitles: {
+      "Opera Studio Performance": "Aufführung des Opernstudios",
+      "Liederabend": "Liederabend",
+      "Innenansichten — crescendo Festival Closing Concert": "Innenansichten — Abschlusskonzert des crescendo-Festivals",
+      "Durch Opernarien: Frieden und Einheit in Korea erträumt — Concert for Peace in Korea": "Durch Opernarien: Frieden und Einheit in Korea erträumt — Konzert für den Frieden in Korea",
+      "Verdi: Requiem — ORATORIO": "Verdi: Requiem — Oratorium",
+      "Schachmatt — Opera Workshop": "Schachmatt — Opernwerkstatt",
+      "nirgend_anders — Junge Norddeutsche Philharmonie": "nirgend_anders — Junge Norddeutsche Philharmonie",
+    },
+    cities: { Berlin: "Berlin", Hamburg: "Hamburg", Stade: "Stade" },
+    countries: { Germany: "Deutschland" },
+  },
+  ko: {
+    title: "공연 일정",
+    upcoming: "예정된 공연",
+    past: "지난 공연",
+    noUpcoming: "현재 예정된 공연이 없습니다.",
+    noPast: "아직 지난 공연 정보가 등록되지 않았습니다.",
+    more: "공연 정보 더 보기",
+    time: "공연 시간",
+    locale: "ko-KR",
+    eventTitles: {
+      "Opera Studio Performance": "오페라 스튜디오 공연",
+      "Liederabend": "가곡 독창회",
+      "Innenansichten — crescendo Festival Closing Concert": "Innenansichten — crescendo 페스티벌 폐막 공연",
+      "Durch Opernarien: Frieden und Einheit in Korea erträumt — Concert for Peace in Korea": "Durch Opernarien: Frieden und Einheit in Korea erträumt — 한반도 평화를 위한 음악회",
+      "Verdi: Requiem — ORATORIO": "베르디: 레퀴엠 — 오라토리오",
+      "Schachmatt — Opera Workshop": "Schachmatt — 오페라 워크숍",
+      "nirgend_anders — Junge Norddeutsche Philharmonie": "nirgend_anders — 융게 노르트도이체 필하모니",
+    },
+    cities: { Berlin: "베를린", Hamburg: "함부르크", Stade: "슈타데" },
+    countries: { Germany: "독일" },
+  },
+};
+const copy = translations[lang];
+
+// The source groups are editorial records. Dates determine the displayed
+// chronology whenever this static site is built.
+const today = new Date().toISOString().slice(0, 10);
+const events: ScheduleEvent[] = [...scheduleData.upcoming, ...scheduleData.past];
+const upcoming = events.filter((event) => event.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+const past = events.filter((event) => event.date < today).sort((a, b) => b.date.localeCompare(a.date));
+const sections = [
+  { title: copy.upcoming, empty: copy.noUpcoming, events: upcoming },
+  { title: copy.past, empty: copy.noPast, events: past },
+];
+
+const formatDate = (dateString: string) =>
+  new Intl.DateTimeFormat(copy.locale, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${dateString}T00:00:00Z`));
+
+const eventTitle = (title: string) =>
+  copy.eventTitles[title as keyof typeof copy.eventTitles] ?? title;
+const eventLocation = (event: ScheduleEvent) => {
+  const city = event.city && (copy.cities[event.city as keyof typeof copy.cities] ?? event.city);
+  const country = event.country && (copy.countries[event.country as keyof typeof copy.countries] ?? event.country);
+  const venueIncludesCity = lang !== "ko" && event.venue && event.city && event.venue.endsWith(event.city);
+  return [event.venue, venueIncludesCity ? undefined : city, country].filter(Boolean).join(", ");
+};
+---
+
+<BaseLayout title={`${copy.title} | Rena Seulgi Jang`} lang={lang}>
+  <section class="schedule-page">
+    {sections.map((section) => (
+      <section class="schedule-section">
+        <h2 class="section-title">{section.title}</h2>
+
+        {section.events.length === 0 ? (
+          <p class="empty-state">{section.empty}</p>
+        ) : (
+          <div class="schedule-list">
+            {section.events.map((event) => (
+              <article class="schedule-item">
+                <time class="schedule-date" datetime={event.date}>{formatDate(event.date)}</time>
+                <div class="schedule-details">
+                  <h3>{eventTitle(event.title)}</h3>
+                  {eventLocation(event) && <p>{eventLocation(event)}</p>}
+                  {event.role && <p>{event.role}</p>}
+                  {event.programme && <p>{event.programme}</p>}
+                  {event.link && (
+                    <p>
+                      <a href={event.link} target="_blank" rel="noopener noreferrer">
+                        {copy.more}
+                      </a>
+                    </p>
+                  )}
+                </div>
+                {event.time && (
+                  <time class="schedule-time" datetime={event.time} aria-label={`${copy.time}: ${event.time}`}>
+                    {event.time}
+                  </time>
+                )}
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+    ))}
+  </section>
+
+  <style>
+    .schedule-page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 20px 0 40px;
+    }
+
+    .schedule-section {
+      margin-bottom: 48px;
+    }
+
+    .section-title {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 22px;
+      font-weight: 400;
+      margin: 0 0 20px;
+      color: #111111;
+      border-bottom: 1px solid #d9d9d9;
+      padding-bottom: 8px;
+    }
+
+    .schedule-list {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .schedule-item {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr) 64px;
+      gap: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .schedule-date {
+      font-size: 14px;
+      color: #6f6f6f;
+      padding-top: 2px;
+      line-height: 1.6;
+    }
+
+    .schedule-time {
+      padding-top: 2px;
+      text-align: right;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #4f4f4f;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .schedule-details {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .schedule-details h3 {
+      margin: 0 0 8px;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: #111111;
+      line-height: 1.4;
+    }
+
+    .schedule-details p {
+      margin: 0 0 6px;
+      color: #4f4f4f;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .schedule-details a {
+      color: #111111;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .empty-state {
+      color: #6f6f6f;
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    @media (max-width: 700px) {
+      .schedule-item {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px 14px;
+      }
+
+      .schedule-date {
+        font-size: 16px;
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .schedule-time {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .schedule-details {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+
+      .schedule-details h3 {
+        font-size: 20px;
+      }
+
+      .schedule-details a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 8px 0;
+      }
+    }
+  </style>
+</BaseLayout>

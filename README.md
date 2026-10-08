@@ -1,43 +1,68 @@
-# Astro Starter Kit: Minimal
+# Rena Seulgi Jang website
+
+A static Astro website with shared English, German, and Korean page layouts.
+
+## Development
+
+Use Node.js 24 and run commands from the repository root:
 
 ```sh
-npm create astro@latest -- --template minimal
+npm ci
+ASTRO_TELEMETRY_DISABLED=1 npm run dev
+ASTRO_TELEMETRY_DISABLED=1 npm run build
+ASTRO_TELEMETRY_DISABLED=1 npm run preview
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The production build is written to `dist/`. Cloud tasks already use isolated
+checkouts; use the existing checkout rather than creating a Git worktree.
 
-## 🚀 Project Structure
+## Publish with GitHub Pages
 
-Inside of your Astro project, you'll see the following folders and files:
+In the GitHub repository, open **Settings → Pages** and choose **GitHub Actions**
+as the source. The workflow in `.github/workflows/deploy-pages.yml` installs the
+locked dependencies, builds the site for the address supplied by GitHub Pages,
+and publishes the resulting static files when `main` changes.
+
+After enabling Pages, use **Actions → Publish website to GitHub Pages → Run
+workflow** if the initial run happened before Pages was enabled. The successful
+deployment's `github-pages` environment shows the public website URL.
+
+For the default project address, the destination is:
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+https://gksdl0311.github.io/renaseulgijang/
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+This address is live only after GitHub reports a successful Pages deployment.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+To test the project address locally:
 
-Any static assets, like images, can be placed in the `public/` directory.
+```sh
+ASTRO_BASE_PATH=/renaseulgijang/ ASTRO_TELEMETRY_DISABLED=1 npm run build
+ASTRO_BASE_PATH=/renaseulgijang/ ASTRO_TELEMETRY_DISABLED=1 npm run preview
+```
 
-## 🧞 Commands
+The deployment base is applied to local images, navigation, language switches,
+favicons, generated scripts/styles, and the homepage redirect. Without
+`ASTRO_BASE_PATH`, the site continues to run at the domain root. Set
+`ASTRO_SITE_URL` when specifying a production origin outside the Pages workflow.
 
-All commands are run from the root of the project, from a terminal:
+## Content
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+- `src/data/schedule.json`: performance dates, venues, and optional local times.
+  Dates are classified as upcoming or past when the static site is built.
+- `src/data/repertoire.json`: authoritative roles, works, and composers.
+- `src/data/videos.json`: video IDs/titles and catalogue provenance.
 
-## 👀 Want to learn more?
+Refresh public YouTube uploads when verified HTTPS access to the official channel
+is available:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+```sh
+python3 scripts/sync-youtube-videos.py
+```
+
+The importer follows the public `/videos` tab's pagination and replaces the
+catalogue only after a complete, supported response. Shorts and live-stream tabs
+are outside that scope. The current catalogue retains three existing curated
+videos; the full channel import is still pending network access. Rebuild the site
+after content changes.

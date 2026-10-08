@@ -1,0 +1,127 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import type { Language } from "../../i18n";
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = "en" } = Astro.props;
+const translations = {
+  en: {
+    title: "Contact",
+    intro: "For professional enquiries, collaborations, or recital opportunities, please get in touch.",
+    email: "Email",
+    note: "Representation details will be added in due course.",
+  },
+  de: {
+    title: "Kontakt",
+    intro: "Für berufliche Anfragen, künstlerische Zusammenarbeit oder Konzertanfragen freue ich mich über Ihre Nachricht.",
+    email: "E-Mail",
+    note: "Informationen zur Künstlervertretung werden zu einem späteren Zeitpunkt ergänzt.",
+  },
+  ko: {
+    title: "연락처",
+    intro: "공연 섭외, 협업 제안, 리사이틀 관련 문의는 아래 이메일로 연락해 주세요.",
+    email: "이메일",
+    note: "매니지먼트 관련 정보는 추후 안내할 예정입니다.",
+  },
+};
+const text = translations[lang];
+---
+
+<BaseLayout lang={lang} current="contact" title={`${text.title} | Rena Seulgi Jang`}>
+  <section class="contact" aria-label={text.title}>
+    <p class="contact-intro">{text.intro}</p>
+
+    <div class="contact-block">
+      <p class="contact-label">{text.email}</p>
+      <a href="mailto:renajang.official@gmail.com" class="contact-email">
+        renajang.official@gmail.com
+      </a>
+    </div>
+
+    <p class="contact-note">{text.note}</p>
+  </section>
+
+  <style>
+    .contact {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 0 60px;
+      text-align: center;
+      font-family: "Times New Roman", Times, serif;
+    }
+
+    .contact-intro {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #2f2f2f;
+      margin-bottom: 36px;
+      overflow-wrap: anywhere;
+    }
+
+    .contact-block {
+      margin-bottom: 30px;
+    }
+
+    .contact-label {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      color: #8a8a8a;
+      margin-bottom: 8px;
+    }
+
+    .contact-email {
+      display: inline-block;
+      max-width: 100%;
+      font-size: 20px;
+      color: #111;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+      overflow-wrap: anywhere;
+    }
+
+    .contact-email:hover {
+      opacity: 0.6;
+    }
+
+    .contact-email:focus-visible {
+      outline: 2px solid #6a6a6a;
+      outline-offset: 4px;
+    }
+
+    .contact-note {
+      font-size: 14px;
+      color: #8a8a8a;
+      margin-top: 20px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    :global(html[lang="ko"]) .contact-intro,
+    :global(html[lang="ko"]) .contact-note {
+      word-break: keep-all;
+    }
+
+    @media (max-width: 700px) {
+      .contact {
+        padding: 24px 0 40px;
+      }
+
+      .contact-label,
+      .contact-note {
+        font-size: 16px;
+        color: #6a6a6a;
+      }
+
+      .contact-email {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        font-size: clamp(18px, 5.3vw, 20px);
+      }
+    }
+  </style>
+</BaseLayout>

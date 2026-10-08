@@ -12,6 +12,70 @@
   ],
   "past": [
     {
+      "date": "2025-06-06",
+      "title": "Innenansichten — crescendo Festival Closing Concert",
+      "venue": "UdK Berlin",
+      "city": "Berlin",
+      "country": "Germany",
+      "time": "19:30"
+    },
+    {
+      "date": "2025-10-08",
+      "title": "Durch Opernarien: Frieden und Einheit in Korea erträumt — Concert for Peace in Korea",
+      "venue": "Kaiser-Wilhelm-Gedächtniskirche",
+      "city": "Berlin",
+      "country": "Germany",
+      "time": "19:00"
+    },
+    {
+      "date": "2025-11-05",
+      "title": "Verdi: Requiem — ORATORIO",
+      "venue": "St. Johanniskirche",
+      "city": "Berlin",
+      "country": "Germany",
+      "time": "19:00"
+    },
+    {
+      "date": "2026-02-13",
+      "title": "Schachmatt — Opera Workshop",
+      "venue": "UNI.T Theater",
+      "city": "Berlin",
+      "country": "Germany",
+      "time": "19:30"
+    },
+    {
+      "date": "2026-02-14",
+      "title": "Schachmatt — Opera Workshop",
+      "venue": "UNI.T Theater",
+      "city": "Berlin",
+      "country": "Germany",
+      "time": "19:30"
+    },
+    {
+      "date": "2026-03-08",
+      "title": "nirgend_anders — Junge Norddeutsche Philharmonie",
+      "venue": "Elbphilharmonie",
+      "city": "Hamburg",
+      "country": "Germany",
+      "time": "19:00"
+    },
+    {
+      "date": "2026-03-10",
+      "title": "nirgend_anders — Junge Norddeutsche Philharmonie",
+      "venue": "Musikbrauerei",
+      "city": "Berlin",
+      "country": "Germany",
+      "time": "20:00"
+    },
+    {
+      "date": "2026-03-11",
+      "title": "nirgend_anders — Junge Norddeutsche Philharmonie",
+      "venue": "Stadeum",
+      "city": "Stade",
+      "country": "Germany",
+      "time": "19:45"
+    },
+    {
       "date": "2025-12-01",
       "title": "Liederabend",
       "venue": "",

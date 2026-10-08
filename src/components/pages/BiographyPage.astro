@@ -1,0 +1,384 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import type { Language } from "../../i18n";
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = "en" } = Astro.props;
+const translations = {
+  en: {
+    title: "Biography",
+    videoTitle: "Rena Seulgi Jang performance",
+    pronunciationLabel: "Play pronunciation of Rena Seulgi Jang",
+    pronunciationTitle: "Play pronunciation",
+    pronunciationGuide: "(reh-nah seul-gee jahng)",
+    pronunciationUnavailable: "Pronunciation audio is unavailable. Please use the written guide above.",
+    pronunciationError: "Pronunciation audio could not be played. Please use the written guide above.",
+    paragraphs: [
+      "Rena Seulgi Jang is a South Korean soprano based in Berlin. She is currently completing her Master’s degree in Opera at the Universität der Künste Berlin under the guidance of Deborah York, following studies at Seoul National University and further professional training as a Young Artist at the Korea National Opera Studio.",
+      "Her recent and upcoming engagements include her Elbphilharmonie debut in nirgend_anders with the Junge Norddeutsche Philharmonie, with additional appearances in Salderatzen, Bienenbüttel, Berlin, and Stade, as well as soprano solo performances in Verdi’s Messa da Requiem and Mendelssohn’s Psalm 95 and Psalm 42, and performances of Schönberg’s Pierrot Lunaire.",
+      "Her operatic repertoire includes Adina in L’elisir d’amore, Mimì in La bohème, Susanna in Le nozze di Figaro, and Fiordiligi in Così fan tutte, as well as staged scenes from roles such as Gilda, Rusalka, Madama Butterfly, and Manon.",
+      "A prizewinner in several competitions, including First Prize at the Pavarotti Voice Competition, Rena has also received multiple scholarships in recognition of her artistic potential.",
+    ],
+  },
+  de: {
+    title: "Biografie",
+    videoTitle: "Rena Seulgi Jang auf der Bühne",
+    pronunciationLabel: "Aussprache des Namens Rena Seulgi Jang anhören",
+    pronunciationTitle: "Aussprache anhören",
+    pronunciationGuide: "(reh-nah seul-gee jahng)",
+    pronunciationUnavailable: "Die Aussprache ist als Audio nicht verfügbar. Bitte nutzen Sie die Lautschrift oben.",
+    pronunciationError: "Die Aussprache konnte nicht abgespielt werden. Bitte nutzen Sie die Lautschrift oben.",
+    paragraphs: [
+      "Rena Seulgi Jang ist eine südkoreanische Sopranistin, die in Berlin lebt. Nach ihrem Studium an der Seoul National University und ihrer weiteren Ausbildung als Young Artist im Korea National Opera Studio absolviert sie derzeit ihr Masterstudium im Fach Oper an der Universität der Künste Berlin bei Deborah York.",
+      "Zu ihren jüngsten und bevorstehenden Engagements zählen ihr Debüt in der Elbphilharmonie im Projekt nirgend_anders mit der Jungen Norddeutschen Philharmonie sowie weitere Auftritte in Salderatzen, Bienenbüttel, Berlin und Stade. Darüber hinaus ist sie als Sopransolistin in Verdis Messa da Requiem, Mendelssohns Psalm 95 und Psalm 42 sowie in Schönbergs Pierrot Lunaire zu hören.",
+      "Ihr Opernrepertoire umfasst Adina in L’elisir d’amore, Mimì in La bohème, Susanna in Le nozze di Figaro und Fiordiligi in Così fan tutte. Hinzu kommen szenische Aufführungen von Ausschnitten aus Partien wie Gilda, Rusalka, Madama Butterfly und Manon.",
+      "Rena wurde bei mehreren Wettbewerben ausgezeichnet, unter anderem mit dem ersten Preis beim Pavarotti-Gesangswettbewerb. Für ihr künstlerisches Potenzial wurde sie zudem mit mehreren Stipendien ausgezeichnet.",
+    ],
+  },
+  ko: {
+    title: "소개",
+    videoTitle: "소프라노 레나 슬기 장의 공연",
+    pronunciationLabel: "레나 슬기 장의 이름 발음 듣기",
+    pronunciationTitle: "이름 발음 듣기",
+    pronunciationGuide: "(레나 슬기 장)",
+    pronunciationUnavailable: "발음 음성을 재생할 수 없습니다. 위의 발음 표기를 참고해 주세요.",
+    pronunciationError: "발음 음성을 재생하지 못했습니다. 위의 발음 표기를 참고해 주세요.",
+    paragraphs: [
+      "레나 슬기 장(Rena Seulgi Jang)은 베를린을 중심으로 활동하는 한국인 소프라노입니다. 서울대학교에서 수학하고 국립오페라단 오페라스튜디오에서 영 아티스트로 전문 교육을 받은 뒤, 현재 베를린 예술대학교(Universität der Künste Berlin)에서 데버러 요크(Deborah York)의 지도 아래 오페라 전공 석사 과정을 밟고 있습니다.",
+      "최근 및 예정된 공연으로는 융게 노르트도이체 필하모니(Junge Norddeutsche Philharmonie)와 함께하는 nirgend_anders 프로젝트의 엘프필하모니 데뷔 무대와 잘더라첸, 비넨뷔텔, 베를린, 슈타데에서의 공연이 있습니다. 또한 베르디의 레퀴엠(Messa da Requiem)과 멘델스존의 시편 95편 및 시편 42편에서 소프라노 독창자로 참여하며, 쇤베르크의 달에 홀린 피에로(Pierrot Lunaire)도 선보입니다.",
+      "오페라 레퍼토리에는 도니체티의 사랑의 묘약(L’elisir d’amore)의 아디나, 푸치니의 라 보엠(La bohème)의 미미, 모차르트의 피가로의 결혼(Le nozze di Figaro)의 수잔나와 코지 판 투테(Così fan tutte)의 피오르딜리지가 있습니다. 이 밖에도 질다, 루살카, 나비부인, 마농 등의 배역을 오페라 장면 공연으로 선보였습니다.",
+      "파바로티 성악 콩쿠르 1위를 비롯해 여러 콩쿠르에서 입상했으며, 예술적 가능성을 인정받아 다수의 장학금을 받았습니다.",
+    ],
+  },
+};
+const text = translations[lang];
+---
+
+<BaseLayout lang={lang} current="biography" title={`${text.title} | Rena Seulgi Jang`}>
+  <section class="bio-video" aria-label={text.videoTitle}>
+    <div class="video-frame">
+      <iframe
+        src="https://www.youtube.com/embed/WYXIK4-Rm4c?autoplay=1&mute=1&loop=1&playlist=WYXIK4-Rm4c&controls=0&modestbranding=1&rel=0&playsinline=1"
+        title={text.videoTitle}
+        loading="lazy"
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </section>
+
+  <section class="bio">
+    <div class="bio-heading-row">
+      <h1 class="bio-title">Rena Seulgi Jang</h1>
+
+      <span class="bio-pronunciation" lang="ko">[ɾe.na sɯl.ɡi tɕaŋ]</span>
+
+      <span class="bio-guide" lang={lang === "ko" ? "ko" : "en"}>{text.pronunciationGuide}</span>
+
+      <button
+        class="audio-button"
+        type="button"
+        aria-label={text.pronunciationLabel}
+        aria-describedby="pronunciation-status"
+        title={text.pronunciationTitle}
+        hidden
+      >
+        <svg
+          class="audio-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <polygon points="11 5 6 9 3 9 3 15 6 15 11 19 11 5"></polygon>
+          <path d="M15 9.5a4 4 0 0 1 0 5"></path>
+          <path d="M17.5 7a7.5 7.5 0 0 1 0 10"></path>
+        </svg>
+      </button>
+    </div>
+
+    <p
+      id="pronunciation-status"
+      class="pronunciation-status"
+      role="status"
+      data-unavailable={text.pronunciationUnavailable}
+      data-error={text.pronunciationError}
+    >{text.pronunciationUnavailable}</p>
+
+    {text.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+  </section>
+
+  <script>
+    const button = document.querySelector<HTMLButtonElement>(".audio-button");
+    const status = document.querySelector<HTMLParagraphElement>(".pronunciation-status");
+
+    if (button && status && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window) {
+      const synthesis = window.speechSynthesis;
+      const chooseKoreanVoice = () => {
+        const voices = synthesis.getVoices();
+        return (
+          voices.find((voice) => /^ko[-_]kr$/i.test(voice.lang)) ||
+          voices.find((voice) => /^ko(?:[-_]|$)/i.test(voice.lang))
+        );
+      };
+
+      const showStatus = (message: string) => {
+        status.textContent = message;
+        status.hidden = !message;
+      };
+
+      const updateAvailability = () => {
+        const available = Boolean(chooseKoreanVoice());
+        button.hidden = !available;
+        showStatus(available ? "" : status.dataset.unavailable || "");
+      };
+
+      updateAvailability();
+      synthesis.addEventListener("voiceschanged", updateAvailability);
+
+      button.addEventListener("click", () => {
+        const voice = chooseKoreanVoice();
+        if (!voice) {
+          updateAvailability();
+          return;
+        }
+
+        synthesis.cancel();
+        showStatus("");
+        const utterance = new SpeechSynthesisUtterance("레나 슬기 장");
+        utterance.lang = "ko-KR";
+        utterance.voice = voice;
+        utterance.rate = 0.85;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+
+        utterance.addEventListener("error", (event) => {
+          if (event.error !== "canceled" && event.error !== "interrupted") {
+            showStatus(status.dataset.error || "");
+          }
+        });
+
+        try {
+          synthesis.speak(utterance);
+        } catch {
+          showStatus(status.dataset.error || "");
+        }
+      });
+    }
+  </script>
+
+  <style>
+    :global(main) {
+      padding-top: 0 !important;
+    }
+
+    .bio-video {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-top: 0;
+      margin-bottom: 22px;
+      line-height: 0;
+    }
+
+    .video-frame {
+      position: relative;
+      width: 100%;
+      height: 34vh;
+      min-height: 220px;
+      max-height: 360px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .video-frame iframe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 220%;
+      height: 220%;
+      transform: translate(-50%, -50%);
+      border: 0;
+      pointer-events: none;
+    }
+
+    .video-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0) 72%,
+        rgba(247, 247, 247, 0.96) 100%
+      );
+      pointer-events: none;
+    }
+
+    .bio {
+      max-width: 760px;
+      margin: 0 auto;
+      padding-top: 0;
+    }
+
+    .bio-heading-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 0 0 30px;
+    }
+
+    .bio-title {
+      margin: 0;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 32px;
+      font-weight: 400;
+      color: #111111;
+      line-height: 1.2;
+    }
+
+    .bio-pronunciation,
+    .bio-guide {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: #6a6a6a;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .audio-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: #6a6a6a;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .audio-button[hidden] {
+      display: none;
+    }
+
+    .audio-button:hover {
+      color: #111111;
+    }
+
+    .audio-button:focus-visible {
+      outline: 2px solid #6a6a6a;
+      outline-offset: 2px;
+      border-radius: 50%;
+    }
+
+    .audio-icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    .bio p {
+      margin: 0 0 18px;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 17px;
+      line-height: 1.8;
+      color: #2f2f2f;
+      overflow-wrap: anywhere;
+    }
+
+    .bio .pronunciation-status {
+      margin: -18px 0 24px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #6a6a6a;
+      text-align: center;
+    }
+
+    :global(html[lang="ko"]) .bio p {
+      word-break: keep-all;
+    }
+
+    @media (max-width: 700px) {
+      .bio-video {
+        margin-bottom: 24px;
+      }
+
+      .video-frame {
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        aspect-ratio: 16 / 9;
+      }
+
+      .video-frame iframe {
+        width: 100%;
+        height: 100%;
+      }
+
+      .bio {
+        max-width: 100%;
+      }
+
+      .bio-heading-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 44px;
+        align-items: center;
+        gap: 8px 12px;
+        margin: 0 auto 24px;
+        max-width: 360px;
+      }
+
+      .bio-heading-row:has(.audio-button[hidden]) {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .bio-title {
+        grid-column: 1 / -1;
+        text-align: center;
+        font-size: 28px;
+        margin-bottom: 4px;
+      }
+
+      .bio-pronunciation,
+      .bio-guide {
+        grid-column: 1;
+        justify-self: center;
+        font-size: 16px;
+        line-height: 1.5;
+        white-space: normal;
+        text-align: center;
+      }
+
+      .audio-button {
+        grid-column: 2;
+        grid-row: 2 / 4;
+        width: 44px;
+        height: 44px;
+      }
+
+      .audio-icon {
+        width: 18px;
+        height: 18px;
+      }
+
+      .bio p {
+        font-size: 17px;
+        line-height: 1.8;
+      }
+
+      .bio .pronunciation-status {
+        font-size: 16px;
+      }
+    }
+  </style>
+</BaseLayout>

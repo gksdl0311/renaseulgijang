@@ -1,0 +1,519 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import repertoire from "../../data/repertoire.json";
+import type { Language } from "../../i18n";
+import { sitePath } from "../../site-paths";
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = "en" } = Astro.props;
+const translations = {
+  en: {
+    title: "Repertoire",
+    intro: "Selected roles and concert repertoire.",
+    name: "Rena Seulgi Jang",
+    photoAlt: "Rena Seulgi Jang performing on stage",
+    photoCaption: "On stage",
+    browse: "Browse repertoire",
+    headings: {
+      "Opera": "Opera",
+      "Stage roles": "Stage roles",
+      "Scenes": "Scenes",
+      "Concert and Oratorio": "Concert and Oratorio",
+      "Oratorio": "Oratorio",
+      "20th Century and Contemporary": "20th Century and Contemporary",
+      "Lied": "Lied",
+    },
+    schubert: "Schubert (selected programme)",
+  },
+  de: {
+    title: "Repertoire",
+    intro: "Ausgewählte Opernpartien und Konzertrepertoire.",
+    name: "Rena Seulgi Jang",
+    photoAlt: "Rena Seulgi Jang auf der Bühne",
+    photoCaption: "Auf der Bühne",
+    browse: "Repertoirebereiche",
+    headings: {
+      "Opera": "Oper",
+      "Stage roles": "Bühnenpartien",
+      "Scenes": "Opernszenen",
+      "Concert and Oratorio": "Konzert und Oratorium",
+      "Oratorio": "Oratorium",
+      "20th Century and Contemporary": "20. Jahrhundert und zeitgenössische Musik",
+      "Lied": "Lied",
+    },
+    schubert: "Schubert (ausgewähltes Programm)",
+  },
+  ko: {
+    title: "레퍼토리",
+    intro: "주요 오페라 배역과 콘서트 레퍼토리.",
+    name: "레나 슬기 장",
+    photoAlt: "무대에서 노래하는 레나 슬기 장",
+    photoCaption: "무대 위에서",
+    browse: "레퍼토리 분야",
+    headings: {
+      "Opera": "오페라",
+      "Stage roles": "무대에서 선보인 배역",
+      "Scenes": "오페라 장면",
+      "Concert and Oratorio": "콘서트 및 오라토리오",
+      "Oratorio": "오라토리오",
+      "20th Century and Contemporary": "20세기 및 현대 음악",
+      "Lied": "독일 가곡",
+    },
+    schubert: "Schubert (선별 가곡 프로그램)",
+  },
+};
+const copy = translations[lang];
+const heading = (label: string) => copy.headings[label as keyof typeof copy.headings] ?? label;
+const repertoireText = (text: string | undefined) =>
+  text === "Schubert (selected programme)" ? copy.schubert : text;
+---
+
+<BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`}>
+  <section class="repertoire-page">
+    <header class="repertoire-lead">
+      <div class="lead-copy">
+        <p class="artist-name">{copy.name}</p>
+        <h1>{copy.title}</h1>
+        <p class="repertoire-intro">{copy.intro}</p>
+        <nav class="repertoire-jumps" aria-label={copy.browse}>
+          {repertoire.columns.map((column, index) => (
+            <a href={`#repertoire-${index + 1}`}>
+              <span>{heading(column.title)}</span>
+              <span class="jump-arrow" aria-hidden="true">↓</span>
+            </a>
+          ))}
+        </nav>
+      </div>
+      <figure class="lead-photo">
+        <img
+          src={sitePath("media/photo/onstage-cover.jpg")}
+          alt={copy.photoAlt}
+          width="716"
+          height="888"
+          loading="eager"
+          decoding="async"
+        />
+        <figcaption>{copy.photoCaption}</figcaption>
+      </figure>
+    </header>
+
+    <div class="rep-grid">
+      {repertoire.columns.map((column, index) => (
+        <section class="rep-column" id={`repertoire-${index + 1}`} aria-labelledby={`repertoire-heading-${index + 1}`}>
+          <header class="rep-column-heading">
+            <span class="column-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            <h2 id={`repertoire-heading-${index + 1}`}>{heading(column.title)}</h2>
+          </header>
+
+          {column.sections.map((section) => (
+            <section class="rep-section">
+              <h3 class="rep-section-title">{heading(section.title)}</h3>
+              <ul class:list={["rep-list", section.items.every((item) => !item.work) && "text-list"]} role="list">
+                {section.items.map((item) => (
+                  <li class:list={["rep-entry", item.role && "has-role"]}>
+                    {item.role && <span class="role">{item.role}</span>}
+                    {item.work ? (
+                      <div class="work-details">
+                        <span class="work"><em>{item.work}</em></span>
+                        {item.composer && <span class="composer">{item.composer}</span>}
+                      </div>
+                    ) : (
+                      <span class="text">{repertoireText(item.text)}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </section>
+      ))}
+    </div>
+  </section>
+
+  <style>
+    .repertoire-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 26px 0 44px;
+      color: #252321;
+    }
+
+    .repertoire-lead {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 248px;
+      align-items: center;
+      gap: 64px;
+      max-width: 940px;
+      margin: 0 auto 64px;
+    }
+
+    .lead-copy {
+      min-width: 0;
+    }
+
+    .artist-name {
+      margin: 0 0 20px;
+      color: #6a6661;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: .16em;
+      line-height: 1.5;
+      text-transform: uppercase;
+    }
+
+    .lead-copy h1 {
+      margin: 0 0 20px;
+      font-family: "Times New Roman", Times, serif;
+      font-size: clamp(44px, 5.8vw, 68px);
+      font-weight: 400;
+      letter-spacing: -.025em;
+      line-height: 1.08;
+    }
+
+    .repertoire-intro {
+      max-width: 430px;
+      margin: 0 0 26px;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 20px;
+      line-height: 1.65;
+      color: #6a6661;
+    }
+
+    .repertoire-jumps {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 10px 28px;
+    }
+
+    .repertoire-jumps a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 44px;
+      max-width: 100%;
+      padding: 8px 0;
+      border-bottom: 1px solid #bcb4ab;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #3d3935;
+      transition: border-color .2s ease, color .2s ease;
+    }
+
+    .repertoire-jumps a:hover {
+      border-color: #252321;
+      color: #111111;
+    }
+
+    .repertoire-jumps a:focus-visible {
+      outline: 2px solid #6a6661;
+      outline-offset: 5px;
+    }
+
+    .jump-arrow {
+      flex-shrink: 0;
+      color: #8c8278;
+    }
+
+    .lead-photo {
+      margin: 0;
+      width: 100%;
+    }
+
+    .lead-photo img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .lead-photo figcaption {
+      margin-top: 10px;
+      text-align: right;
+      color: #6a6661;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 14px;
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .rep-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 52px;
+      border-top: 1px solid #cfc8c0;
+      padding-top: 34px;
+      align-items: start;
+    }
+
+    .rep-column {
+      min-width: 0;
+      scroll-margin-top: 190px;
+    }
+
+    .rep-column + .rep-column {
+      border-left: 1px solid #e8e3dd;
+      padding-left: 40px;
+    }
+
+    .rep-column-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 34px;
+    }
+
+    .column-number {
+      flex-shrink: 0;
+      color: #9c8f80;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .rep-column-heading h2 {
+      margin: 0;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 31px;
+      font-weight: 400;
+      line-height: 1.2;
+    }
+
+    .rep-section {
+      margin-bottom: 34px;
+    }
+
+    .rep-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .rep-section-title {
+      margin: 0 0 9px;
+      color: #6a6661;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.6;
+      letter-spacing: .075em;
+      text-transform: uppercase;
+    }
+
+    .rep-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .rep-entry {
+      min-width: 0;
+      padding: 13px 0;
+      border-bottom: 1px solid #ede9e4;
+      font-family: "Times New Roman", Times, serif;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .rep-entry.has-role {
+      display: grid;
+      grid-template-columns: 105px minmax(0, 1fr);
+      gap: 15px;
+      align-items: baseline;
+    }
+
+    .role {
+      font-size: 18px;
+      color: #3d3935;
+    }
+
+    .work-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .work {
+      color: #252321;
+      font-size: 20px;
+    }
+
+    .work em {
+      font-style: italic;
+    }
+
+    .composer {
+      color: #766f68;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .text-list {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0 22px;
+    }
+
+    .text-list .rep-entry:only-child {
+      grid-column: 1 / -1;
+    }
+
+    .text {
+      font-size: 19px;
+      color: #3d3935;
+    }
+
+    :global(html[lang="ko"]) .repertoire-page {
+      word-break: keep-all;
+    }
+
+    :global(html[lang="ko"]) .rep-section-title {
+      letter-spacing: .025em;
+    }
+
+    @media (max-width: 1000px) {
+      .repertoire-lead {
+        grid-template-columns: minmax(0, 1fr) 216px;
+        gap: 40px;
+      }
+
+      .rep-grid {
+        gap: 32px;
+      }
+
+      .rep-column + .rep-column {
+        padding-left: 28px;
+      }
+
+      .rep-entry.has-role {
+        grid-template-columns: 90px minmax(0, 1fr);
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .repertoire-page {
+        padding-top: 18px;
+      }
+
+      .repertoire-lead {
+        margin-bottom: 44px;
+      }
+
+      .rep-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 40px;
+        padding-top: 28px;
+      }
+
+      .rep-column + .rep-column {
+        border-left: 0;
+        border-top: 1px solid #cfc8c0;
+        padding: 28px 0 0;
+      }
+
+      .rep-column {
+        scroll-margin-top: 150px;
+      }
+
+      .rep-entry.has-role {
+        grid-template-columns: 140px minmax(0, 1fr);
+        gap: 20px;
+      }
+
+      .artist-name,
+      .rep-section-title,
+      .composer,
+      .lead-photo figcaption {
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .repertoire-lead {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+      }
+
+      .lead-copy {
+        text-align: center;
+      }
+
+      .artist-name {
+        margin-bottom: 14px;
+        letter-spacing: .1em;
+      }
+
+      .lead-copy h1 {
+        margin-bottom: 14px;
+        font-size: 44px;
+      }
+
+      .repertoire-intro {
+        margin: 0 auto 18px;
+        font-size: 18px;
+      }
+
+      .repertoire-jumps {
+        justify-content: center;
+        gap: 8px 22px;
+      }
+
+      .lead-photo {
+        max-width: 180px;
+        justify-self: center;
+      }
+
+      .lead-photo figcaption {
+        text-align: center;
+      }
+
+      .rep-column {
+        scroll-margin-top: 170px;
+      }
+
+      .rep-column-heading {
+        gap: 12px;
+        margin-bottom: 26px;
+      }
+
+      .rep-column-heading h2 {
+        font-size: 28px;
+      }
+
+      .rep-section-title {
+        letter-spacing: .04em;
+      }
+
+      .rep-entry.has-role {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 4px;
+        padding: 15px 0;
+      }
+
+      .role {
+        font-size: 17px;
+      }
+
+      .work {
+        font-size: 19px;
+      }
+
+      .work-details {
+        gap: 3px;
+      }
+
+      .text-list {
+        gap: 0 20px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .repertoire-jumps a {
+        transition: none;
+      }
+    }
+  </style>
+</BaseLayout>

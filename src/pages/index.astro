@@ -1,5 +1,6 @@
 ---
-return Astro.redirect("/en/");
+import { sitePath } from "../site-paths";
+return Astro.redirect(sitePath("en/"));
 
 const title = "Rena Seulgi Jang | Soprano";
 ---
@@ -12,7 +13,7 @@ const title = "Rena Seulgi Jang | Soprano";
       <figure class="portrait-wrap reveal r2">
         <img
           class="portrait"
-          src="/hero/portrait.jpg"
+          src={sitePath("hero/portrait.jpg")}
           alt="Portrait of Rena Seulgi Jang"
           loading="eager"
           decoding="async"

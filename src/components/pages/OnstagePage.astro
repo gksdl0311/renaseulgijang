@@ -1,0 +1,182 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import type { Language } from "../../i18n";
+import { sitePath } from "../../site-paths";
+
+interface Props { lang: Language }
+const { lang } = Astro.props;
+const copy = {
+  en: { title: "Photo (Onstage)", gallery: "Onstage photo gallery", dialog: "Enlarged onstage photograph", close: "Close photograph", alt: (number: number) => `Onstage photograph ${number} of Rena Seulgi Jang`, open: (number: number) => `Enlarge onstage photograph ${number}` },
+  de: { title: "Fotos (Bühne)", gallery: "Galerie mit Bühnenfotos", dialog: "Vergrößertes Bühnenfoto", close: "Foto schließen", alt: (number: number) => `Bühnenfoto ${number} von Rena Seulgi Jang`, open: (number: number) => `Bühnenfoto ${number} vergrößern` },
+  ko: { title: "사진 (무대)", gallery: "무대 사진 갤러리", dialog: "확대한 무대 사진", close: "사진 닫기", alt: (number: number) => `레나 슬기 장의 무대 사진 ${number}`, open: (number: number) => `무대 사진 ${number} 확대하기` },
+}[lang];
+const dimensions = [
+  [3640, 2053], [2836, 4095], [2410, 1606], [2183, 3275], [1600, 1007],
+  [3931, 2607], [4073, 2741], [4056, 2729], [2224, 1251], [2224, 1251],
+  [2722, 4096], [4095, 2750], [2696, 4096], [4095, 2730], [4095, 2730],
+  [3399, 1911], [2450, 3674], [4032, 2752], [1142, 610], [4095, 2681],
+  [4071, 2729], [4095, 2730], [4095, 2730], [2450, 1587], [4095, 2730],
+  [3317, 2230], [3931, 2591], [2932, 3664], [4032, 2647], [4095, 2730],
+];
+const images = dimensions.map(([width, height], index) => ({
+  name: `onstage-${String(index + 1).padStart(2, "0")}.JPG`, width, height,
+}));
+---
+
+<BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`}>
+  <section class="onstage-page" aria-label={copy.gallery}>
+    <div class="onstage-masonry">
+      {images.map((image, index) => (
+        <figure class="onstage-item">
+          <button
+            type="button"
+            class="onstage-frame onstage-open"
+            aria-label={copy.open(index + 1)}
+            aria-haspopup="dialog"
+            aria-controls="onstage-lightbox"
+          >
+            <img
+              src={sitePath(`media/photo/onstage/${image.name}`)}
+              alt={copy.alt(index + 1)}
+              width={image.width}
+              height={image.height}
+              loading={index === 0 ? "eager" : "lazy"}
+              decoding="async"
+            />
+          </button>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <dialog class="lightbox" id="onstage-lightbox" aria-label={copy.dialog}>
+    <button type="button" class="lightbox-close" aria-label={copy.close} autofocus>
+      <span aria-hidden="true">×</span>
+    </button>
+    <img class="lightbox-img" id="onstage-lightbox-img" alt="" />
+  </dialog>
+
+  <style>
+    .onstage-page { max-width: 980px; margin: 0 auto; padding: 2rem 0 5rem; animation: pageFade 0.7s ease both; }
+    .onstage-masonry { column-count: 3; column-gap: 1rem; }
+    .onstage-item { margin: 0 0 1rem; break-inside: avoid; opacity: 0; transform: translateY(22px); animation: galleryReveal 0.8s ease forwards; }
+    .onstage-item:nth-child(1) { animation-delay: 0.04s; }
+    .onstage-item:nth-child(2) { animation-delay: 0.08s; }
+    .onstage-item:nth-child(3) { animation-delay: 0.12s; }
+    .onstage-item:nth-child(4) { animation-delay: 0.16s; }
+    .onstage-item:nth-child(5) { animation-delay: 0.20s; }
+    .onstage-item:nth-child(6) { animation-delay: 0.24s; }
+    .onstage-item:nth-child(7) { animation-delay: 0.28s; }
+    .onstage-item:nth-child(8) { animation-delay: 0.32s; }
+    .onstage-item:nth-child(9) { animation-delay: 0.36s; }
+    .onstage-item:nth-child(10) { animation-delay: 0.40s; }
+    .onstage-item:nth-child(11) { animation-delay: 0.44s; }
+    .onstage-item:nth-child(12) { animation-delay: 0.48s; }
+    .onstage-frame {
+      display: block;
+      width: 100%;
+      min-height: 44px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+    .onstage-frame:focus-visible { outline: 2px solid #111; outline-offset: 4px; }
+    .onstage-item img { display: block; width: 100%; height: auto; transition: transform 0.45s ease, filter 0.35s ease; }
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      max-width: none;
+      max-height: none;
+      margin: 0;
+      padding: 64px 24px 24px;
+      border: 0;
+      background: rgba(0, 0, 0, 0.92);
+      overflow: hidden;
+    }
+    .lightbox[open] { display: flex; align-items: center; justify-content: center; }
+    .lightbox::backdrop { background: rgba(0, 0, 0, 0.92); }
+    .lightbox-img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      max-height: calc(100dvh - 88px);
+      width: auto;
+      height: auto;
+      min-width: 0;
+      min-height: 0;
+      object-fit: contain;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: max(12px, env(safe-area-inset-top));
+      right: max(12px, env(safe-area-inset-right));
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.45);
+      color: #fff;
+      font-size: 32px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .lightbox-close:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+    @keyframes galleryReveal { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pageFade { from { opacity: 0; } to { opacity: 1; } }
+    @media (hover: hover) and (pointer: fine) {
+      .onstage-item:hover img { transform: translateY(-4px) scale(1.015); filter: brightness(1.02); }
+    }
+    @media (max-width: 1000px) { .onstage-masonry { column-count: 2; } }
+    @media (max-width: 700px) {
+      .onstage-page { padding: 1.5rem 0 3rem; }
+      .onstage-masonry { column-count: 1; column-gap: 0; }
+      .lightbox { padding-inline: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .onstage-page, .onstage-item { opacity: 1; transform: none; animation: none; }
+      .onstage-item img { transition: none; }
+    }
+  </style>
+
+  <script>
+    const lightbox = document.getElementById("onstage-lightbox");
+    const lightboxImg = document.getElementById("onstage-lightbox-img");
+
+    if (lightbox instanceof HTMLDialogElement && lightboxImg instanceof HTMLImageElement) {
+      let opener: HTMLButtonElement | null = null;
+      let previousOverflow = "";
+
+      document.querySelectorAll<HTMLButtonElement>(".onstage-open").forEach((button) => {
+        button.addEventListener("click", () => {
+          const image = button.querySelector("img");
+          if (!image || lightbox.open) return;
+
+          opener = button;
+          previousOverflow = document.body.style.overflow;
+          lightboxImg.src = image.currentSrc || image.src;
+          lightboxImg.alt = image.alt;
+          lightbox.showModal();
+          document.body.style.overflow = "hidden";
+        });
+      });
+
+      lightbox.querySelector(".lightbox-close")?.addEventListener("click", () => lightbox.close());
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) lightbox.close();
+      });
+      lightbox.addEventListener("close", () => {
+        document.body.style.overflow = previousOverflow;
+        opener?.focus({ preventScroll: true });
+      });
+    }
+  </script>
+</BaseLayout>

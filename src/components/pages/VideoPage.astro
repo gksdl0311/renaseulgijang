@@ -1,0 +1,339 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import type { Language } from "../../i18n";
+import videoCatalogue from "../../data/videos.json";
+
+interface Props { lang: Language; }
+const { lang } = Astro.props;
+const copy = {
+  en: {
+    title: "Video", carousel: "Performance videos", carouselType: "carousel", slide: "slide",
+    previous: "Previous video", next: "Next video",
+    play: (title: string) => `Play ${title} on YouTube (opens in a new tab)`,
+    counter: "Video {index} of {total}",
+    library: "Performances",
+    channel: "Visit the YouTube channel",
+    select: (title: string) => `Select video: ${title}`,
+  },
+  de: {
+    title: "Videos", carousel: "Videos von Auftritten", carouselType: "Karussell", slide: "Folie",
+    previous: "Vorheriges Video", next: "Nächstes Video",
+    play: (title: string) => `${title} auf YouTube abspielen (öffnet sich in einem neuen Tab)`,
+    counter: "Video {index} von {total}",
+    library: "Auftritte",
+    channel: "Zum YouTube-Kanal",
+    select: (title: string) => `Video auswählen: ${title}`,
+  },
+  ko: {
+    title: "동영상", carousel: "공연 영상", carouselType: "슬라이드 모음", slide: "슬라이드",
+    previous: "이전 영상", next: "다음 영상",
+    play: (title: string) => `YouTube에서 ${title} 재생 (새 탭에서 열림)`,
+    counter: "동영상 {total}개 중 {index}번째",
+    library: "공연 영상",
+    channel: "YouTube 채널 보기",
+    select: (title: string) => `영상 선택: ${title}`,
+  },
+}[lang];
+
+const videos = videoCatalogue.videos;
+const countLabel = (index: number) => copy.counter
+  .replace("{index}", String(index)).replace("{total}", String(videos.length));
+---
+
+<BaseLayout lang={lang} current="media" title={`${copy.title} | Rena Seulgi Jang`}>
+  <section class="video-page">
+    <div class="video-section" data-video-carousel role="region" aria-label={copy.carousel} aria-roledescription={copy.carouselType}>
+      <div class="video-container">
+        <div class="video-track">
+          {videos.map((video, i) => (
+            <div
+              class:list={["video-item", { active: i === 0 }]}
+              role="group" aria-roledescription={copy.slide}
+              aria-label={`${countLabel(i + 1)}: ${video.title}`}
+              aria-hidden={i !== 0} hidden={i !== 0}
+            >
+              <a
+                class="video-link" href={`https://www.youtube.com/watch?v=${video.id}`}
+                target="_blank" rel="noopener noreferrer" aria-label={copy.play(video.title)}
+              >
+                <div class="video-preview">
+                  <img
+                    class="video-thumb" src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
+                    alt={video.title} width="480" height="360" loading={i === 0 ? "eager" : "lazy"}
+                  />
+                  <iframe
+                    class="video-iframe"
+                    data-src={`https://www.youtube.com/embed/${video.id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${video.id}&playsinline=1&rel=0`}
+                    title={video.title} tabindex="-1" aria-hidden="true"
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                  ></iframe>
+                  <div class="play-button" aria-hidden="true"></div>
+                </div>
+                <div class="video-overlay"><p>{video.title}</p></div>
+              </a>
+            </div>
+          ))}
+        </div>
+
+        <div class="video-controls">
+          <button class="nav prev" type="button" aria-label={copy.previous}><span aria-hidden="true">‹</span></button>
+          <div class="video-counter" role="status" aria-live="polite" aria-atomic="true"
+            aria-label={countLabel(1)} data-counter-template={copy.counter}>1 / {videos.length}</div>
+          <button class="nav next" type="button" aria-label={copy.next}><span aria-hidden="true">›</span></button>
+        </div>
+      </div>
+      <section class="video-library" aria-label={copy.library}>
+        <div class="library-heading">
+          <h1>{copy.library}</h1>
+          <a class="channel-link" href={videoCatalogue.source} target="_blank" rel="noopener noreferrer">
+            {copy.channel} <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <div class="video-grid">
+          {videos.map((video, i) => (
+            <button class="video-choice" type="button" data-video-select={i}
+              aria-pressed={i === 0} aria-label={copy.select(video.title)}>
+              <img src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`} alt=""
+                width="480" height="360" loading="lazy" decoding="async" />
+              <span>{video.title}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <style>
+    .video-page { padding: 3rem 1.5rem 5rem; }
+    .video-section { max-width: 980px; margin: 0 auto; text-align: center; }
+    .video-container, .video-track, .video-link { position: relative; }
+    .video-item[hidden] { display: none; }
+    .video-item.active { animation: reveal 0.35s ease; }
+    .video-link { display: block; text-decoration: none; color: inherit; border-radius: 4px; }
+    .video-preview {
+      position: relative;
+      width: 100%;
+      height: 560px;
+      overflow: hidden;
+      border-radius: 4px;
+      background: #111;
+    }
+    .video-thumb, .video-iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      object-fit: cover;
+      display: block;
+    }
+    .video-thumb { z-index: 1; transition: opacity 0.35s ease, transform 0.45s ease; filter: brightness(0.92); }
+    .video-iframe { z-index: 2; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
+    .video-item.previewing .video-thumb { opacity: 0; transform: scale(1.02); }
+    .video-item.previewing .video-iframe { opacity: 1; }
+    .video-preview::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.08));
+      pointer-events: none;
+    }
+    .video-overlay {
+      position: absolute;
+      left: 1.25rem;
+      right: 1.25rem;
+      bottom: 1.25rem;
+      z-index: 4;
+      text-align: left;
+      color: white;
+      overflow-wrap: anywhere;
+    }
+    .video-overlay p { margin: 0; font-size: 1rem; line-height: 1.4; }
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 68px;
+      height: 68px;
+      transform: translate(-50%, -50%);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.42);
+      z-index: 4;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+    .play-button::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 53%;
+      transform: translate(-50%, -50%);
+      border-style: solid;
+      border-width: 11px 0 11px 17px;
+      border-color: transparent transparent transparent white;
+    }
+    .video-item.previewing .play-button { opacity: 0; transform: translate(-50%, -50%) scale(0.94); }
+    .nav {
+      position: absolute;
+      top: 280px;
+      transform: translateY(-50%);
+      z-index: 5;
+      border: none;
+      background: rgba(0, 0, 0, 0.35);
+      color: white;
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 1.7rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav.prev { left: 1rem; }
+    .nav.next { right: 1rem; }
+    .nav:focus-visible, .video-link:focus-visible { outline: 2px solid #111; outline-offset: 4px; }
+    .video-counter { margin-top: 1rem; font-size: 0.85rem; color: #666; letter-spacing: 0.08em; }
+    .video-library { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #d9d9d9; text-align: left; }
+    .library-heading { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .library-heading h1 { margin: 0; font-family: "Times New Roman", Times, serif; font-size: 1.65rem; font-weight: 400; }
+    .channel-link { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; font-size: 0.95rem; color: #555; text-decoration: underline; text-underline-offset: 4px; }
+    .video-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+    .video-choice { min-width: 0; padding: 0; overflow: hidden; border: 1px solid #d9d9d9; border-radius: 4px; background: #fff; color: #111; font: inherit; text-align: left; cursor: pointer; }
+    .video-choice[aria-pressed="true"] { border-color: #111; box-shadow: 0 0 0 1px #111; }
+    .video-choice img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: #111; }
+    .video-choice span { display: block; padding: 1rem; font-size: 1rem; line-height: 1.5; overflow-wrap: anywhere; }
+    .video-choice:focus-visible, .channel-link:focus-visible { outline: 2px solid #111; outline-offset: 4px; }
+    @keyframes reveal { from { opacity: 0; } to { opacity: 1; } }
+
+    @media (max-width: 768px) {
+      .video-page { padding: 1.5rem 0 3rem; }
+      .video-preview { height: auto; aspect-ratio: 16 / 9; }
+      .video-thumb { object-fit: contain; }
+      .video-overlay { position: static; padding-top: 0.875rem; color: #111; }
+      .video-overlay p { font-size: 1rem; line-height: 1.55; }
+      .video-controls {
+        display: grid;
+        grid-template-columns: 46px minmax(0, 1fr) 46px;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+      .nav { position: static; transform: none; font-size: 1.7rem; }
+      .video-counter { margin: 0; font-size: 1rem; }
+      .play-button { width: 52px; height: 52px; }
+      .play-button::before { border-width: 8px 0 8px 13px; }
+      .video-library { margin-top: 2rem; padding-top: 1.5rem; }
+      .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    }
+    @media (max-width: 480px) {
+      .video-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .video-item.active { animation: none; }
+      .video-thumb, .video-iframe, .play-button { transition: none; }
+    }
+  </style>
+
+  <script>
+    document.querySelectorAll<HTMLElement>("[data-video-carousel]").forEach((carousel) => {
+      const items = Array.from(carousel.querySelectorAll<HTMLElement>(".video-item"));
+      const track = carousel.querySelector<HTMLElement>(".video-track");
+      const counter = carousel.querySelector<HTMLElement>(".video-counter");
+      const nextButton = carousel.querySelector<HTMLButtonElement>(".nav.next");
+      const previousButton = carousel.querySelector<HTMLButtonElement>(".nav.prev");
+      const choices = Array.from(carousel.querySelectorAll<HTMLButtonElement>("[data-video-select]"));
+      const canPreview = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+      let index = 0;
+      let touchStart: { x: number; y: number } | undefined;
+      let lastSwipe = 0;
+
+      function stopPreview(item: HTMLElement) {
+        item.classList.remove("previewing");
+        item.querySelector<HTMLIFrameElement>(".video-iframe")?.removeAttribute("src");
+      }
+
+      function updateCarousel() {
+        const restoreLinkFocus = items.some((item) => item.contains(document.activeElement));
+        items.forEach((item, itemIndex) => {
+          const isActive = itemIndex === index;
+          item.classList.toggle("active", isActive);
+          item.hidden = !isActive;
+          item.setAttribute("aria-hidden", String(!isActive));
+          if (!isActive) stopPreview(item);
+        });
+        choices.forEach((choice, choiceIndex) => choice.setAttribute("aria-pressed", String(choiceIndex === index)));
+        if (counter) {
+          counter.textContent = `${index + 1} / ${items.length}`;
+          counter.setAttribute("aria-label", (counter.dataset.counterTemplate ?? "{index} / {total}")
+            .replace("{index}", String(index + 1)).replace("{total}", String(items.length)));
+        }
+        if (restoreLinkFocus) items[index].querySelector<HTMLAnchorElement>(".video-link")?.focus();
+      }
+
+      function changeVideo(direction: number) {
+        index = (index + direction + items.length) % items.length;
+        updateCarousel();
+      }
+      nextButton?.addEventListener("click", () => changeVideo(1));
+      previousButton?.addEventListener("click", () => changeVideo(-1));
+      choices.forEach((choice, choiceIndex) => choice.addEventListener("click", () => {
+        index = choiceIndex;
+        updateCarousel();
+        items[index].querySelector<HTMLAnchorElement>(".video-link")?.focus({ preventScroll: true });
+        if (track) {
+          const headerHeight = document.querySelector("header")?.getBoundingClientRect().height ?? 0;
+          window.scrollTo({ top: track.getBoundingClientRect().top + window.scrollY - headerHeight - 24,
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+        }
+      }));
+      carousel.addEventListener("keydown", (event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+        if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+          event.preventDefault();
+          changeVideo(event.key === "ArrowRight" ? 1 : -1);
+          if ((event.target as HTMLElement).closest("[data-video-select]")) choices[index]?.focus();
+        }
+      });
+      track?.addEventListener("touchstart", (event) => {
+        if (event.touches.length !== 1) { touchStart = undefined; return; }
+        touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+      }, { passive: true });
+      track?.addEventListener("touchend", (event) => {
+        if (!touchStart || !event.changedTouches.length) return;
+        const x = event.changedTouches[0].clientX - touchStart.x;
+        const y = event.changedTouches[0].clientY - touchStart.y;
+        touchStart = undefined;
+        if (Math.abs(x) > 50 && Math.abs(x) > Math.abs(y) * 1.3) {
+          lastSwipe = Date.now();
+          changeVideo(x < 0 ? 1 : -1);
+        }
+      }, { passive: true });
+      track?.addEventListener("touchcancel", () => { touchStart = undefined; }, { passive: true });
+      track?.addEventListener("click", (event) => {
+        if (Date.now() - lastSwipe < 500) event.preventDefault();
+      }, true);
+      items.forEach((item) => {
+        const link = item.querySelector<HTMLAnchorElement>(".video-link");
+        const iframe = item.querySelector<HTMLIFrameElement>(".video-iframe");
+        function startPreview() {
+          if (!canPreview.matches || item.hidden || !iframe?.dataset.src) return;
+          if (!iframe.hasAttribute("src")) iframe.src = iframe.dataset.src;
+        }
+        iframe?.addEventListener("load", () => {
+          if (iframe.hasAttribute("src") && !item.hidden && (link?.matches(":hover") || link === document.activeElement)) {
+            item.classList.add("previewing");
+          }
+        });
+        link?.addEventListener("mouseenter", startPreview);
+        link?.addEventListener("focus", startPreview);
+        link?.addEventListener("mouseleave", () => { if (link !== document.activeElement) stopPreview(item); });
+        link?.addEventListener("blur", () => { if (!link.matches(":hover")) stopPreview(item); });
+      });
+      updateCarousel();
+    });
+  </script>
+</BaseLayout>
