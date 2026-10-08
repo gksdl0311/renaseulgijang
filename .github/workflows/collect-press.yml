@@ -1,0 +1,220 @@
+name: Collect public press sources
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish_api_output:
+        description: Also expose public editorial evidence in check-run output for review
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - name: Read the two original public articles
+        run: |
+          python3 - <<'PY'
+          from datetime import datetime, timezone
+          from html.parser import HTMLParser
+          import json
+          import os
+          from pathlib import Path
+          import re
+          import sys
+          from urllib.error import HTTPError, URLError
+          from urllib.parse import urlsplit
+          from urllib.request import HTTPRedirectHandler, Request, build_opener
+
+          sources = [
+              ("eroun", "https://www.eroun.net/news/articleView.html?idxno=64617"),
+              ("kyoposhinmun", "https://kyoposhinmun.de/koreaner/2025/10/06/24061/"),
+          ]
+          void_tags = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
+          blocked_tags = {"script", "style", "noscript", "svg", "iframe", "nav", "aside", "footer", "form", "button"}
+          block_tags = {"p", "div", "section", "article", "main", "h1", "h2", "h3", "li", "br", "blockquote"}
+          body_marker = re.compile(r"(?:^|\s)(?:article-view-content-div|article-view-content|article-body|article_body|article-content|entry-content|post-content|td-post-content)(?:\s|$)", re.I)
+
+          class Parser(HTMLParser):
+              def __init__(self):
+                  super().__init__(convert_charrefs=True)
+                  self.root = {"tag": "root", "attrs": {}, "children": [], "blocked": False}
+                  self.stack = [self.root]
+                  self.meta = {}
+                  self.nodes = []
+                  self.schema = []
+                  self.ld = None
+
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  if tag == "meta":
+                      key = attrs.get("property") or attrs.get("name")
+                      if key and attrs.get("content"):
+                          self.meta.setdefault(key.lower(), attrs["content"])
+                  node = {"tag": tag, "attrs": attrs, "children": [], "blocked": self.stack[-1]["blocked"] or tag in blocked_tags}
+                  self.stack[-1]["children"].append(node)
+                  self.nodes.append(node)
+                  if tag not in void_tags:
+                      self.stack.append(node)
+                  if tag == "script" and attrs.get("type", "").lower() == "application/ld+json":
+                      self.ld = []
+
+              def handle_data(self, data):
+                  if self.ld is not None and self.stack[-1]["tag"] == "script":
+                      self.ld.append(data)
+                  elif not self.stack[-1]["blocked"]:
+                      self.stack[-1]["children"].append(data)
+
+              def handle_endtag(self, tag):
+                  if tag == "script" and self.ld is not None:
+                      try:
+                          self.schema.append(json.loads("".join(self.ld)))
+                      except json.JSONDecodeError:
+                          pass
+                      self.ld = None
+                  for index in range(len(self.stack) - 1, 0, -1):
+                      if self.stack[index]["tag"] == tag:
+                          del self.stack[index:]
+                          break
+
+          def visible(node):
+              if isinstance(node, str):
+                  return node
+              if node["blocked"]:
+                  return ""
+              value = "".join(visible(child) for child in node["children"])
+              return "\n" + value + "\n" if node["tag"] in block_tags else value
+
+          def clean(value, limit=500):
+              return re.sub(r"\s+", " ", value or "").strip()[:limit]
+
+          def objects(value):
+              if isinstance(value, dict):
+                  yield value
+                  for child in value.values():
+                      yield from objects(child)
+              elif isinstance(value, list):
+                  for child in value:
+                      yield from objects(child)
+
+          class VerifiedRedirects(HTTPRedirectHandler):
+              def __init__(self, source):
+                  super().__init__()
+                  host = urlsplit(source).hostname.removeprefix("www.")
+                  self.hosts = {host, "www." + host}
+
+              def redirect_request(self, request, response, code, message, headers, newurl):
+                  target = urlsplit(newurl)
+                  if target.scheme != "https" or target.hostname not in self.hosts:
+                      raise ValueError("The publisher redirected outside its verified HTTPS host.")
+                  return super().redirect_request(request, response, code, message, headers, newurl)
+
+          articles = []
+          for source_id, url in sources:
+              record = {"id": source_id, "source": url, "status": "unavailable"}
+              try:
+                  request = Request(url, headers={"User-Agent": "Mozilla/5.0", "Accept-Language": "ko,en;q=0.8"})
+                  # Standard Python HTTPS validation remains enabled.
+                  with build_opener(VerifiedRedirects(url)).open(request, timeout=45) as response:
+                      if "html" not in response.headers.get("Content-Type", "").lower():
+                          raise ValueError("The publisher did not return an HTML article.")
+                      charset = response.headers.get_content_charset() or "utf-8"
+                      html = response.read(4_000_001)
+                      if len(html) > 4_000_000:
+                          raise ValueError("The public article exceeded the collection size limit.")
+                      html = html.decode(charset)
+                  parser = Parser()
+                  parser.feed(html)
+                  schemas = [node for item in parser.schema for node in objects(item)
+                             if set([node.get("@type")] if isinstance(node.get("@type"), str) else node.get("@type", [])) & {"Article", "NewsArticle", "BlogPosting"}]
+                  schema = schemas[0] if schemas else {}
+                  h1 = next((clean(visible(node)) for node in parser.nodes if node["tag"] == "h1" and clean(visible(node))), "")
+                  title = clean(schema.get("headline")) or clean(parser.meta.get("og:title")) or h1
+                  publisher = schema.get("publisher", {})
+                  publisher = clean(publisher.get("name")) if isinstance(publisher, dict) else ""
+                  publisher = publisher or clean(parser.meta.get("og:site_name"))
+                  dates = {key: clean(parser.meta[key]) for key in ("article:published_time", "date", "datepublished", "pubdate", "publishdate") if parser.meta.get(key)}
+                  if schema.get("datePublished"):
+                      dates["schema:datePublished"] = clean(schema["datePublished"])
+                  times = [clean(node["attrs"]["datetime"]) for node in parser.nodes if node["tag"] == "time" and node["attrs"].get("datetime")]
+                  if times:
+                      dates["time:datetime"] = list(dict.fromkeys(times))
+                  candidates = [node for node in parser.nodes if body_marker.search(node["attrs"].get("id", "") + " " + node["attrs"].get("class", ""))]
+                  candidates = candidates or [node for node in parser.nodes if node["tag"] == "article"]
+                  body = max((visible(node) for node in candidates), key=len, default="")
+                  body = "\n".join(clean(line, 3000) for line in body.splitlines() if clean(line))
+                  contexts = [body[max(0, match.start() - 350):match.end() + 650] for match in re.finditer(r"레나|장\s*슬기|슬기\s*장|Rena|Seulgi", body, re.I)][:6]
+                  date_lines = [line[:500] for line in body.splitlines() if re.search(r"(?:입력|등록|승인|발행|게재|게시).*\d{4}", line)][:5]
+                  record.update({"title": title, "title_evidence": {"h1": h1, "og:title": clean(parser.meta.get("og:title")), "schema:headline": clean(schema.get("headline"))},
+                                 "publisher": publisher, "publication_date_evidence": dates, "visible_date_evidence": date_lines,
+                                 "description": clean(schema.get("description") or parser.meta.get("og:description") or parser.meta.get("description"), 1000),
+                                 "body_excerpt": body[:12000], "rena_context": contexts})
+                  if not title or not body:
+                      raise ValueError("A title or parser-visible editorial body could not be verified.")
+                  record["status"] = "verified-source"
+                  print(f"Read public editorial evidence from {source_id}; {len(contexts)} name context(s).")
+              except (HTTPError, URLError, ValueError, LookupError, TimeoutError) as error:
+                  # Never emit raw HTML, script/configuration data, redirect URLs, or headers.
+                  diagnostic = f"HTTP {error.code}" if isinstance(error, HTTPError) else f"{type(error).__name__}: article evidence unavailable"
+                  record["error"] = diagnostic
+                  print(f"::error title=Public press source unavailable::{source_id}: {diagnostic}")
+              articles.append(record)
+          report = {"fetchedAt": datetime.now(timezone.utc).isoformat(), "complete": all(article["status"] == "verified-source" for article in articles), "articles": articles}
+          output = Path(os.environ["RUNNER_TEMP"]) / "public-press/press-research.json"
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          if not report["complete"]:
+              raise SystemExit(1)
+          PY
+      - name: Upload public article evidence for review
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-press-research
+          path: ${{ runner.temp }}/public-press/press-research.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Expose public editorial evidence through the Checks API when requested
+        if: ${{ always() && inputs.publish_api_output }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+          GH_HEAD_SHA: ${{ github.sha }}
+          GH_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+
+          payload = (Path(os.environ["RUNNER_TEMP"]) / "public-press/press-research.json").read_text(encoding="utf-8")
+          report = json.loads(payload)
+          digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()
+          parts = [payload[offset:offset + 12000] for offset in range(0, len(payload), 12000)]
+          for index, part in enumerate(parts, 1):
+              body = {
+                  "name": f"Public press research {index:04d}/{len(parts):04d}",
+                  "head_sha": os.environ["GH_HEAD_SHA"], "details_url": os.environ["GH_RUN_URL"],
+                  "status": "completed", "conclusion": "success" if report["complete"] else "failure",
+                  "output": {"title": "Original public article evidence for review",
+                             "summary": f"Two fixed public sources; part {index}/{len(parts)}. Join output.text in numeric order. UTF-8 SHA-256: {digest}",
+                             "text": part},
+              }
+              request = Request(f"https://api.github.com/repos/{os.environ['GH_REPOSITORY']}/check-runs",
+                                data=json.dumps(body).encode("utf-8"), headers={
+                                    "Authorization": "Bearer " + os.environ["GH_TOKEN"],
+                                    "Accept": "application/vnd.github+json", "Content-Type": "application/json",
+                                    "X-GitHub-Api-Version": "2022-11-28"})
+              with urlopen(request, timeout=30) as response:
+                  json.load(response)
+          print(f"Published {len(parts)} check-run output part(s) containing public editorial evidence only.")
+          PY
