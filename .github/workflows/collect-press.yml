@@ -34,7 +34,7 @@ jobs:
           import socket
           import sys
           from urllib.error import HTTPError, URLError
-          from urllib.parse import urljoin, urlsplit
+          from urllib.parse import parse_qs, urljoin, urlsplit
           from urllib.request import HTTPRedirectHandler, Request, build_opener
 
           sources = [
@@ -139,17 +139,42 @@ jobs:
               schema_objects = [node for item in parser.schema for node in objects(item)]
               publisher = schema.get("publisher", {})
               logos = image_urls(publisher.get("logo"), schema_objects) if isinstance(publisher, dict) else []
-              candidates = []
-              if parser.meta.get("og:image"):
-                  candidates.append((parser.meta["og:image"], "og:image"))
-              candidates += [(url, "Article schema:image") for url in image_urls(schema.get("image"), schema_objects)]
+              def node_candidates(node, evidence):
+                  attrs = node["attrs"]
+                  widths = [(match.group(1), int(match.group(2))) for match in re.finditer(
+                      r"(?:^|,)\s*(\S+)\s+(\d+)w(?=\s*(?:,|$))", attrs.get("srcset") or attrs.get("data-srcset") or "")]
+                  choices = []
+                  if widths:
+                      preferred = [(url, width) for url, width in widths if 700 <= width <= 1200]
+                      url, width = min(preferred or widths, key=lambda item: abs(item[1] - 800))
+                      choices.append((url, f"{evidence}; publisher srcset {width}w"))
+                  choices += [(attrs.get(key), evidence) for key in ("src", "data-src", "data-lazy-src") if attrs.get(key)]
+                  return choices
+
+              def photo_key(url):
+                  try:
+                      # Compare advertised filenames only; never construct URL variants.
+                      return re.sub(r"(?:(?:_v\d+)|(?:-\d+x\d+)|(?:-scaled))+$", "", Path(urlsplit(url).path).stem)
+                  except (ValueError, TypeError):
+                      return ""
+
+              editorial = []
               for node in parser.nodes:
                   if node["tag"] == "img" and not node["blocked"] and "wp-post-image" in node["attrs"].get("class", "").split():
-                      candidates.append((node["attrs"].get("src") or node["attrs"].get("data-src"), "Article featured image"))
+                      editorial.append(node_candidates(node, "Article featured image"))
               for body_node in body_nodes:
                   for node in objects(body_node):
                       if node.get("tag") == "img" and not node["blocked"]:
-                          candidates.append((node["attrs"].get("src") or node["attrs"].get("data-src") or node["attrs"].get("data-lazy-src"), "Editorial body image"))
+                          editorial.append(node_candidates(node, "Editorial body image"))
+              og_image = parser.meta.get("og:image", "")
+              article_id = parse_qs(urlsplit(source).query).get("idxno", [""])[0]
+              og_key = photo_key(og_image)
+              if article_id and og_key:
+                  editorial.sort(key=lambda group: not any(photo_key(url) == og_key and re.search(rf"(?<!\d){re.escape(article_id)}(?!\d)", photo_key(url)) for url, _ in group))
+              candidates = [candidate for group in editorial for candidate in group]
+              candidates += [(url, "Article schema:image") for url in image_urls(schema.get("image"), schema_objects)]
+              if og_image:
+                  candidates.append((og_image, "og:image"))
               seen = set()
               failures = []
               logo_urls = set()
@@ -170,8 +195,8 @@ jobs:
                   if image_url in seen or image_url in logo_urls or re.search(r"logo|로고|favicon|placeholder|no[-_]?image|default", target.path, re.I):
                       continue
                   seen.add(image_url)
-                  if len(seen) > 3:
-                      break
+                  if len(seen) > 3 and evidence != "og:image":
+                      continue  # Always retain the publisher's OG thumbnail fallback.
                   try:
                       if target.scheme != "https" or not target.hostname or target.username or target.password or target.port not in (None, 443):
                           raise ValueError("The article image is not a public HTTPS URL.")
