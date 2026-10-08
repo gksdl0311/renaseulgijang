@@ -53,6 +53,10 @@ favicons, generated scripts/styles, and the homepage redirect. Without
   Dates are classified as upcoming or past when the static site is built.
 - `src/data/repertoire.json`: authoritative roles, works, and composers.
 - `src/data/videos.json`: video IDs/titles and catalogue provenance.
+- `src/data/video-descriptions.json`: short editorial explanations in EN/DE/KO,
+  keyed by video ID so refreshing channel metadata preserves the explanations.
+- `src/data/press.json`: original article URLs, verified publication information,
+  and translated headlines and summaries.
 
 Refresh public YouTube uploads when verified HTTPS access to the official channel
 is available:
@@ -63,9 +67,10 @@ python3 scripts/sync-youtube-videos.py
 
 The importer follows the public `/videos` tab's pagination and replaces the
 catalogue only after a complete, supported response. Shorts and live-stream tabs
-are outside that scope. The current catalogue retains three existing curated
-videos; the full channel import is still pending network access. Rebuild the site
-after content changes.
+are outside that scope. The current catalogue contains all ten public uploads
+verified on 8 October 2026, including the four separately supplied video links.
+Add a localized explanation for any new video ID before publishing updated
+content, then rebuild the site.
 
 If cloud network access is unavailable, run **Actions → Collect public YouTube
 catalogue → Run workflow**. The manual workflow saves `videos.json` in the
@@ -77,3 +82,7 @@ If artifact downloads are blocked, enable the optional `publish_api_output`
 input. The same public JSON is then available through GitHub's Checks API:
 concatenate the numbered check runs' `output.text` fields in order and verify the
 UTF-8 SHA-256 digest shown in their summaries before reviewing the catalogue.
+
+The manual **Collect public press sources** workflow retrieves editorial evidence
+from the two original publishers for review. It does not change site content.
+Press cards link directly to those original articles in every language.

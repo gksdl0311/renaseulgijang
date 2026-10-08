@@ -1,0 +1,442 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import type { Language } from "../../i18n";
+import press from "../../data/press.json";
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = "en" } = Astro.props;
+const translations = {
+  en: {
+    title: "Press",
+    name: "Rena Seulgi Jang",
+    intro: "A selection of press coverage of Rena Seulgi Jang.",
+    selection: "Selected coverage",
+    count: "Articles",
+    read: "Read article",
+    originalTitle: "Original headline",
+    newTab: "opens in a new tab",
+    note: "Read the original articles on the publishers’ websites. Links open in a new tab.",
+  },
+  de: {
+    title: "Presse",
+    name: "Rena Seulgi Jang",
+    intro: "Ausgewählte Presseberichte über Rena Seulgi Jang.",
+    selection: "Ausgewählte Beiträge",
+    count: "Artikel",
+    read: "Artikel lesen",
+    originalTitle: "Originaltitel",
+    newTab: "öffnet in einem neuen Tab",
+    note: "Die Originalartikel finden Sie auf den Websites der jeweiligen Publikationen. Die Links öffnen sich in einem neuen Tab.",
+  },
+  ko: {
+    title: "언론 보도",
+    name: "레나 슬기 장",
+    intro: "언론에 소개된 레나 슬기 장의 이야기를 만나보세요.",
+    selection: "주요 보도",
+    count: "기사",
+    read: "기사 읽기",
+    originalTitle: "원문 제목",
+    newTab: "새 탭에서 열림",
+    note: "각 언론사 웹사이트에서 기사 원문을 읽으실 수 있습니다. 링크는 새 탭에서 열립니다.",
+  },
+};
+const copy = translations[lang];
+const dateLocale = { en: "en-GB", de: "de-DE", ko: "ko-KR" }[lang];
+const formatDate = (date: string) =>
+  new Intl.DateTimeFormat(dateLocale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${date}T12:00:00Z`));
+---
+
+<BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`} description={copy.intro}>
+  <section class="press-page" aria-labelledby="press-title">
+    <header class="press-lead">
+      <div class="press-introduction">
+        <p class="artist-name">{copy.name}</p>
+        <h1 id="press-title">{copy.title}</h1>
+        <p class="press-intro">{copy.intro}</p>
+      </div>
+      <div class="press-index" aria-hidden="true">
+        <span class="press-count">{String(press.length).padStart(2, "0")}</span>
+        <span class="count-label">{copy.count}</span>
+      </div>
+    </header>
+
+    <section class="press-selection" aria-labelledby="selection-title">
+      <header class="selection-heading">
+        <h2 id="selection-title">{copy.selection}</h2>
+        <span class="selection-rule" aria-hidden="true"></span>
+      </header>
+
+      <div class="press-grid">
+        {press.map((article, index) => (
+          <article class="press-article">
+            <a
+              class="article-link"
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-labelledby={`article-title-${index} article-read-${index}`}
+              aria-describedby={`article-summary-${index}`}
+            >
+              <div class="article-meta">
+                <span class="publisher">{article.publisher[lang]}</span>
+                {article.published && (
+                  <time datetime={article.published}>{formatDate(article.published)}</time>
+                )}
+              </div>
+
+              <div class="article-copy">
+                <h3 id={`article-title-${index}`}>{article.title[lang]}</h3>
+                {lang !== "ko" && article.originalTitle && (
+                  <p class="original-title">
+                    <span class="visually-hidden">{copy.originalTitle}: </span>
+                    <span lang="ko">{article.originalTitle}</span>
+                  </p>
+                )}
+                <p class="article-summary" id={`article-summary-${index}`}>{article.summary[lang]}</p>
+              </div>
+
+              <div class="article-action">
+                <span id={`article-read-${index}`}>
+                  {copy.read}
+                  <span class="visually-hidden"> ({copy.newTab})</span>
+                </span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <path d="M6 18 18 6M6 6h12v12" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+
+      <p class="press-note">{copy.note}</p>
+    </section>
+  </section>
+
+  <style>
+    .press-page {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 30px 0 48px;
+      font-family: "Times New Roman", Times, serif;
+    }
+
+    .press-lead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      padding: 0 0 48px;
+      border-bottom: 1px solid #d9d9d9;
+    }
+
+    .press-introduction {
+      min-width: 0;
+    }
+
+    .artist-name {
+      margin: 0 0 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      letter-spacing: 0.12em;
+      color: #6a6a6a;
+    }
+
+    .press-lead h1 {
+      margin: 0 0 18px;
+      font-size: clamp(42px, 6vw, 64px);
+      font-weight: 400;
+      line-height: 1.1;
+      color: #111;
+    }
+
+    .press-intro {
+      max-width: 480px;
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.7;
+      color: #4b4b4b;
+    }
+
+    .press-index {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      padding: 12px 16px;
+      color: #6a6a6a;
+    }
+
+    .press-count {
+      font-size: 76px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.045em;
+      color: #d2d2d2;
+    }
+
+    .count-label {
+      margin-top: 8px;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+    }
+
+    .press-selection {
+      padding-top: 30px;
+    }
+
+    .selection-heading {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .selection-heading h2 {
+      flex-shrink: 0;
+      margin: 0;
+      color: #6a6a6a;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0.09em;
+    }
+
+    .selection-rule {
+      flex: 1;
+      height: 1px;
+      background: #ededed;
+    }
+
+    .press-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 26px;
+    }
+
+    .press-article {
+      min-width: 0;
+    }
+
+    .article-link {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 340px;
+      padding: 28px;
+      border: 1px solid #d9d9d9;
+      background: #ffffff;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .article-link:hover {
+      border-color: #8a8a8a;
+      background: #fbfbfb;
+    }
+
+    .article-link:focus-visible {
+      outline: 2px solid #333;
+      outline-offset: 4px;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin-bottom: 28px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .publisher {
+      color: #111;
+    }
+
+    .article-meta time {
+      color: #6a6a6a;
+    }
+
+    .article-copy {
+      margin-bottom: 24px;
+    }
+
+    .article-copy h3 {
+      margin: 0;
+      color: #111;
+      font-size: 27px;
+      font-weight: 400;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .original-title {
+      margin: 12px 0 0;
+      font-size: 15px;
+      line-height: 1.65;
+      color: #6a6a6a;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
+    .article-summary {
+      margin: 18px 0 0;
+      font-size: 17px;
+      line-height: 1.75;
+      color: #4b4b4b;
+      overflow-wrap: anywhere;
+    }
+
+    .article-action {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 44px;
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid #e5e5e5;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #111;
+    }
+
+    .article-action svg {
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .article-link:hover .article-action svg {
+      transform: translate(2px, -2px);
+    }
+
+    .press-note {
+      max-width: 720px;
+      margin: 24px 0 0;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #6a6a6a;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    :global(html[lang="ko"]) .press-page {
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 960px) {
+      .press-page {
+        padding-top: 24px;
+      }
+
+      .press-grid {
+        gap: 20px;
+      }
+
+      .article-link {
+        padding: 24px;
+      }
+
+      .article-meta,
+      .artist-name,
+      .count-label,
+      .selection-heading h2,
+      .original-title,
+      .press-note {
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .press-page {
+        padding: 16px 0 24px;
+      }
+
+      .press-lead {
+        gap: 20px;
+        padding-bottom: 30px;
+      }
+
+      .artist-name {
+        margin-bottom: 12px;
+        letter-spacing: 0.06em;
+      }
+
+      .press-lead h1 {
+        font-size: 42px;
+        margin-bottom: 14px;
+      }
+
+      .press-intro {
+        font-size: 18px;
+        line-height: 1.7;
+      }
+
+      .press-index {
+        display: none;
+      }
+
+      .press-selection {
+        padding-top: 24px;
+      }
+
+      .selection-heading {
+        margin-bottom: 20px;
+        gap: 16px;
+      }
+
+      .press-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+      }
+
+      .article-link {
+        min-height: 0;
+        padding: 24px 20px;
+      }
+
+      .article-meta {
+        margin-bottom: 22px;
+      }
+
+      .article-copy h3 {
+        font-size: 25px;
+      }
+
+      .article-summary {
+        font-size: 17px;
+      }
+
+      .press-note {
+        margin-top: 22px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .article-link,
+      .article-action svg {
+        transition: none;
+      }
+    }
+  </style>
+</BaseLayout>

@@ -1,12 +1,52 @@
 {
   "source": "https://www.youtube.com/@SopranoRena/videos",
   "channelHandle": "@SopranoRena",
-  "provenance": "Existing curated website videos; the public channel catalogue has not been fetched.",
-  "fetchedAt": null,
-  "complete": false,
+  "provenance": "Canonical titles and video IDs fetched from the official public channel uploads tab.",
+  "scope": "Public /videos uploads tab; Shorts and live-stream tabs are excluded.",
+  "channelId": "UCYVoQDWLrvsQ6WKYfx99L-w",
+  "fetchedAt": "2026-10-08T13:52:09.636905+00:00",
+  "complete": true,
+  "pagesFetched": 1,
   "videos": [
-    { "id": "SQX4s5lqAqM", "title": "Porgy and Bess: My man's gone now" },
-    { "id": "KlVq2Q6wltc", "title": "La Bohème: Sì, mi chiamano Mimì" },
-    { "id": "HypvYrBaCMU", "title": "Massenet: \"Je suis encore tout étourdie\" [Manon]" }
+    {
+      "id": "V124lEJWrf0",
+      "title": "Mahler Symphony no. 4, IV. Das himmlische Leben | Rena Seulgi Jang"
+    },
+    {
+      "id": "SQX4s5lqAqM",
+      "title": "Porgy and Bess: “My man’s gone now”"
+    },
+    {
+      "id": "KlVq2Q6wltc",
+      "title": "La Bohème: “Sì, mi chiamano Mimì”"
+    },
+    {
+      "id": "HypvYrBaCMU",
+      "title": "Soprano Rena Jang : Massenet \"Je suis encore tout étourdie\" [Manon]"
+    },
+    {
+      "id": "Dj7y0qa9x4A",
+      "title": "Soprano Seulgi Jang : Gustave Charpentier “Depuis le jour” [Louise]"
+    },
+    {
+      "id": "2FblD-3GHaQ",
+      "title": "Soprano Seulgi Jang : Bellini \"Eccomi in lieta vesta...Oh quante volte\" [I Capuleti e i Montecchi]"
+    },
+    {
+      "id": "jAYAw01yjj4",
+      "title": "Mozart | Così fan tutte, K.588, Act I: \"Dove son? Son partiti...Soave sia il vento\""
+    },
+    {
+      "id": "2uaQSSuPw80",
+      "title": "Mahler: Rückert Lieder, Op.44-2  \"Liebst du um Schönheit\""
+    },
+    {
+      "id": "WYXIK4-Rm4c",
+      "title": "제6회 파파로티 성악 콩쿠르 대학 일반부 1위 소프라노 장슬기 I Puritani: 'Qui la voce... Vien, diletto'(Elvira)"
+    },
+    {
+      "id": "H0MKllDxjs8",
+      "title": "La Forza del Destino: \"Pace, pace, mio Dio\"(Leonora) _Soprano.Seulgi Jang/소프라노 장슬기"
+    }
   ]
 }

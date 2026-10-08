@@ -94,6 +94,27 @@ jobs:
               raise SystemExit(result.returncode)
           print(result.stdout, end="")
           PY
+      - name: Verify public video thumbnails
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+
+          catalogue = json.loads((Path(os.environ["RUNNER_TEMP"]) / "public-videos/videos.json").read_text(encoding="utf-8"))
+          for video in catalogue["videos"]:
+              request = Request(f"https://img.youtube.com/vi/{video['id']}/hqdefault.jpg", headers={"User-Agent": "Mozilla/5.0"})
+              try:
+                  with urlopen(request, timeout=30) as response:
+                      assert response.status == 200
+                      assert response.headers.get_content_type() == "image/jpeg"
+                      assert response.read(16).startswith(b"\xff\xd8")
+              except Exception as error:
+                  print(f"::error title=Public video thumbnail verification failed::{video['id']}: {type(error).__name__}")
+                  raise SystemExit(1)
+          print(f"::notice title=Public video thumbnails verified::{len(catalogue['videos'])} thumbnails returned HTTPS 200 and valid JPEG content.")
+          PY
       - name: Upload metadata for review
         uses: actions/upload-artifact@v4
         with:

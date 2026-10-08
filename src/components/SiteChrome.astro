@@ -83,6 +83,7 @@ const primaryLinks = [
       </div>
     </div>
 
+    <a class:list={["nav-link", isActive(href("press")) && "is-active"]} href={href("press")} aria-current={isCurrent(href("press")) ? "page" : undefined}>{copy.press}</a>
     <a class:list={["nav-link", isActive(href("contact")) && "is-active"]} href={href("contact")} aria-current={isCurrent(href("contact")) ? "page" : undefined}>{copy.contact}</a>
   </nav>
 
@@ -98,6 +99,7 @@ const primaryLinks = [
           <a class="m-sublink m-photo" href={href("media/photo/portrait")}>{copy.portrait}</a>
         </div>
       </details>
+      <a class:list={["m-link", isActive(href("press")) && "is-active"]} href={href("press")} aria-current={isCurrent(href("press")) ? "page" : undefined}>{copy.press}</a>
       <a class:list={["m-link", isActive(href("contact")) && "is-active"]} href={href("contact")} aria-current={isCurrent(href("contact")) ? "page" : undefined}>{copy.contact}</a>
     </div>
   </nav>
