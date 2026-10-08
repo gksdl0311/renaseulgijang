@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import type { Language } from "../../i18n";
+import { getCopy, localeConfig, type Language } from "../../i18n";
 import press from "../../data/press.json";
 import { sitePath } from "../../site-paths";
 
@@ -9,59 +9,21 @@ interface Props {
 }
 
 interface PressArticle {
+  id: string;
+  originalLanguage: string;
   url: string;
-  publisher: Record<Language, string>;
   published: string | null;
   originalTitle: string | null;
-  title: Record<Language, string>;
-  summary: Record<Language, string>;
   image?: string;
   imageWidth?: number;
   imageHeight?: number;
-  imageAlt?: Record<Language, string>;
 }
 
 const { lang = "en" } = Astro.props;
 const articles: PressArticle[] = press;
-const translations = {
-  en: {
-    title: "Press",
-    name: "Rena Seulgi Jang",
-    intro: "A selection of press coverage of Rena Seulgi Jang.",
-    selection: "Selected coverage",
-    count: "Articles",
-    read: "Read article",
-    originalTitle: "Original headline",
-    newTab: "opens in a new tab",
-    note: "Read the original articles on the publishers’ websites. Links open in a new tab.",
-  },
-  de: {
-    title: "Presse",
-    name: "Rena Seulgi Jang",
-    intro: "Ausgewählte Presseberichte über Rena Seulgi Jang.",
-    selection: "Ausgewählte Beiträge",
-    count: "Artikel",
-    read: "Artikel lesen",
-    originalTitle: "Originaltitel",
-    newTab: "öffnet in einem neuen Tab",
-    note: "Die Originalartikel finden Sie auf den Websites der jeweiligen Publikationen. Die Links öffnen sich in einem neuen Tab.",
-  },
-  ko: {
-    title: "언론 보도",
-    name: "레나 슬기 장",
-    intro: "언론에 소개된 레나 슬기 장의 이야기를 만나보세요.",
-    selection: "주요 보도",
-    count: "기사",
-    read: "기사 읽기",
-    originalTitle: "원문 제목",
-    newTab: "새 탭에서 열림",
-    note: "각 언론사 웹사이트에서 기사 원문을 읽으실 수 있습니다. 링크는 새 탭에서 열립니다.",
-  },
-};
-const copy = translations[lang];
-const dateLocale = { en: "en-GB", de: "de-DE", ko: "ko-KR" }[lang];
+const copy = getCopy(lang).press;
 const formatDate = (date: string) =>
-  new Intl.DateTimeFormat(dateLocale, {
+  new Intl.DateTimeFormat(localeConfig[lang].dateLocale, {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -69,7 +31,7 @@ const formatDate = (date: string) =>
   }).format(new Date(`${date}T12:00:00Z`));
 ---
 
-<BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`} description={copy.intro}>
+<BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`} description={copy.description}>
   <section class="press-page" aria-labelledby="press-title">
     <header class="press-lead">
       <div class="press-introduction">
@@ -104,7 +66,7 @@ const formatDate = (date: string) =>
                 <div class="article-thumbnail">
                   <img
                     src={sitePath(article.image)}
-                    alt={article.imageAlt?.[lang] ?? ""}
+                    alt={copy.articles[article.id].imageAlt}
                     width={article.imageWidth}
                     height={article.imageHeight}
                     loading="lazy"
@@ -114,21 +76,21 @@ const formatDate = (date: string) =>
               )}
 
               <div class="article-meta">
-                <span class="publisher">{article.publisher[lang]}</span>
+                <span class="publisher">{copy.articles[article.id].publisher}</span>
                 {article.published && (
                   <time datetime={article.published}>{formatDate(article.published)}</time>
                 )}
               </div>
 
               <div class="article-copy">
-                <h3 id={`article-title-${index}`}>{article.title[lang]}</h3>
-                {lang !== "ko" && article.originalTitle && (
+                <h3 id={`article-title-${index}`}>{copy.articles[article.id].title}</h3>
+                {lang !== article.originalLanguage && article.originalTitle && (
                   <p class="original-title">
                     <span class="visually-hidden">{copy.originalTitle}: </span>
-                    <span lang="ko">{article.originalTitle}</span>
+                    <span lang={article.originalLanguage}>{article.originalTitle}</span>
                   </p>
                 )}
-                <p class="article-summary" id={`article-summary-${index}`}>{article.summary[lang]}</p>
+                <p class="article-summary" id={`article-summary-${index}`}>{copy.articles[article.id].summary}</p>
               </div>
 
               <div class="article-action">

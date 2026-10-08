@@ -1,10 +1,27 @@
 ---
-const { title = "Rena Seulgi Jang", lang = "en", description = "" } = Astro.props;
 import SiteChrome from "../components/SiteChrome.astro";
-import { navigationCopy } from "../i18n/navigation";
-import type { Language } from "../i18n";
-import { sitePath } from "../site-paths";
-const copy = navigationCopy[lang as Language] ?? navigationCopy.en;
+import { getCopy, isLanguage, localeConfig, type Language } from "../i18n";
+import { alternateLanguages, defaultPath, localizedPath, pageKeyForPath, pagePathForRequest } from "../i18n/routes";
+import { sitePath, siteRelativePath } from "../site-paths";
+
+interface Props { title?: string; lang?: Language; description?: string; current?: string }
+const { title = "Rena Seulgi Jang", lang = "en", description = "" } = Astro.props;
+const pathLanguage = siteRelativePath(Astro.url.pathname).split("/").filter(Boolean)[0];
+if (pathLanguage && isLanguage(pathLanguage) && pathLanguage !== lang) {
+  throw new Error(`Page language ${lang} does not match its route ${pathLanguage}`);
+}
+const content = getCopy(lang);
+const copy = content.navigation;
+const pageKey = pageKeyForPath(Astro.url.pathname);
+const pagePath = pagePathForRequest(Astro.url.pathname);
+const pageCopy = pageKey ? content[pageKey] : undefined;
+const metaTitle = pageKey === "home" ? content.home.metaTitle
+  : pageCopy && "title" in pageCopy ? `${pageCopy.title} | ${content.home.hero}` : title;
+const metaDescription = description || pageCopy?.description || content.home.description;
+const absolute = (path: string) => new URL(path, Astro.site).href;
+const canonical = absolute(localizedPath(lang, pagePath));
+const alternates = alternateLanguages(pagePath);
+const shareImage = absolute(sitePath("hero/portrait.jpg"));
 ---
 
 <!doctype html>
@@ -13,8 +30,22 @@ const copy = navigationCopy[lang as Language] ?? navigationCopy.en;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href={sitePath("favicon.ico")} />
-    {description && <meta name="description" content={description} />}
-    <title>{title}</title>
+    <meta name="description" content={metaDescription} />
+    <title>{metaTitle}</title>
+    <link rel="canonical" href={canonical} />
+    {alternates.map(code => <link rel="alternate" hreflang={code} href={absolute(localizedPath(code, pagePath))} />)}
+    <link rel="alternate" hreflang="x-default" href={absolute(defaultPath(pagePath))} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rena Seulgi Jang" />
+    <meta property="og:title" content={metaTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={localeConfig[lang].ogLocale} />
+    {alternates.filter(code => code !== lang).map(code => <meta property="og:locale:alternate" content={localeConfig[code].ogLocale} />)}
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:width" content="1638" />
+    <meta property="og:image:height" content="2048" />
+    <meta property="og:image:alt" content={content.home.portrait} />
  <meta name="google-site-verification" content="QIzUIHniwwNlJRuJ789uRDNLT4B8il1CvzqdE2pQzqw" />
   </head>
 

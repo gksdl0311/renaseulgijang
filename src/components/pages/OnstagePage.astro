@@ -1,15 +1,11 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import type { Language } from "../../i18n";
+import { getCopy, formatCopy, type Language } from "../../i18n";
 import { sitePath } from "../../site-paths";
 
 interface Props { lang: Language }
 const { lang } = Astro.props;
-const copy = {
-  en: { title: "Photo (Onstage)", gallery: "Onstage photo gallery", dialog: "Enlarged onstage photograph", close: "Close photograph", alt: (number: number) => `Onstage photograph ${number} of Rena Seulgi Jang`, open: (number: number) => `Enlarge onstage photograph ${number}` },
-  de: { title: "Fotos (Bühne)", gallery: "Galerie mit Bühnenfotos", dialog: "Vergrößertes Bühnenfoto", close: "Foto schließen", alt: (number: number) => `Bühnenfoto ${number} von Rena Seulgi Jang`, open: (number: number) => `Bühnenfoto ${number} vergrößern` },
-  ko: { title: "사진 (무대)", gallery: "무대 사진 갤러리", dialog: "확대한 무대 사진", close: "사진 닫기", alt: (number: number) => `레나 슬기 장의 무대 사진 ${number}`, open: (number: number) => `무대 사진 ${number} 확대하기` },
-}[lang];
+const copy = getCopy(lang).onstage;
 const dimensions = [
   [3640, 2053], [2836, 4095], [2410, 1606], [2183, 3275], [1600, 1007],
   [3931, 2607], [4073, 2741], [4056, 2729], [2224, 1251], [2224, 1251],
@@ -23,7 +19,7 @@ const images = dimensions.map(([width, height], index) => ({
 }));
 ---
 
-<BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`}>
+<BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`} description={copy.description}>
   <section class="onstage-page" aria-label={copy.gallery}>
     <div class="onstage-masonry">
       {images.map((image, index) => (
@@ -31,13 +27,13 @@ const images = dimensions.map(([width, height], index) => ({
           <button
             type="button"
             class="onstage-frame onstage-open"
-            aria-label={copy.open(index + 1)}
+            aria-label={formatCopy(copy.open, { number: index + 1 })}
             aria-haspopup="dialog"
             aria-controls="onstage-lightbox"
           >
             <img
               src={sitePath(`media/photo/onstage/${image.name}`)}
-              alt={copy.alt(index + 1)}
+              alt={formatCopy(copy.alt, { number: index + 1 })}
               width={image.width}
               height={image.height}
               loading={index === 0 ? "eager" : "lazy"}

@@ -1,18 +1,14 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import type { Language } from "../../i18n";
+import { getCopy, type Language } from "../../i18n";
 import { sitePath } from "../../site-paths";
 
 interface Props { lang: Language }
 const { lang } = Astro.props;
-const copy = {
-  en: { voice: "Soprano", name: "Rena Seulgi Jang", hero: "Rena Seulgi Jang, soprano", portrait: "Portrait of Rena Seulgi Jang" },
-  de: { voice: "Sopran", name: "Rena Seulgi Jang", hero: "Rena Seulgi Jang, Sopran", portrait: "Porträt von Rena Seulgi Jang" },
-  ko: { voice: "소프라노", name: "레나 슬기 장", hero: "소프라노 레나 슬기 장", portrait: "레나 슬기 장의 프로필 사진" },
-}[lang];
+const copy = getCopy(lang).home;
 ---
 
-<BaseLayout title={`Rena Seulgi Jang | ${copy.voice}`} lang={lang}>
+<BaseLayout title={copy.metaTitle} lang={lang}>
   <section class="hero" aria-label={copy.hero}>
     <div class="hero-inner">
       <div class="soprano reveal r1">{copy.voice}</div>

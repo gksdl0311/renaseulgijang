@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import scheduleData from "../../data/schedule.json";
-import type { Language } from "../../i18n";
+import { getCopy, localeConfig, type Language } from "../../i18n";
 
 interface Props {
   lang?: Language;
@@ -21,72 +21,7 @@ interface ScheduleEvent {
 }
 
 const { lang = "en" } = Astro.props;
-const translations = {
-  en: {
-    title: "Schedule",
-    upcoming: "Upcoming",
-    past: "Past",
-    noUpcoming: "No upcoming engagements at the moment.",
-    noPast: "No past engagements listed yet.",
-    more: "More information",
-    time: "Time",
-    locale: "en-GB",
-    eventTitles: {
-      "Opera Studio Performance": "Opera Studio Performance",
-      "Liederabend": "Liederabend",
-      "Innenansichten — crescendo Festival Closing Concert": "Innenansichten — crescendo Festival Closing Concert",
-      "Durch Opernarien: Frieden und Einheit in Korea erträumt — Concert for Peace in Korea": "Durch Opernarien: Frieden und Einheit in Korea erträumt — Concert for Peace in Korea",
-      "Verdi: Requiem — ORATORIO": "Verdi: Requiem — ORATORIO",
-      "Schachmatt — Opera Workshop": "Schachmatt — Opera Workshop",
-      "nirgend_anders — Junge Norddeutsche Philharmonie": "nirgend_anders — Junge Norddeutsche Philharmonie",
-    },
-    cities: { Berlin: "Berlin", Hamburg: "Hamburg", Stade: "Stade" },
-    countries: { Germany: "Germany" },
-  },
-  de: {
-    title: "Termine",
-    upcoming: "Kommende Termine",
-    past: "Vergangene Auftritte",
-    noUpcoming: "Derzeit sind keine weiteren Auftritte angekündigt.",
-    noPast: "Bisher sind keine vergangenen Auftritte aufgeführt.",
-    more: "Weitere Informationen",
-    time: "Uhrzeit",
-    locale: "de-DE",
-    eventTitles: {
-      "Opera Studio Performance": "Aufführung des Opernstudios",
-      "Liederabend": "Liederabend",
-      "Innenansichten — crescendo Festival Closing Concert": "Innenansichten — Abschlusskonzert des crescendo-Festivals",
-      "Durch Opernarien: Frieden und Einheit in Korea erträumt — Concert for Peace in Korea": "Durch Opernarien: Frieden und Einheit in Korea erträumt — Konzert für den Frieden in Korea",
-      "Verdi: Requiem — ORATORIO": "Verdi: Requiem — Oratorium",
-      "Schachmatt — Opera Workshop": "Schachmatt — Opernwerkstatt",
-      "nirgend_anders — Junge Norddeutsche Philharmonie": "nirgend_anders — Junge Norddeutsche Philharmonie",
-    },
-    cities: { Berlin: "Berlin", Hamburg: "Hamburg", Stade: "Stade" },
-    countries: { Germany: "Deutschland" },
-  },
-  ko: {
-    title: "공연 일정",
-    upcoming: "예정된 공연",
-    past: "지난 공연",
-    noUpcoming: "현재 예정된 공연이 없습니다.",
-    noPast: "아직 지난 공연 정보가 등록되지 않았습니다.",
-    more: "공연 정보 더 보기",
-    time: "공연 시간",
-    locale: "ko-KR",
-    eventTitles: {
-      "Opera Studio Performance": "오페라 스튜디오 공연",
-      "Liederabend": "가곡 독창회",
-      "Innenansichten — crescendo Festival Closing Concert": "Innenansichten — crescendo 페스티벌 폐막 공연",
-      "Durch Opernarien: Frieden und Einheit in Korea erträumt — Concert for Peace in Korea": "Durch Opernarien: Frieden und Einheit in Korea erträumt — 한반도 평화를 위한 음악회",
-      "Verdi: Requiem — ORATORIO": "베르디: 레퀴엠 — 오라토리오",
-      "Schachmatt — Opera Workshop": "Schachmatt — 오페라 워크숍",
-      "nirgend_anders — Junge Norddeutsche Philharmonie": "nirgend_anders — 융게 노르트도이체 필하모니",
-    },
-    cities: { Berlin: "베를린", Hamburg: "함부르크", Stade: "슈타데" },
-    countries: { Germany: "독일" },
-  },
-};
-const copy = translations[lang];
+const copy = getCopy(lang).schedule;
 
 // The source groups are editorial records. Dates determine the displayed
 // chronology whenever this static site is built.
@@ -100,7 +35,7 @@ const sections = [
 ];
 
 const formatDate = (dateString: string) =>
-  new Intl.DateTimeFormat(copy.locale, {
+  new Intl.DateTimeFormat(localeConfig[lang].dateLocale, {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -112,12 +47,12 @@ const eventTitle = (title: string) =>
 const eventLocation = (event: ScheduleEvent) => {
   const city = event.city && (copy.cities[event.city as keyof typeof copy.cities] ?? event.city);
   const country = event.country && (copy.countries[event.country as keyof typeof copy.countries] ?? event.country);
-  const venueIncludesCity = lang !== "ko" && event.venue && event.city && event.venue.endsWith(event.city);
+  const venueIncludesCity = event.venue && city && event.venue.endsWith(city);
   return [event.venue, venueIncludesCity ? undefined : city, country].filter(Boolean).join(", ");
 };
 ---
 
-<BaseLayout title={`${copy.title} | Rena Seulgi Jang`} lang={lang}>
+<BaseLayout title={`${copy.title} | Rena Seulgi Jang`} lang={lang} description={copy.description}>
   <section class="schedule-page">
     {sections.map((section) => (
       <section class="schedule-section">

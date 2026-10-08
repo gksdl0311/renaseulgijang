@@ -1,18 +1,14 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import type { Language } from "../../i18n";
+import { getCopy, type Language } from "../../i18n";
 import { sitePath } from "../../site-paths";
 
 interface Props { lang: Language }
 const { lang } = Astro.props;
-const copy = {
-  en: { title: "Photo", portrait: "Portrait", portraitText: "Studio and editorial imagery", portraitAlt: "Portrait gallery", onstage: "Onstage", onstageText: "Performance and production photography", onstageAlt: "Onstage gallery" },
-  de: { title: "Fotos", portrait: "Porträt", portraitText: "Studio- und Editorialfotografie", portraitAlt: "Zur Porträtgalerie", onstage: "Auf der Bühne", onstageText: "Fotos von Aufführungen und Inszenierungen", onstageAlt: "Zur Galerie mit Bühnenfotos" },
-  ko: { title: "사진", portrait: "프로필", portraitText: "스튜디오 및 화보 사진", portraitAlt: "프로필 사진 갤러리", onstage: "무대", onstageText: "공연 및 오페라 무대 사진", onstageAlt: "무대 사진 갤러리" },
-}[lang];
+const copy = getCopy(lang).photo;
 ---
 
-<BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`}>
+<BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`} description={copy.description}>
   <section class="photo-page" aria-label={copy.title}>
     <div class="photo-grid">
       <a class="portrait-card reveal-card reveal-left" href={sitePath(`${lang}/media/photo/portrait/`)} aria-labelledby="portrait-heading">

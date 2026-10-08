@@ -1,29 +1,25 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import type { Language } from "../../i18n";
+import { getCopy, formatCopy, type Language } from "../../i18n";
 import { sitePath } from "../../site-paths";
 
 interface Props { lang: Language }
 const { lang } = Astro.props;
-const copy = {
-  en: { title: "Photo (Portrait)", gallery: "Portrait photo gallery", alt: (number: number) => `Portrait photograph ${number} of Rena Seulgi Jang` },
-  de: { title: "Fotos (Porträt)", gallery: "Porträtgalerie", alt: (number: number) => `Porträtfoto ${number} von Rena Seulgi Jang` },
-  ko: { title: "사진 (프로필)", gallery: "프로필 사진 갤러리", alt: (number: number) => `레나 슬기 장의 프로필 사진 ${number}` },
-}[lang];
+const copy = getCopy(lang).portrait;
 const dimensions = [[2730, 4095], [2667, 4000], [2584, 3877], [1525, 2287], [1280, 1921]];
 const images = dimensions.map(([width, height], index) => ({
   name: `portrait-${String(index + 1).padStart(2, "0")}.JPG`, width, height,
 }));
 ---
 
-<BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`}>
+<BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`} description={copy.description}>
   <section class="portrait-page" aria-label={copy.gallery}>
     <div class="portrait-masonry">
       {images.map((image, index) => (
         <figure class="portrait-item">
           <img
             src={sitePath(`media/photo/portrait/${image.name}`)}
-            alt={copy.alt(index + 1)}
+            alt={formatCopy(copy.alt, { number: index + 1 })}
             width={image.width}
             height={image.height}
             loading={index === 0 ? "eager" : "lazy"}

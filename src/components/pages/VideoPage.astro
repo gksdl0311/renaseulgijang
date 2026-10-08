@@ -1,54 +1,22 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import type { Language } from "../../i18n";
+import { getCopy, formatCopy, type Language } from "../../i18n";
 import videoCatalogue from "../../data/videos.json";
 import videoDescriptions from "../../data/video-descriptions.json";
 
 interface Props { lang: Language; }
 const { lang } = Astro.props;
-const copy = {
-  en: {
-    title: "Video", carousel: "Performance videos", carouselType: "carousel", slide: "slide",
-    previous: "Previous video", next: "Next video",
-    play: (title: string) => `Play ${title} on YouTube (opens in a new tab)`,
-    counter: "Video {index} of {total}",
-    library: "Performances",
-    channel: "Visit the YouTube channel",
-    select: (title: string) => `Select video: ${title}`,
-    performanceDescription: "A performance by Rena Seulgi Jang. Watch the full recording on YouTube.",
-  },
-  de: {
-    title: "Videos", carousel: "Videos von Auftritten", carouselType: "Karussell", slide: "Folie",
-    previous: "Vorheriges Video", next: "Nächstes Video",
-    play: (title: string) => `${title} auf YouTube abspielen (öffnet sich in einem neuen Tab)`,
-    counter: "Video {index} von {total}",
-    library: "Auftritte",
-    channel: "Zum YouTube-Kanal",
-    select: (title: string) => `Video auswählen: ${title}`,
-    performanceDescription: "Ein Auftritt von Rena Seulgi Jang. Die vollständige Aufnahme finden Sie auf YouTube.",
-  },
-  ko: {
-    title: "동영상", carousel: "공연 영상", carouselType: "슬라이드 모음", slide: "슬라이드",
-    previous: "이전 영상", next: "다음 영상",
-    play: (title: string) => `YouTube에서 ${title} 재생 (새 탭에서 열림)`,
-    counter: "동영상 {total}개 중 {index}번째",
-    library: "공연 영상",
-    channel: "YouTube 채널 보기",
-    select: (title: string) => `영상 선택: ${title}`,
-    performanceDescription: "레나 슬기 장의 공연 영상입니다. YouTube에서 전체 영상을 감상하실 수 있습니다.",
-  },
-}[lang];
+const copy = getCopy(lang).video;
 
 const descriptions: Record<string, Record<Language, string>> = videoDescriptions;
 const videos = videoCatalogue.videos.map(video => ({
   ...video,
-  description: descriptions[video.id]?.[lang] ?? copy.performanceDescription,
+  description: descriptions[video.id][lang],
 }));
-const countLabel = (index: number) => copy.counter
-  .replace("{index}", String(index)).replace("{total}", String(videos.length));
+const countLabel = (index: number) => formatCopy(copy.counter, { index, total: videos.length });
 ---
 
-<BaseLayout lang={lang} current="media" title={`${copy.title} | Rena Seulgi Jang`}>
+<BaseLayout lang={lang} current="media" title={`${copy.title} | Rena Seulgi Jang`} description={copy.description}>
   <section class="video-page">
     <div class="video-section" data-video-carousel role="region" aria-label={copy.carousel} aria-roledescription={copy.carouselType}>
       <div class="video-container">
@@ -62,7 +30,7 @@ const countLabel = (index: number) => copy.counter
             >
               <a
                 class="video-link" href={`https://www.youtube.com/watch?v=${video.id}`}
-                target="_blank" rel="noopener noreferrer" aria-label={copy.play(video.title)}
+                target="_blank" rel="noopener noreferrer" aria-label={formatCopy(copy.play, { title: video.title })}
                 aria-describedby={`featured-video-description-${i}`}
               >
                 <div class="video-preview">
@@ -103,7 +71,7 @@ const countLabel = (index: number) => copy.counter
         <div class="video-grid">
           {videos.map((video, i) => (
             <button class="video-choice" type="button" data-video-select={i}
-              aria-pressed={i === 0} aria-label={copy.select(video.title)}
+              aria-pressed={i === 0} aria-label={formatCopy(copy.select, { title: video.title })}
               aria-describedby={`library-video-description-${i}`}>
               <img src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`} alt=""
                 width="480" height="360" loading="lazy" decoding="async" />

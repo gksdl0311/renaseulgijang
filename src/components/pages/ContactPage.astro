@@ -1,33 +1,13 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import type { Language } from "../../i18n";
+import { getCopy, type Language } from "../../i18n";
 
 interface Props {
   lang?: Language;
 }
 
 const { lang = "en" } = Astro.props;
-const translations = {
-  en: {
-    title: "Contact",
-    intro: "For professional enquiries, collaborations, or recital opportunities, please get in touch.",
-    email: "Email",
-    note: "Representation details will be added in due course.",
-  },
-  de: {
-    title: "Kontakt",
-    intro: "Für berufliche Anfragen, künstlerische Zusammenarbeit oder Konzertanfragen freue ich mich über Ihre Nachricht.",
-    email: "E-Mail",
-    note: "Informationen zur Künstlervertretung werden zu einem späteren Zeitpunkt ergänzt.",
-  },
-  ko: {
-    title: "연락처",
-    intro: "공연 섭외, 협업 제안, 리사이틀 관련 문의는 아래 이메일로 연락해 주세요.",
-    email: "이메일",
-    note: "매니지먼트 관련 정보는 추후 안내할 예정입니다.",
-  },
-};
-const text = translations[lang];
+const text = getCopy(lang).contact;
 ---
 
 <BaseLayout lang={lang} current="contact" title={`${text.title} | Rena Seulgi Jang`}>
