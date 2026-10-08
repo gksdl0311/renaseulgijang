@@ -25,7 +25,34 @@ jobs:
           persist-credentials: false
       - name: Collect the complete public uploads tab
         id: catalogue
-        run: python3 scripts/sync-youtube-videos.py --output "$RUNNER_TEMP/public-videos/videos.json"
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          import re
+          import subprocess
+          import sys
+
+          result = subprocess.run(
+              [sys.executable, "scripts/sync-youtube-videos.py", "--output",
+               str(Path(os.environ["RUNNER_TEMP"]) / "public-videos/videos.json")],
+              capture_output=True, text=True,
+          )
+          if result.returncode:
+              diagnostic = next(
+                  (line for line in result.stderr.splitlines()
+                   if line.startswith("Could not refresh public channel metadata:")),
+                  f"The public metadata helper failed with exit code {result.returncode}; no catalogue was produced.",
+              )
+              # Emit only the helper's concise error, never raw responses,
+              # traceback/configuration dumps, or API/client query values.
+              if re.search(r"(?i)(?:[?&](?:key|token|access_token)=|authorization\s*[:=]|INNERTUBE_|visitorData\s*[:=])", diagnostic):
+                  diagnostic = "The helper rejected an API/client configuration response; detailed values were omitted."
+              diagnostic = diagnostic[:2000].replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+              print(f"::error title=Public YouTube catalogue collection failed::{diagnostic}")
+              raise SystemExit(result.returncode)
+          print(result.stdout, end="")
+          PY
       - name: Upload metadata for review
         uses: actions/upload-artifact@v4
         with:
