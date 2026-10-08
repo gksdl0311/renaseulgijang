@@ -66,3 +66,14 @@ catalogue only after a complete, supported response. Shorts and live-stream tabs
 are outside that scope. The current catalogue retains three existing curated
 videos; the full channel import is still pending network access. Rebuild the site
 after content changes.
+
+If cloud network access is unavailable, run **Actions → Collect public YouTube
+catalogue → Run workflow**. The manual workflow saves `videos.json` in the
+`public-youtube-catalogue` artifact for seven days. It changes neither source
+content nor the deployed website. Review the IDs, canonical titles, provenance,
+pagination, and completeness before adopting the file into `src/data/videos.json`.
+
+If artifact downloads are blocked, enable the optional `publish_api_output`
+input. The same public JSON is then available through GitHub's Checks API:
+concatenate the numbered check runs' `output.text` fields in order and verify the
+UTF-8 SHA-256 digest shown in their summaries before reviewing the catalogue.

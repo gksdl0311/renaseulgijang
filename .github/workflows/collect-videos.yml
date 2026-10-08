@@ -1,0 +1,84 @@
+name: Collect public YouTube catalogue
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish_api_output:
+        description: Also expose public metadata in check-run output for API inspection
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - name: Check out the metadata helper
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Collect the complete public uploads tab
+        id: catalogue
+        run: python3 scripts/sync-youtube-videos.py --output "$RUNNER_TEMP/public-videos/videos.json"
+      - name: Upload metadata for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-youtube-catalogue
+          path: ${{ runner.temp }}/public-videos/videos.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Expose public metadata through the Checks API when requested
+        if: ${{ inputs.publish_api_output }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+          GH_HEAD_SHA: ${{ github.sha }}
+          GH_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+
+          payload = (Path(os.environ["RUNNER_TEMP"]) / "public-videos/videos.json").read_text(encoding="utf-8")
+          catalogue = json.loads(payload)
+          assert catalogue["complete"] is True
+          assert catalogue["source"] == "https://www.youtube.com/@SopranoRena/videos"
+          digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()
+          # Bound each UTF-8 part below the Checks API's output text limit.
+          parts = [payload[offset:offset + 12000] for offset in range(0, len(payload), 12000)]
+          for index, part in enumerate(parts, 1):
+              body = {
+                  "name": f"Public YouTube catalogue {index:04d}/{len(parts):04d}",
+                  "head_sha": os.environ["GH_HEAD_SHA"],
+                  "details_url": os.environ["GH_RUN_URL"],
+                  "status": "completed",
+                  "conclusion": "success",
+                  "output": {
+                      "title": "Public uploads metadata for review",
+                      "summary": f"{len(catalogue['videos'])} public uploads; part {index}/{len(parts)}. Join output.text parts in numeric order. UTF-8 SHA-256: {digest}",
+                      "text": part,
+                  },
+              }
+              request = Request(
+                  f"https://api.github.com/repos/{os.environ['GH_REPOSITORY']}/check-runs",
+                  data=json.dumps(body).encode("utf-8"),
+                  headers={
+                      "Authorization": "Bearer " + os.environ["GH_TOKEN"],
+                      "Accept": "application/vnd.github+json",
+                      "Content-Type": "application/json",
+                      "X-GitHub-Api-Version": "2022-11-28",
+                  },
+              )
+              with urlopen(request, timeout=30) as response:
+                  json.load(response)
+          print(f"Published {len(parts)} check-run output part(s) containing public metadata only.")
+          PY
