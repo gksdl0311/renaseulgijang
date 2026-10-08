@@ -17,7 +17,18 @@
       "en": "A report on the seventh Concert for Peace and Unification on the Korean Peninsula at Berlin’s Kaiser Wilhelm Memorial Church, naming soprano Rena Seulgi Jang among the participating artists.",
       "de": "Bericht über das 7. Konzert für Frieden und Wiedervereinigung auf der koreanischen Halbinsel in der Berliner Kaiser-Wilhelm-Gedächtniskirche. Rena Seulgi Jang wird als mitwirkende Sopranistin genannt.",
       "ko": "베를린 카이저 빌헬름 기념교회에서 열린 제7회 한반도 평화통일음악회 보도입니다. 소프라노 장슬기(레나 슬기 장)의 참여를 소개합니다."
-    }
+    },
+    "image": "/press/eroun-peace-concert.jpg",
+    "imageWidth": 1280,
+    "imageHeight": 1041,
+    "imageAlt": {
+      "en": "Singers and choir on stage at Berlin’s Kaiser Wilhelm Memorial Church.",
+      "de": "Sängerinnen, Sänger und Chor auf der Bühne der Berliner Kaiser-Wilhelm-Gedächtniskirche.",
+      "ko": "베를린 카이저 빌헬름 기념교회 무대에 선 성악가들과 합창단."
+    },
+    "imageSource": "https://cdn.eroun.net/news/photo/202510/64617_115320_3945.jpg",
+    "imageSourceEvidence": "Editorial body image",
+    "imageSHA256": "1b444d8a8df122d28fd7310923ff4cac6c65f1d0f3c14d048379ae6b5bcca211"
   },
   {
     "url": "https://kyoposhinmun.de/koreaner/2025/10/06/24061/",
@@ -37,6 +48,17 @@
       "en": "A preview of the 8 October 2025 concert in Berlin, listing Rena Seulgi Jang among the performers and outlining a programme that connects opera arias with hopes for peace and reconciliation.",
       "de": "Ankündigung des Konzerts vom 8. Oktober 2025 in Berlin, mit Rena Seulgi Jang unter den Mitwirkenden. Das Programm verbindet Opernarien mit dem Wunsch nach Frieden und Versöhnung.",
       "ko": "2025년 10월 8일 베를린에서 열린 한반도 평화통일음악회의 사전 안내 기사입니다. 소프라노 장슬기(레나 슬기 장)를 비롯한 출연진과 평화와 화합을 향한 프로그램을 소개합니다."
-    }
+    },
+    "image": "/press/kyoposhinmun-peace-concert.jpg",
+    "imageWidth": 768,
+    "imageHeight": 512,
+    "imageAlt": {
+      "en": "Orchestra and audience inside Berlin’s Kaiser Wilhelm Memorial Church.",
+      "de": "Orchester und Publikum in der Berliner Kaiser-Wilhelm-Gedächtniskirche.",
+      "ko": "베를린 카이저 빌헬름 기념교회에서 공연 중인 오케스트라와 관객."
+    },
+    "imageSource": "https://kyoposhinmun.de/wp-content/uploads/2025/10/1429-20-1-768x512.jpg",
+    "imageSourceEvidence": "Editorial body image; publisher srcset 768w",
+    "imageSHA256": "33babaed9d309eaccb031253d26f5bae94dbd68900bd5e61795e4761dc89beee"
   }
 ]
