@@ -2,6 +2,9 @@ import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { resolve, relative, sep } from "node:path";
 import { parse } from "parse5";
+import { createHash } from "node:crypto";
+import sharp from "sharp";
+import { photoCollections } from "../src/data/photos.ts";
 
 const root = resolve(import.meta.dirname, "..");
 const dist = resolve(root, "dist");
@@ -78,6 +81,18 @@ for (const { lang, page } of expected) {
   assert.equal(attrs(meta("property", "og:description")).content, description);
   assert(attrs(meta("property", "og:locale")).content, "Missing Open Graph locale");
   assert(attrs(meta("property", "og:image")).content.startsWith(`${origin}${base}`), "Wrong social image base");
+  const structured = JSON.parse(text(headNodes.find(node => node.tagName === "script" && attrs(node).type === "application/ld+json")));
+  assert.equal(structured["@context"], "https://schema.org");
+  const person = structured["@graph"].find(item => item["@type"] === "Person");
+  const webPage = structured["@graph"].find(item => item["@type"] === "WebPage");
+  assert.equal(person.name, "Rena Seulgi Jang");
+  assert.equal(person.url, `${origin}${base}`);
+  assert.equal(webPage.url, canonical);
+  assert.equal(webPage.inLanguage, lang);
+  assert.equal(all.filter(node => node.tagName === "h1").length, 1, `Heading count differs: ${canonical}`);
+  assert.equal(all.filter(node => node.tagName === "footer").length, 1, `Missing shared footer: ${canonical}`);
+  const ids = all.map(node => attrs(node).id).filter(Boolean);
+  assert.equal(new Set(ids).size, ids.length, `Duplicate ID: ${canonical}`);
 
   const choices = withClass(document, "lang-link");
   const order = choices.map(node => attrs(node).hreflang);
@@ -94,8 +109,9 @@ for (const { lang, page } of expected) {
   }
   for (const node of all) {
     const a = attrs(node);
-    for (const attribute of ["href", "src", "poster"]) {
-      const ref = a[attribute]; if (!ref || ref.startsWith("#")) continue;
+    const refs = [a.href, a.src, a.poster, ...(a.srcset ? a.srcset.split(",").map(candidate => candidate.trim().split(/\s+/)[0]) : [])];
+    for (const ref of refs) {
+      if (!ref || ref.startsWith("#")) continue;
       const url = new URL(ref, canonical);
       if (url.origin !== origin || !["http:", "https:"].includes(url.protocol)) continue;
       assert(url.pathname.startsWith(base), `Wrong base: ${ref} on ${canonical}`);
@@ -115,6 +131,11 @@ for (const { lang, page } of expected) {
     const choices = withClass(document, "video-choice"); assert.equal(choices.length, videos.length);
     assert.deepEqual(withClass(document, "video-choice-title").map(normalizedText), videos.map(video => video.title.replace(/\s+/g, " ").trim()));
     assert(withClass(document, "video-choice-description").every(node => normalizedText(node).length > 0));
+    assert.equal(all.filter(node => node.tagName === "iframe").length, 0, "Video player must load only after intent");
+  }
+  if (page === "biography") assert.equal(all.filter(node => node.tagName === "iframe").length, 0, "Biography player must load only after intent");
+  if (page === "media/photo/onstage" || page === "media/photo/portrait") {
+    assert.equal(withClass(document, "gallery-open").length, page.endsWith("onstage") ? photoCollections.onstage.length : photoCollections.portrait.length, "Original photographs disappeared");
   }
   if (page === "press") {
     assert.deepEqual(withClass(document, "article-link").map(node => attrs(node).href), press.map(article => article.url));
@@ -122,6 +143,34 @@ for (const { lang, page } of expected) {
     for (const article of press) assert(normalizedText(all.find(node => node.tagName === "main")).includes(article.originalTitle), `Original headline missing: ${article.id}`);
   }
   pageDocuments.set(canonical, { alternates });
+}
+for (const file of walkFiles(resolve(dist, "_astro")).filter(file => file.endsWith(".css"))) {
+  const css = readFileSync(file, "utf8");
+  for (const match of css.matchAll(/url\(["']?([^\s)'";]+)["']?\)/g)) {
+    const url = new URL(match[1], `${origin}${base}_astro/`);
+    if (url.origin !== origin || url.protocol === "data:") continue;
+    assert(url.pathname.startsWith(base), `Wrong CSS asset base: ${match[1]}`);
+    assert(existsSync(resolve(dist, decodeURIComponent(url.pathname.slice(base.length)))), `Missing CSS asset: ${match[1]}`);
+    checkedTargets.add(url.pathname);
+  }
+}
+const images = json("image-manifest");
+assert.equal(Object.keys(images).length, 3 + photoCollections.onstage.length + photoCollections.portrait.length + press.filter(article => article.image).length, "Responsive image coverage differs");
+let variantCount = 0;
+for (const [original, image] of Object.entries(images)) {
+  const originalBytes = readFileSync(resolve(root, "public", original));
+  assert.equal(createHash("sha256").update(originalBytes).digest("hex"), image.originalSha256, `Original changed: ${original}`);
+  for (const variant of image.variants) {
+    const target = resolve(dist, variant.src);
+    const bytes = readFileSync(target);
+    const metadata = await sharp(bytes).metadata();
+    assert.equal(metadata.format, "webp");
+    assert.equal(metadata.width, variant.width);
+    assert.equal(metadata.height, variant.height);
+    assert.equal(bytes.length, variant.bytes);
+    assert(variant.width <= image.width, `Image upscaled: ${variant.src}`);
+    variantCount++;
+  }
 }
 for (const [url, { alternates }] of pageDocuments) {
   for (const [code, target] of alternates) {
@@ -139,4 +188,4 @@ for (const [, xml] of sitemapEntries) {
   const links = new Map([...xml.matchAll(/<xhtml:link rel="alternate" hreflang="([^"]+)" href="([^"]+)"\/>/g)].map(match => [match[1], match[2]]));
   assert.deepEqual(links, pageDocuments.get(url).alternates, `Sitemap alternates differ: ${url}`);
 }
-console.log(`Verified ${expected.length} localized pages in ${languages.length} languages, ${checkedTargets.size} local targets, reciprocal SEO, sitemap and shared content.`);
+console.log(`Verified ${expected.length} localized pages in ${languages.length} languages, ${checkedTargets.size} local targets, reciprocal SEO, sitemap, structured data and shared content; ${variantCount} WebP variants and all ${Object.keys(images).length} originals.`);

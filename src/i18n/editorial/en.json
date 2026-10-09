@@ -1,0 +1,92 @@
+{
+  "navigation": {
+    "performances": "Performances",
+    "listen": "Listen",
+    "gallery": "Gallery"
+  },
+  "footer": {
+    "enquiries": "Professional enquiries",
+    "explore": "Explore",
+    "backToTop": "Back to top"
+  },
+  "home": {
+    "introLabel": "The artist",
+    "introTitle": "Biography",
+    "biographyLink": "Read the biography",
+    "performanceLabel": "Selected performances",
+    "performanceTitle": "On stage",
+    "performanceLink": "Performance history",
+    "recordingLabel": "Selected recordings",
+    "recordingTitle": "Listen to Rena",
+    "recordingLink": "Explore the recordings",
+    "galleryLabel": "Photography",
+    "galleryTitle": "Portraits & performance",
+    "galleryLink": "Explore the gallery",
+    "contactLabel": "Artistic enquiries",
+    "contactTitle": "Let’s be in touch",
+    "contactLink": "Contact"
+  },
+  "biography": {
+    "pronunciationHeading": "The name, spoken",
+    "videoEyebrow": "In performance",
+    "videoHeading": "I puritani",
+    "videoIntro": "Bellini’s “Qui la voce… Vien, diletto”, performed by Rena Seulgi Jang.",
+    "videoPlay": "Play the performance",
+    "videoExternal": "Watch on YouTube",
+    "videoLoading": "Loading the YouTube player…"
+  },
+  "repertoire": {
+    "eyebrow": "Roles & concert works",
+    "roleLabel": "Role",
+    "workLabel": "Work",
+    "composerLabel": "Composer"
+  },
+  "schedule": {
+    "eyebrow": "Performance diary",
+    "intro": "Upcoming engagements and an archive of past performances.",
+    "timeZoneLabel": "All times are local to the venue."
+  },
+  "press": {
+    "eyebrow": "In the press",
+    "contextLabel": "Press mentions"
+  },
+  "contact": {
+    "headline": "Let’s be in touch.",
+    "enquiryEyebrow": "Professional enquiries",
+    "socialEyebrow": "Follow Rena",
+    "emailAction": "Write an email",
+    "instagramDescription": "Photographs and moments from her artistic work.",
+    "youtubeDescription": "Recordings from the official channel.",
+    "externalNote": "Social links open in a new tab."
+  },
+  "listen": {
+    "title": "Listen",
+    "intro": "A selection of opera, concert and song recordings from Rena’s official channel.",
+    "selected": "Selected recording",
+    "play": "Play recording",
+    "close": "Close recording",
+    "external": "Watch on YouTube",
+    "portraitNote": "Artist portrait · illustrative photograph",
+    "opera": "Opera",
+    "orchestral": "Orchestral",
+    "song": "Song",
+    "loading": "Loading the YouTube player…",
+    "workTitles": {
+      "Symphony No. 4": "Symphony No. 4"
+    }
+  },
+  "gallery": {
+    "title": "Gallery",
+    "intro": "Portraits and photographs from the stage.",
+    "viewCollection": "View collection",
+    "open": "Enlarge photograph {number}",
+    "close": "Close photograph",
+    "previous": "Previous photograph",
+    "next": "Next photograph",
+    "counter": "{index} / {total}",
+    "original": "Open original photograph",
+    "portraitDialog": "Enlarged portrait photograph",
+    "onstageDialog": "Enlarged onstage photograph",
+    "photoCredit": "Photograph: {name}"
+  }
+}

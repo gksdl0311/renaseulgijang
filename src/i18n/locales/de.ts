@@ -1,6 +1,9 @@
 import type { LocaleCopy } from "../types";
 
+import editorial from "../editorial/de.json";
+
 export default {
+  editorial,
   "navigation": {
     "home": "Startseite",
     "biography": "Biografie",

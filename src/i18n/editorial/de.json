@@ -1,0 +1,92 @@
+{
+  "navigation": {
+    "performances": "Auftritte",
+    "listen": "Hören",
+    "gallery": "Galerie"
+  },
+  "footer": {
+    "enquiries": "Anfragen & Engagements",
+    "explore": "Entdecken",
+    "backToTop": "Nach oben"
+  },
+  "home": {
+    "introLabel": "Die Künstlerin",
+    "introTitle": "Biografie",
+    "biographyLink": "Zur Biografie",
+    "performanceLabel": "Ausgewählte Auftritte",
+    "performanceTitle": "Auf der Bühne",
+    "performanceLink": "Alle Auftritte",
+    "recordingLabel": "Ausgewählte Aufnahmen",
+    "recordingTitle": "Rena hören",
+    "recordingLink": "Alle Aufnahmen",
+    "galleryLabel": "Fotografie",
+    "galleryTitle": "Porträts & Bühne",
+    "galleryLink": "Zur Galerie",
+    "contactLabel": "Künstlerische Anfragen",
+    "contactTitle": "Kontakt aufnehmen",
+    "contactLink": "Kontakt"
+  },
+  "biography": {
+    "pronunciationHeading": "Name und Aussprache",
+    "videoEyebrow": "Aufnahme",
+    "videoHeading": "I puritani",
+    "videoIntro": "Bellinis „Qui la voce… Vien, diletto“, gesungen von Rena Seulgi Jang.",
+    "videoPlay": "Aufnahme abspielen",
+    "videoExternal": "Auf YouTube ansehen",
+    "videoLoading": "YouTube-Player wird geladen…"
+  },
+  "repertoire": {
+    "eyebrow": "Partien & Konzertwerke",
+    "roleLabel": "Partie",
+    "workLabel": "Werk",
+    "composerLabel": "Komponist"
+  },
+  "schedule": {
+    "eyebrow": "Auftritte",
+    "intro": "Kommende Engagements und ein Archiv vergangener Auftritte.",
+    "timeZoneLabel": "Alle Uhrzeiten entsprechen der Ortszeit des Veranstaltungsortes."
+  },
+  "press": {
+    "eyebrow": "In der Presse",
+    "contextLabel": "Presseberichte"
+  },
+  "contact": {
+    "headline": "Kontakt aufnehmen.",
+    "enquiryEyebrow": "Professionelle Anfragen",
+    "socialEyebrow": "Rena folgen",
+    "emailAction": "E-Mail schreiben",
+    "instagramDescription": "Fotografien und Einblicke in ihre künstlerische Arbeit.",
+    "youtubeDescription": "Aufnahmen auf dem offiziellen Kanal.",
+    "externalNote": "Social-Media-Links öffnen sich in einem neuen Tab."
+  },
+  "listen": {
+    "title": "Rena hören",
+    "intro": "Opern-, Konzert- und Liedaufnahmen auf Renas offiziellem Kanal.",
+    "selected": "Ausgewählte Aufnahme",
+    "play": "Aufnahme abspielen",
+    "close": "Aufnahme schließen",
+    "external": "Auf YouTube ansehen",
+    "portraitNote": "Künstlerporträt · begleitende Fotografie",
+    "opera": "Oper",
+    "orchestral": "Orchester",
+    "song": "Lied",
+    "loading": "YouTube-Player wird geladen…",
+    "workTitles": {
+      "Symphony No. 4": "Sinfonie Nr. 4"
+    }
+  },
+  "gallery": {
+    "title": "Galerie",
+    "intro": "Porträts und Fotografien von der Bühne.",
+    "viewCollection": "Sammlung ansehen",
+    "open": "Fotografie {number} vergrößern",
+    "close": "Fotografie schließen",
+    "previous": "Vorherige Fotografie",
+    "next": "Nächste Fotografie",
+    "counter": "{index} / {total}",
+    "original": "Originalfotografie öffnen",
+    "portraitDialog": "Vergrößertes Porträt",
+    "onstageDialog": "Vergrößerte Bühnenfotografie",
+    "photoCredit": "Fotografie: {name}"
+  }
+}

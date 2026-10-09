@@ -1,115 +1,54 @@
 ---
-import { navigationCopy } from "../i18n/navigation";
-import { languages, localeConfig, type Language } from "../i18n";
-import { localizedPath } from "../i18n/routes";
+import { getCopy, isLanguage, languages, localeConfig, type Language } from "../i18n";
+import { localizedPath, pagePathForRequest } from "../i18n/routes";
+import { artist } from "../data/artist";
+import { getNavigationLinks } from "../i18n/navigation";
 import { sitePath, siteRelativePath } from "../site-paths";
 
+interface Props { lang?: Language }
 const { lang = languages[0] } = Astro.props;
-const isLanguage = (value: string): value is Language => languages.some((code) => code === value);
-const normalizePath = (url: string) => {
-  const relative = siteRelativePath(url);
-  return relative === "/" ? "/" : `${relative.replace(/\/+$/, "")}/`;
-};
-const path = normalizePath(Astro.url.pathname);
-const segments = path.split("/").filter(Boolean);
-const pathLanguage = segments[0] ?? "";
-const currentLang = isLanguage(pathLanguage) ? pathLanguage : isLanguage(lang) ? lang : languages[0];
-const copy = navigationCopy[currentLang];
-const basePath = (code: Language) => sitePath(`${code}/`);
-const pagePath = isLanguage(pathLanguage) ? segments.slice(1).join("/") : segments.join("/");
-const languagePath = (code: Language) => localizedPath(code, pagePath);
-const href = (page = "") => localizedPath(currentLang, page);
-const isCurrentPage = (page = "") => pagePath === page;
-const isActivePage = (page = "") => page
-  ? isCurrentPage(page) || pagePath.startsWith(`${page}/`)
-  : isCurrentPage();
-const isMediaActive = isActivePage("media");
-const primaryLinks = [
-  { page: "", label: copy.home, url: href() },
-  { page: "biography", label: copy.biography, url: href("biography") },
-  { page: "repertoire", label: copy.repertoire, url: href("repertoire") },
-  { page: "schedule", label: copy.schedule, url: href("schedule") },
-];
+const pathLanguage = siteRelativePath(Astro.url.pathname).split("/").filter(Boolean)[0] ?? "";
+const currentLang = isLanguage(pathLanguage) ? pathLanguage : lang;
+const content = getCopy(currentLang);
+const copy = content.navigation;
+const editorial = content.editorial.navigation;
+const pagePath = pagePathForRequest(Astro.url.pathname);
+const links = getNavigationLinks(currentLang);
+const isCurrent = (page: string) => pagePath === page;
+const isActive = (page: string) => isCurrent(page) || pagePath.startsWith(`${page}/`);
 ---
 
 <header class="chrome">
   <div class="top">
-    <div class="top-inner">
-      <div class="top-left"></div>
-      <div class="brand">
-        <a class="brand-link" href={basePath(currentLang)} aria-label={copy.home}>
-          <img class="brand-logo" src={sitePath("brand/rena-logo.png")} alt="Rena Seulgi Jang" width="618" height="362" />
-        </a>
+    <div class="masthead shell">
+      <a class="brand-link" href={localizedPath(currentLang)} aria-label={copy.home}>
+        <img class="brand-logo" src={sitePath("brand/rena-logo.png")} alt={artist.name} width="618" height="362" />
+      </a>
+
+      <nav class="nav" aria-label={copy.primary}>
+        {links.map(({ page, label }) => <a class:list={["nav-link", isActive(page) && "is-active"]} href={localizedPath(currentLang, page)} aria-current={isCurrent(page) ? "page" : undefined}>{label}</a>)}
+      </nav>
+
+      <div class="lang" role="group" aria-label={copy.languages}>
+        {languages.map((code, index) => <>
+          {index > 0 && <span class="lang-sep" aria-hidden="true">|</span>}
+          <a class:list={["lang-link", currentLang === code && "is-active"]} href={localizedPath(code, pagePath)} hreflang={code} lang={code} aria-label={localeConfig[code].nativeName} aria-current={currentLang === code ? "true" : undefined}>{localeConfig[code].label}</a>
+        </>)}
       </div>
 
-      <div class="top-right">
-        <div class="social">
-          <a class="icon-link" href="https://www.instagram.com/rrenajang/?hl=en" target="_blank" rel="noopener noreferrer" aria-label={copy.instagram}>
-            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-              <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm10 2H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3zm-5 4.5A5.5 5.5 0 1 1 6.5 14 5.5 5.5 0 0 1 12 8.5zm0 2A3.5 3.5 0 1 0 15.5 14 3.5 3.5 0 0 0 12 10.5zM18 6.8a1.2 1.2 0 1 1-1.2 1.2A1.2 1.2 0 0 1 18 6.8z" />
-            </svg>
-          </a>
-          <a class="icon-link" href="https://www.youtube.com/@SopranoRena" target="_blank" rel="noopener noreferrer" aria-label={copy.youtube}>
-            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-              <path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.7 4.6 12 4.6 12 4.6s-5.7 0-7.5.5A3 3 0 0 0 2.4 7.2 31.6 31.6 0 0 0 2 12a31.6 31.6 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.8.5 7.5.5 7.5.5s5.7 0 7.5-.5a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 22 12a31.6 31.6 0 0 0-.4-4.8zM10 15.5v-7l6 3.5-6 3.5z" />
-            </svg>
-          </a>
-        </div>
-
-        <div class="lang" role="group" aria-label={copy.languages}>
-          {languages.map((code, index) => <>
-            {index > 0 && <span class="lang-sep" aria-hidden="true">|</span>}
-            <a class:list={["lang-link", currentLang === code && "is-active"]} href={languagePath(code)} hreflang={code} lang={code} aria-label={localeConfig[code].nativeName} aria-current={currentLang === code ? "true" : undefined}>{localeConfig[code].label}</a>
-          </>)}
-        </div>
-
-        <button class="burger" type="button" aria-label={copy.openMenu} aria-expanded="false" aria-controls="mobile-navigation" data-open-label={copy.openMenu} data-close-label={copy.closeMenu}>
-          <span></span><span></span>
-        </button>
-      </div>
+      <button class="burger" type="button" aria-label={copy.openMenu} aria-expanded="false" aria-controls="mobile-navigation" data-open-label={copy.openMenu} data-close-label={copy.closeMenu}>
+        <span></span><span></span>
+      </button>
     </div>
   </div>
 
-  <nav class="nav" aria-label={copy.primary}>
-    {primaryLinks.map(({ page, label, url }) => <a class:list={["nav-link", isActivePage(page) && "is-active"]} href={url} aria-current={isCurrentPage(page) ? "page" : undefined}>{label}</a>)}
-
-    <div class="drop">
-      <button class:list={["nav-link", "has-drop", isMediaActive && "is-active"]} type="button" aria-expanded="false" aria-controls="media-menu" data-disclosure>
-        {copy.media} <span class="chev" aria-hidden="true">▾</span>
-      </button>
-      <div class="menu" id="media-menu" aria-label={copy.mediaMenu} hidden>
-        <a class="menu-link" href={href("media/video")}>{copy.video}</a>
-        <div class="menu-group">
-          <div class="photo-row">
-            <a class="menu-link" href={href("media/photo")}>{copy.photo}</a>
-            <button class="photo-toggle" type="button" aria-label={copy.photoMenu} aria-expanded="false" aria-controls="photo-menu" data-disclosure><span class="chev right" aria-hidden="true">▸</span></button>
-          </div>
-          <div class="menu sub" id="photo-menu" aria-label={copy.photoMenu} hidden>
-            <a class="menu-link" href={href("media/photo/onstage")}>{copy.onstage}</a>
-            <a class="menu-link" href={href("media/photo/portrait")}>{copy.portrait}</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <a class:list={["nav-link", isActivePage("press") && "is-active"]} href={href("press")} aria-current={isCurrentPage("press") ? "page" : undefined}>{copy.press}</a>
-    <a class:list={["nav-link", isActivePage("contact") && "is-active"]} href={href("contact")} aria-current={isCurrentPage("contact") ? "page" : undefined}>{copy.contact}</a>
-  </nav>
-
   <nav class="mobile" id="mobile-navigation" aria-label={copy.mobile} hidden>
-    <div class="mobile-inner">
-      {primaryLinks.map(({ page, label, url }) => <a class:list={["m-link", isActivePage(page) && "is-active"]} href={url} aria-current={isCurrentPage(page) ? "page" : undefined}>{label}</a>)}
-      <details class="m-details" open={isMediaActive}>
-        <summary class="m-summary">{copy.media}</summary>
-        <div class="m-sub">
-          <a class="m-sublink" href={href("media/video")}>{copy.video}</a>
-          <a class="m-sublink" href={href("media/photo")}>{copy.photo}</a>
-          <a class="m-sublink m-photo" href={href("media/photo/onstage")}>{copy.onstage}</a>
-          <a class="m-sublink m-photo" href={href("media/photo/portrait")}>{copy.portrait}</a>
-        </div>
-      </details>
-      <a class:list={["m-link", isActivePage("press") && "is-active"]} href={href("press")} aria-current={isCurrentPage("press") ? "page" : undefined}>{copy.press}</a>
-      <a class:list={["m-link", isActivePage("contact") && "is-active"]} href={href("contact")} aria-current={isCurrentPage("contact") ? "page" : undefined}>{copy.contact}</a>
+    <div class="mobile-inner shell">
+      {links.map(({ page, label }, index) => <a class:list={["m-link", isActive(page) && "is-active"]} href={localizedPath(currentLang, page)} aria-current={isCurrent(page) ? "page" : undefined}>
+        <span class="m-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+        <span class="m-label">{label}</span>
+        <span class="m-arrow" aria-hidden="true">↗</span>
+      </a>)}
     </div>
   </nav>
 </header>
@@ -118,212 +57,121 @@ const primaryLinks = [
   const chrome = document.querySelector<HTMLElement>(".chrome");
   const burger = chrome?.querySelector<HTMLButtonElement>(".burger");
   const mobile = chrome?.querySelector<HTMLElement>(".mobile");
-  const desktopMedia = chrome?.querySelector<HTMLButtonElement>(".has-drop");
-  const photoToggle = chrome?.querySelector<HTMLButtonElement>(".photo-toggle");
-  const desktopBreakpoint = window.matchMedia("(min-width: 901px)");
-  const pinnedDisclosures = new WeakSet<HTMLButtonElement>();
+  const desktop = window.matchMedia("(min-width: 1101px)");
 
   function updateLanguageLinks() {
     chrome?.querySelectorAll<HTMLAnchorElement>(".lang-link").forEach((link) => {
-      const target = new URL(link.href);
-      target.search = window.location.search;
-      target.hash = window.location.hash;
-      link.href = `${target.pathname}${target.search}${target.hash}`;
+      const destination = new URL(link.href);
+      destination.search = window.location.search;
+      destination.hash = window.location.hash;
+      link.href = `${destination.pathname}${destination.search}${destination.hash}`;
     });
   }
 
-  updateLanguageLinks();
-  window.addEventListener("hashchange", updateLanguageLinks);
-  window.addEventListener("popstate", updateLanguageLinks);
+  function syncHeaderHeight() {
+    const height = chrome?.querySelector<HTMLElement>(".top")?.offsetHeight ?? 100;
+    chrome?.style.setProperty("--top-height", `${height}px`);
+    document.documentElement.style.setProperty("--header-height", `${height + 1}px`);
+  }
 
-  function setMobile(open: boolean) {
-    if (!chrome || !burger || !mobile) return;
-    const topHeight = chrome.querySelector<HTMLElement>(".top")?.offsetHeight ?? 150;
-    chrome.style.setProperty("--top-height", `${topHeight}px`);
+  function setMobile(open: boolean, restoreFocus = false) {
+    if (!burger || !mobile) return;
+    syncHeaderHeight();
     mobile.hidden = !open;
     burger.setAttribute("aria-expanded", String(open));
     burger.setAttribute("aria-label", open ? burger.dataset.closeLabel! : burger.dataset.openLabel!);
+    if (open) {
+      mobile.scrollTop = 0;
+      mobile.querySelector<HTMLAnchorElement>("a")?.focus({ preventScroll: true });
+    } else if (restoreFocus) burger.focus({ preventScroll: true });
   }
 
-  function setDisclosure(button: HTMLButtonElement | undefined | null, open: boolean) {
-    if (!button) return;
-    const panel = document.getElementById(button.getAttribute("aria-controls")!);
-    if (!panel) return;
-    button.setAttribute("aria-expanded", String(open));
-    panel.hidden = !open;
-    if (!open) pinnedDisclosures.delete(button);
-    if (button === desktopMedia && !open) setDisclosure(photoToggle, false);
+  function updateScrolledState() {
+    chrome?.classList.toggle("is-scrolled", window.scrollY > 12);
   }
 
+  updateLanguageLinks();
+  syncHeaderHeight();
+  updateScrolledState();
+  window.addEventListener("hashchange", updateLanguageLinks);
+  window.addEventListener("popstate", updateLanguageLinks);
+  window.addEventListener("scroll", updateScrolledState, { passive: true });
   burger?.addEventListener("click", () => setMobile(burger.getAttribute("aria-expanded") !== "true"));
-  chrome?.querySelectorAll<HTMLButtonElement>("[data-disclosure]").forEach((button) => {
-    button.addEventListener("click", () => {
-      // A mouse entering the trigger may already have opened its panel.
-      // The first click keeps that panel open; a second click dismisses it.
-      const open = !pinnedDisclosures.has(button);
-      setDisclosure(button, open);
-      if (open) pinnedDisclosures.add(button);
-    });
-  });
-
-  // Preserve desktop hover behavior while using the same state for touch and keyboard.
-  const hoverGroups = [
-    { group: chrome?.querySelector<HTMLElement>(".drop"), button: desktopMedia },
-    { group: chrome?.querySelector<HTMLElement>(".menu-group"), button: photoToggle },
-  ];
-  hoverGroups.forEach(({ group, button }) => {
-    group?.addEventListener("pointerenter", (event) => {
-      if (event.pointerType === "mouse") setDisclosure(button, true);
-    });
-    group?.addEventListener("pointerleave", (event) => {
-      if (event.pointerType === "mouse" && !group.contains(document.activeElement)) setDisclosure(button, false);
-    });
-    group?.addEventListener("focusout", (event) => {
-      if (!group.contains(event.relatedTarget as Node | null)) setDisclosure(button, false);
-    });
-  });
-
+  chrome?.querySelectorAll<HTMLAnchorElement>("a").forEach(link => link.addEventListener("click", () => setMobile(false)));
   document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") return;
-    if (burger?.getAttribute("aria-expanded") === "true") {
-      setMobile(false);
-      burger.focus();
-    } else if (photoToggle?.getAttribute("aria-expanded") === "true") {
-      setDisclosure(photoToggle, false);
-      photoToggle.focus();
-    } else if (desktopMedia?.getAttribute("aria-expanded") === "true") {
-      setDisclosure(desktopMedia, false);
-      desktopMedia.focus();
-    }
+    if (event.key === "Escape" && burger?.getAttribute("aria-expanded") === "true") setMobile(false, true);
   });
-
   document.addEventListener("click", (event) => {
-    if (!chrome?.contains(event.target as Node)) {
-      setMobile(false);
-      setDisclosure(desktopMedia, false);
-    }
+    if (!chrome?.contains(event.target as Node)) setMobile(false);
   });
-  mobile?.querySelectorAll<HTMLAnchorElement>("a").forEach((link) => link.addEventListener("click", () => setMobile(false)));
+  chrome?.addEventListener("focusout", (event) => {
+    if (!chrome.contains(event.relatedTarget as Node | null)) setMobile(false);
+  });
   window.addEventListener("resize", () => {
-    if (desktopBreakpoint.matches) setMobile(false);
-    else if (burger?.getAttribute("aria-expanded") === "true") setMobile(true);
+    syncHeaderHeight();
+    if (desktop.matches) setMobile(false);
   });
+  new ResizeObserver(syncHeaderHeight).observe(chrome!.querySelector(".top")!);
 </script>
 
 <style>
-  a { text-decoration: none; }
-  :global(:root) {
-    --bg: #ffffff;
-    --text: #111111;
-    --muted: #6f6f6f;
-    --rule: #d9d9d9;
-    --hover: #111111;
-    --max: 1100px;
+  .site-top-anchor { display: block; height: 0; }
+  .chrome {
+    position: sticky;
+    top: 0;
+    z-index: 80;
+    background: var(--color-bg, #f7f3ec);
+    border-bottom: 1px solid var(--color-rule, #d8d0c7);
+    transition: box-shadow 180ms ease;
   }
-  .chrome { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--rule); }
-  .top { background: var(--bg); }
-  .top-inner { max-width: var(--max); margin: 0 auto; padding: 8px 18px 4px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
-  .top-left { justify-self: start; }
-  .brand { justify-self: center; }
-  .brand-link { display: inline-flex; align-items: center; justify-content: center; }
-  .brand-logo { width: min(180px, 38vw); height: auto; display: block; }
-  .top-right { justify-self: end; display: flex; align-items: center; gap: 10px; }
-  .social { display: flex; align-items: center; gap: 10px; }
-  .icon-link { color: var(--muted); display: inline-flex; align-items: center; justify-content: center; padding: 6px; border-radius: 10px; transition: color .2s ease, background .2s ease; }
-  .icon-link:hover { color: var(--text); background: rgba(0, 0, 0, 0.03); }
-  .icon-link svg { fill: currentColor; display: block; }
-  .lang { display: inline-flex; align-items: center; gap: 6px; padding-left: 10px; margin-left: 4px; border-left: 1px solid var(--rule); }
-  .lang-link { color: var(--muted); font-family: "Times New Roman", Times, serif; letter-spacing: .08em; font-size: 14px; padding: 6px 0; position: relative; transition: color .2s ease; text-decoration: none; white-space: nowrap; }
-  .lang-link[lang="ko"] { letter-spacing: 0; }
-  .lang-link:hover { color: var(--hover); }
-  .lang-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: 2px; height: 1px; background: var(--text); opacity: 0; transition: opacity .2s ease; }
-  .lang-link:hover::after, .lang-link.is-active::after { opacity: .65; }
-  .lang-link.is-active { color: var(--text); }
-  .lang-sep { color: rgba(17, 17, 17, 0.35); font-size: 12px; }
-  .nav { max-width: var(--max); margin: 0 auto; padding: 0 18px 8px; display: flex; justify-content: center; gap: 22px; flex-wrap: wrap; }
-  .nav-link { color: var(--muted); font-family: "Times New Roman", Times, serif; letter-spacing: .10em; font-size: 14px; padding: 8px 0; position: relative; white-space: nowrap; transition: color .2s ease; text-decoration: none; }
-  .nav-link:hover { color: var(--hover); }
-  .nav-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: 2px; height: 1px; background: var(--text); opacity: 0; transition: opacity .2s ease; }
-  .nav-link:hover::after, .nav-link.is-active::after { opacity: .5; }
-  .nav-link.is-active { color: var(--text); }
-  .drop, .menu-group { position: relative; }
-  .drop::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 14px; }
-  .has-drop { display: inline-flex; align-items: center; gap: 8px; border: 0; background: transparent; cursor: pointer; line-height: inherit; }
-  .chev { font-size: 11px; color: rgba(17, 17, 17, .45); }
-  .chev.right { font-size: 12px; }
-  .menu { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); min-width: 180px; background: #ffffff; border: 1px solid var(--rule); border-radius: 14px; padding: 8px; box-shadow: 0 14px 40px rgba(0, 0, 0, .10); z-index: 60; }
-  .menu-link { display: flex; align-items: center; justify-content: space-between; min-height: 44px; padding: 10px; border-radius: 10px; font-size: 14px; color: var(--muted); transition: color .2s ease, background .2s ease; white-space: nowrap; }
-  .menu-link:hover { color: var(--text); background: rgba(0, 0, 0, .03); }
-  .menu-group::after { content: ""; position: absolute; top: 0; left: 100%; width: 12px; height: 100%; }
-  .photo-row { display: flex; align-items: center; }
-  .photo-row .menu-link { flex: 1; }
-  .photo-toggle { width: 44px; min-height: 44px; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; cursor: pointer; }
-  .photo-toggle:hover { background: rgba(0, 0, 0, .03); }
-  .menu.sub { top: 0; left: calc(100% + 8px); z-index: 70; transform: none; }
-  .burger { display: none; width: 44px; height: 44px; padding: 0; border: 1px solid var(--rule); border-radius: 12px; align-items: center; justify-content: center; flex-direction: column; gap: 6px; background: #ffffff; cursor: pointer; }
-  .burger span { width: 18px; height: 1px; background: rgba(17, 17, 17, .85); display: block; transition: transform .2s ease; }
+  .chrome.is-scrolled { box-shadow: 0 4px 20px rgb(36 33 30 / 4%); }
+  .masthead { min-height: 88px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(16px, 1.6vw, 24px); align-items: center; }
+  .brand-link { width: 116px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+  .brand-logo { width: 116px; height: auto; display: block; mix-blend-mode: multiply; }
+  .nav { display: flex; align-items: center; justify-content: center; gap: clamp(12px, 1.2vw, 19px); min-width: 0; }
+  .nav-link { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; color: var(--color-text, #24211e); font-family: var(--font-body, sans-serif); font-size: 14px; font-weight: 450; letter-spacing: .015em; white-space: nowrap; text-decoration: none; transition: color 180ms ease; }
+  .nav-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: 6px; height: 1px; background: var(--color-accent, #6b2c3e); transform: scaleX(0); transform-origin: left; transition: transform 180ms ease; }
+  .nav-link:hover, .nav-link.is-active { color: var(--color-accent, #6b2c3e); }
+  .nav-link:hover::after, .nav-link.is-active::after { transform: scaleX(1); }
+  .lang { display: inline-flex; align-items: center; justify-content: center; min-width: 0; }
+  .lang-link { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 8px 4px; color: var(--color-muted, #756c63); font-family: var(--font-body, sans-serif); font-size: 12px; line-height: 1.2; font-weight: 450; letter-spacing: .06em; white-space: nowrap; text-decoration: none; transition: color 180ms ease; }
+  .lang-link[lang="ko"] { font-size: 13px; letter-spacing: 0; }
+  .lang-link::after { content: ""; position: absolute; right: 13px; bottom: 7px; left: 13px; height: 1px; background: currentColor; opacity: 0; transition: opacity 180ms ease; }
+  .lang-link:hover, .lang-link.is-active { color: var(--color-accent, #6b2c3e); }
+  .lang-link:hover::after, .lang-link.is-active::after { opacity: 1; }
+  .lang-sep { color: var(--color-rule, #d8d0c7); font-size: 10px; }
+  .burger { display: none; width: 44px; height: 44px; flex-shrink: 0; padding: 0; border: 1px solid var(--color-rule, #d8d0c7); background: transparent; color: var(--color-text, #24211e); cursor: pointer; align-items: center; justify-content: center; flex-direction: column; gap: 6px; transition: border-color 180ms ease; }
+  .burger:hover { border-color: var(--color-accent, #6b2c3e); }
+  .burger span { display: block; width: 20px; height: 1px; background: currentColor; transition: transform 180ms ease; }
   .burger[aria-expanded="true"] span:first-child { transform: translateY(3.5px) rotate(45deg); }
   .burger[aria-expanded="true"] span:last-child { transform: translateY(-3.5px) rotate(-45deg); }
-  .mobile { display: none; border-top: 1px solid var(--rule); background: var(--bg); max-height: calc(100vh - var(--top-height, 150px)); max-height: calc(100dvh - var(--top-height, 150px)); overflow-y: auto; overscroll-behavior: contain; }
-  .mobile-inner { max-width: var(--max); margin: 0 auto; padding: 10px 18px 18px; display: flex; flex-direction: column; gap: 2px; }
-  .m-link, .m-sublink, .m-summary { font-family: "Times New Roman", Times, serif; letter-spacing: .06em; font-size: 16px; line-height: 1.5; color: var(--muted); min-height: 44px; padding: 10px 6px; transition: color .2s ease; }
-  .m-link, .m-sublink { display: flex; align-items: center; }
-  .m-link:hover, .m-sublink:hover { color: var(--text); }
-  .m-link.is-active { color: var(--text); }
-  .m-details { border-left: 1px solid var(--rule); padding-left: 10px; margin-left: 2px; }
-  .m-summary { display: flex; align-items: center; justify-content: space-between; list-style: none; cursor: pointer; }
-  .m-summary::after { content: "+"; padding: 0 6px; }
-  .m-details[open] > .m-summary::after { content: "−"; }
-  .m-details summary::-webkit-details-marker { display: none; }
-  .m-sub { display: flex; flex-direction: column; gap: 2px; }
-  .m-photo { padding-left: 20px; }
+  .mobile { display: none; border-top: 1px solid var(--color-rule, #d8d0c7); background: var(--color-bg, #f7f3ec); max-height: calc(100vh - var(--top-height, 100px)); max-height: calc(100dvh - var(--top-height, 100px)); overflow-y: auto; overscroll-behavior: contain; }
+  .mobile-inner { display: flex; flex-direction: column; padding-block: 12px 24px; }
+  .m-link { display: grid; grid-template-columns: 24px minmax(0, 1fr) 22px; align-items: center; gap: 16px; min-height: 66px; padding-block: 14px; border-bottom: 1px solid var(--color-rule, #d8d0c7); color: var(--color-text, #24211e); text-decoration: none; }
+  .m-index { font-family: var(--font-body, sans-serif); font-size: 10px; letter-spacing: .04em; color: var(--color-muted, #756c63); }
+  .m-label { font-family: var(--font-display, serif); font-size: clamp(27px, 4vw, 35px); font-weight: 500; line-height: 1.15; overflow-wrap: anywhere; }
+  .m-arrow { font-size: 20px; color: var(--color-accent, #6b2c3e); transition: transform 180ms ease; }
+  .m-link:hover, .m-link.is-active { color: var(--color-accent, #6b2c3e); }
+  .m-link:hover .m-arrow { transform: translate(2px, -2px); }
   [hidden] { display: none !important; }
-  @media (min-width: 901px) and (max-width: 1100px) {
-    .menu.sub { left: auto; right: calc(100% + 8px); }
-    .menu-group::after { left: auto; right: 100%; }
-  }
-  @media (any-pointer: coarse) {
-    .icon-link, .lang-link, .nav-link {
-      min-width: 44px;
-      min-height: 44px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lang { gap: 0; }
-    .lang-link::after { left: 10px; right: 10px; bottom: 7px; }
-  }
-  @media (min-width: 901px) and (max-width: 1100px) and (any-pointer: coarse) {
-    .social { gap: 2px; }
-    .top-right { gap: 6px; }
-    .lang { padding-left: 6px; margin-left: 0; }
-  }
-  @media (max-width: 900px) {
+  @media (max-width: 1100px) {
+    .masthead { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); min-height: 82px; gap: 16px; }
+    .brand-link { justify-self: start; }
     .nav { display: none; }
-    .top-inner { grid-template-columns: 1fr auto; gap: 12px; }
-    .top-left { display: none; }
-    .brand { justify-self: start; }
-    .burger { display: inline-flex; }
+    .burger { display: inline-flex; justify-self: end; }
     .mobile:not([hidden]) { display: block; }
-    .brand-logo { width: 160px; }
-    .icon-link, .lang-link { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
-    .lang { gap: 0; padding-left: 6px; margin-left: 0; }
-    .lang-link { font-size: 15px; }
-    .lang-link::after { left: 10px; right: 10px; bottom: 7px; }
-    .social { gap: 2px; }
-    .top-right { gap: 8px; }
+    .lang-link { font-size: 13px; }
+    .lang-link[lang="ko"] { font-size: 14px; }
   }
-  @media (max-width: 640px) {
-    .top-inner { padding: 4px 16px 6px; grid-template-columns: minmax(0, 1fr) auto auto; gap: 0 8px; }
-    .top-right { display: contents; }
-    .brand { grid-column: 1; grid-row: 1; }
-    .brand-logo { width: 132px; }
-    .burger { grid-column: 3; grid-row: 1; justify-self: end; }
-    .social { grid-column: 2; grid-row: 1; justify-self: end; }
-    .lang { grid-column: 1 / -1; grid-row: 2; justify-self: center; padding: 0; border: 0; max-width: 100%; flex-wrap: wrap; justify-content: center; }
-    .mobile-inner { padding-inline: 16px; }
+  @media (max-width: 600px) {
+    .masthead { grid-template-columns: minmax(0, 1fr) auto; gap: 0 16px; padding-top: 2px; min-height: 0; }
+    .brand-link { grid-column: 1; grid-row: 1; width: 106px; min-height: 64px; }
+    .brand-logo { width: 106px; }
+    .burger { grid-column: 2; grid-row: 1; }
+    .lang { grid-column: 1 / -1; grid-row: 2; width: 100%; padding-block: 1px 4px; border-top: 1px solid var(--color-rule, #d8d0c7); }
+    .m-link { min-height: 60px; gap: 12px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .burger span { transition: none; }
+    .chrome, .nav-link, .nav-link::after, .lang-link, .lang-link::after, .burger, .burger span, .m-arrow { transition: none; }
   }
 </style>

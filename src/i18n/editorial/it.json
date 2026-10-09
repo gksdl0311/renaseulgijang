@@ -1,0 +1,92 @@
+{
+  "navigation": {
+    "performances": "Appuntamenti",
+    "listen": "Ascolta",
+    "gallery": "Galleria"
+  },
+  "footer": {
+    "enquiries": "Contatti professionali",
+    "explore": "Esplora",
+    "backToTop": "Torna in alto"
+  },
+  "home": {
+    "introLabel": "L’artista",
+    "introTitle": "Biografia",
+    "biographyLink": "Leggi la biografia",
+    "performanceLabel": "Appuntamenti scelti",
+    "performanceTitle": "In scena",
+    "performanceLink": "Tutti gli appuntamenti",
+    "recordingLabel": "Registrazioni scelte",
+    "recordingTitle": "Ascolta Rena",
+    "recordingLink": "Tutte le registrazioni",
+    "galleryLabel": "Fotografie",
+    "galleryTitle": "Ritratti e scena",
+    "galleryLink": "Esplora la galleria",
+    "contactLabel": "Contatti professionali",
+    "contactTitle": "Restiamo in contatto",
+    "contactLink": "Contatti"
+  },
+  "biography": {
+    "pronunciationHeading": "Il nome e la pronuncia",
+    "videoEyebrow": "In video",
+    "videoHeading": "I puritani",
+    "videoIntro": "“Qui la voce… Vien, diletto” di Bellini, interpretata da Rena Seulgi Jang.",
+    "videoPlay": "Riproduci l’esecuzione",
+    "videoExternal": "Guarda su YouTube",
+    "videoLoading": "Caricamento del lettore YouTube…"
+  },
+  "repertoire": {
+    "eyebrow": "Ruoli e repertorio da concerto",
+    "roleLabel": "Ruolo",
+    "workLabel": "Opera",
+    "composerLabel": "Compositore"
+  },
+  "schedule": {
+    "eyebrow": "Appuntamenti",
+    "intro": "I prossimi impegni e l’archivio delle esibizioni passate.",
+    "timeZoneLabel": "Tutti gli orari si riferiscono all’ora locale della sede."
+  },
+  "press": {
+    "eyebrow": "Nella stampa",
+    "contextLabel": "Articoli di stampa"
+  },
+  "contact": {
+    "headline": "Restiamo in contatto.",
+    "enquiryEyebrow": "Contatti professionali",
+    "socialEyebrow": "Segui Rena",
+    "emailAction": "Scrivi un’email",
+    "instagramDescription": "Fotografie e momenti del suo percorso artistico.",
+    "youtubeDescription": "Registrazioni sul canale ufficiale.",
+    "externalNote": "I link ai social si aprono in una nuova scheda."
+  },
+  "listen": {
+    "title": "Ascolta Rena",
+    "intro": "Registrazioni d’opera, da concerto e di Lieder dal canale ufficiale di Rena.",
+    "selected": "Registrazione selezionata",
+    "play": "Riproduci la registrazione",
+    "close": "Chiudi la registrazione",
+    "external": "Guarda su YouTube",
+    "portraitNote": "Ritratto dell’artista · fotografia illustrativa",
+    "opera": "Opera",
+    "orchestral": "Orchestra",
+    "song": "Lied",
+    "loading": "Caricamento del lettore YouTube…",
+    "workTitles": {
+      "Symphony No. 4": "Sinfonia n. 4"
+    }
+  },
+  "gallery": {
+    "title": "Galleria",
+    "intro": "Ritratti e fotografie di scena.",
+    "viewCollection": "Esplora la raccolta",
+    "open": "Ingrandisci la fotografia {number}",
+    "close": "Chiudi la fotografia",
+    "previous": "Fotografia precedente",
+    "next": "Fotografia successiva",
+    "counter": "{index} / {total}",
+    "original": "Apri la fotografia originale",
+    "portraitDialog": "Ritratto ingrandito",
+    "onstageDialog": "Fotografia di scena ingrandita",
+    "photoCredit": "Fotografia: {name}"
+  }
+}

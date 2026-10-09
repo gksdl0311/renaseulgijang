@@ -1,0 +1,1030 @@
+{
+  "hero/portrait.jpg": {
+    "width": 1638,
+    "height": 2048,
+    "originalBytes": 113561,
+    "originalSha256": "33380bfbda6b3502f561270808ef76c9b4f75097d6d735abd53620e2795169e6",
+    "variants": [
+      {
+        "src": "optimized/hero/portrait-480.webp",
+        "width": 480,
+        "height": 600,
+        "bytes": 6950
+      },
+      {
+        "src": "optimized/hero/portrait-800.webp",
+        "width": 800,
+        "height": 1000,
+        "bytes": 14612
+      },
+      {
+        "src": "optimized/hero/portrait-1200.webp",
+        "width": 1200,
+        "height": 1500,
+        "bytes": 26772
+      }
+    ]
+  },
+  "media/photo/portrait-cover.jpg": {
+    "width": 1066,
+    "height": 1600,
+    "originalBytes": 126046,
+    "originalSha256": "a710aae9ded8b2cf6e6e853eab8903c53b1fd6666c8bde680c15db79606ae7cd",
+    "variants": [
+      {
+        "src": "optimized/media/photo/portrait-cover-480.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 19054
+      },
+      {
+        "src": "optimized/media/photo/portrait-cover-800.webp",
+        "width": 800,
+        "height": 1201,
+        "bytes": 40844
+      },
+      {
+        "src": "optimized/media/photo/portrait-cover-1066.webp",
+        "width": 1066,
+        "height": 1600,
+        "bytes": 65602
+      }
+    ]
+  },
+  "media/photo/onstage-cover.jpg": {
+    "width": 716,
+    "height": 888,
+    "originalBytes": 404438,
+    "originalSha256": "d562f0182f2cc271e0cc43fec1d391cbfe7e3993a74961a06ff91d41a6b43ae1",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage-cover-480.webp",
+        "width": 480,
+        "height": 595,
+        "bytes": 12156
+      },
+      {
+        "src": "optimized/media/photo/onstage-cover-716.webp",
+        "width": 716,
+        "height": 888,
+        "bytes": 20132
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-01.JPG": {
+    "width": 3640,
+    "height": 2053,
+    "originalBytes": 3577517,
+    "originalSha256": "174c8f41c0350ac027c286d181e1615bd28aef69d8369da9aab9e4958f5e557e",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-01-480.webp",
+        "width": 480,
+        "height": 271,
+        "bytes": 22988
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-01-800.webp",
+        "width": 800,
+        "height": 451,
+        "bytes": 59596
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-01-1200.webp",
+        "width": 1200,
+        "height": 676,
+        "bytes": 121034
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-02.JPG": {
+    "width": 2836,
+    "height": 4095,
+    "originalBytes": 4887644,
+    "originalSha256": "f76527bd8899b28e7d5bcf4714c63a333a023f763c1633cf2b24417b861fc152",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-02-480.webp",
+        "width": 480,
+        "height": 693,
+        "bytes": 29662
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-02-800.webp",
+        "width": 800,
+        "height": 1155,
+        "bytes": 72056
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-02-1200.webp",
+        "width": 1200,
+        "height": 1733,
+        "bytes": 210270
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-03.JPG": {
+    "width": 2410,
+    "height": 1606,
+    "originalBytes": 948648,
+    "originalSha256": "a15809c9d65bd8ac8cbe1cb864368e5a4d0efe9c43e55ea8f6506d0c03ada184",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-03-480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 11112
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-03-800.webp",
+        "width": 800,
+        "height": 533,
+        "bytes": 24098
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-03-1200.webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 47406
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-04.JPG": {
+    "width": 2183,
+    "height": 3275,
+    "originalBytes": 3125462,
+    "originalSha256": "8ef122bbad8be1b333d3f316838ce3a446c7c4bd13b8a862ce4d5e915f0bb633",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-04-480.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 45654
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-04-800.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 101220
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-04-1200.webp",
+        "width": 1200,
+        "height": 1800,
+        "bytes": 259704
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-05.JPG": {
+    "width": 1600,
+    "height": 1007,
+    "originalBytes": 521034,
+    "originalSha256": "f397ddd5ded635020353b30292f97c9ad48f5372853ced952cfb46fca4180d04",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-05-480.webp",
+        "width": 480,
+        "height": 302,
+        "bytes": 26980
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-05-800.webp",
+        "width": 800,
+        "height": 504,
+        "bytes": 63292
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-05-1200.webp",
+        "width": 1200,
+        "height": 755,
+        "bytes": 129200
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-06.JPG": {
+    "width": 3931,
+    "height": 2607,
+    "originalBytes": 1295104,
+    "originalSha256": "7a54bef4b239fbc3df19b642d2853aac34f6d8dda286ea36672a336e387ce8cd",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-06-480.webp",
+        "width": 480,
+        "height": 318,
+        "bytes": 9160
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-06-800.webp",
+        "width": 800,
+        "height": 530,
+        "bytes": 18072
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-06-1200.webp",
+        "width": 1200,
+        "height": 796,
+        "bytes": 30870
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-07.JPG": {
+    "width": 4073,
+    "height": 2741,
+    "originalBytes": 1388487,
+    "originalSha256": "eec26208a11523033d2ce8c392c07776f7d697dbadfe83830da748fb52defb71",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-07-480.webp",
+        "width": 480,
+        "height": 323,
+        "bytes": 9354
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-07-800.webp",
+        "width": 800,
+        "height": 538,
+        "bytes": 17820
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-07-1200.webp",
+        "width": 1200,
+        "height": 807,
+        "bytes": 29878
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-08.JPG": {
+    "width": 4056,
+    "height": 2729,
+    "originalBytes": 1658373,
+    "originalSha256": "fad27f38647c02cc6fe7f9485c64c53b7290a13555dc60014c16164e170abe5b",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-08-480.webp",
+        "width": 480,
+        "height": 323,
+        "bytes": 12110
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-08-800.webp",
+        "width": 800,
+        "height": 538,
+        "bytes": 22874
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-08-1200.webp",
+        "width": 1200,
+        "height": 807,
+        "bytes": 40152
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-09.JPG": {
+    "width": 2224,
+    "height": 1251,
+    "originalBytes": 2993757,
+    "originalSha256": "227e9b9bfa7b7a44be2b367a01949e7f00ebee31b97654367c3037db949d544d",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-09-480.webp",
+        "width": 480,
+        "height": 270,
+        "bytes": 10482
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-09-800.webp",
+        "width": 800,
+        "height": 450,
+        "bytes": 21350
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-09-1200.webp",
+        "width": 1200,
+        "height": 675,
+        "bytes": 36602
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-10.JPG": {
+    "width": 2224,
+    "height": 1251,
+    "originalBytes": 3389132,
+    "originalSha256": "a6cc0b489b6e15b584835787b67233f1195e6c697ba43d4c3561b6e4418e9959",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-10-480.webp",
+        "width": 480,
+        "height": 270,
+        "bytes": 13892
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-10-800.webp",
+        "width": 800,
+        "height": 450,
+        "bytes": 32428
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-10-1200.webp",
+        "width": 1200,
+        "height": 675,
+        "bytes": 65886
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-11.JPG": {
+    "width": 2722,
+    "height": 4096,
+    "originalBytes": 2826593,
+    "originalSha256": "b7c41f63b315d44421f9329bcb1f60e1537c72db52ac06e5edc9508f30093ce5",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-11-480.webp",
+        "width": 480,
+        "height": 723,
+        "bytes": 47416
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-11-800.webp",
+        "width": 800,
+        "height": 1204,
+        "bytes": 91678
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-11-1200.webp",
+        "width": 1200,
+        "height": 1806,
+        "bytes": 150098
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-12.JPG": {
+    "width": 4095,
+    "height": 2750,
+    "originalBytes": 2557887,
+    "originalSha256": "177ca248d96065a37a713dcaab21cd806383bb76d52153540b7fbb9cdc18eb67",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-12-480.webp",
+        "width": 480,
+        "height": 322,
+        "bytes": 30396
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-12-800.webp",
+        "width": 800,
+        "height": 537,
+        "bytes": 66376
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-12-1200.webp",
+        "width": 1200,
+        "height": 806,
+        "bytes": 119474
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-13.JPG": {
+    "width": 2696,
+    "height": 4096,
+    "originalBytes": 1648428,
+    "originalSha256": "b291f76b5452bbbfb1f088179badb6100192c2103d09e676f0e2831b0c5e649d",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-13-480.webp",
+        "width": 480,
+        "height": 729,
+        "bytes": 43596
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-13-800.webp",
+        "width": 800,
+        "height": 1215,
+        "bytes": 86472
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-13-1200.webp",
+        "width": 1200,
+        "height": 1823,
+        "bytes": 138708
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-14.JPG": {
+    "width": 4095,
+    "height": 2730,
+    "originalBytes": 2803399,
+    "originalSha256": "e9f056ede2fb41a8763330fe5b7782554ab9066227cd69322e0bb709b2fba441",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-14-480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 23802
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-14-800.webp",
+        "width": 800,
+        "height": 533,
+        "bytes": 48086
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-14-1200.webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 85338
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-15.JPG": {
+    "width": 4095,
+    "height": 2730,
+    "originalBytes": 3017696,
+    "originalSha256": "dde8fc094bd6da9a0cd2d2d08020bedf786e9d795d97e6741a24871a474584a7",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-15-480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 28090
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-15-800.webp",
+        "width": 800,
+        "height": 533,
+        "bytes": 57388
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-15-1200.webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 102728
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-16.JPG": {
+    "width": 3399,
+    "height": 1911,
+    "originalBytes": 746282,
+    "originalSha256": "4d002b669171f72e7af1d6c85aefe0d6821d847b6a67cbff615e9ed2c95c6d2a",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-16-480.webp",
+        "width": 480,
+        "height": 270,
+        "bytes": 11926
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-16-800.webp",
+        "width": 800,
+        "height": 450,
+        "bytes": 27012
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-16-1200.webp",
+        "width": 1200,
+        "height": 675,
+        "bytes": 45970
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-17.JPG": {
+    "width": 2450,
+    "height": 3674,
+    "originalBytes": 833348,
+    "originalSha256": "43e446db166a31edc3a79673d8a39c1c28db8d845c67c871cfbc376668fd9b3d",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-17-480.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 14232
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-17-800.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 28576
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-17-1200.webp",
+        "width": 1200,
+        "height": 1800,
+        "bytes": 51214
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-18.JPG": {
+    "width": 4032,
+    "height": 2752,
+    "originalBytes": 1642763,
+    "originalSha256": "94421867e89ffafc02aa0ac6ac27b85a2c8fc13836a9acf9cb76af3d5da8d0c3",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-18-480.webp",
+        "width": 480,
+        "height": 328,
+        "bytes": 12380
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-18-800.webp",
+        "width": 800,
+        "height": 546,
+        "bytes": 26260
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-18-1200.webp",
+        "width": 1200,
+        "height": 819,
+        "bytes": 49018
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-19.JPG": {
+    "width": 1142,
+    "height": 610,
+    "originalBytes": 357516,
+    "originalSha256": "6516b73a8c9a9bd771654434c11d55b45405e2873d2b9cd6cad97236e6dd5a6f",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-19-480.webp",
+        "width": 480,
+        "height": 256,
+        "bytes": 20840
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-19-800.webp",
+        "width": 800,
+        "height": 427,
+        "bytes": 50300
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-19-1142.webp",
+        "width": 1142,
+        "height": 610,
+        "bytes": 132206
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-20.JPG": {
+    "width": 4095,
+    "height": 2681,
+    "originalBytes": 2178213,
+    "originalSha256": "ff23823e5d24dd4d5a13233adc7b07c5cc0490bfdf68a027e2bc73c1c0effb19",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-20-480.webp",
+        "width": 480,
+        "height": 314,
+        "bytes": 14782
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-20-800.webp",
+        "width": 800,
+        "height": 524,
+        "bytes": 28562
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-20-1200.webp",
+        "width": 1200,
+        "height": 786,
+        "bytes": 52846
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-21.JPG": {
+    "width": 4071,
+    "height": 2729,
+    "originalBytes": 1935271,
+    "originalSha256": "624ff0b04e59b80b953755c036e3594a2600e7ac7160e69025a78b2971ed31a2",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-21-480.webp",
+        "width": 480,
+        "height": 322,
+        "bytes": 10328
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-21-800.webp",
+        "width": 800,
+        "height": 536,
+        "bytes": 19356
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-21-1200.webp",
+        "width": 1200,
+        "height": 804,
+        "bytes": 34552
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-22.JPG": {
+    "width": 4095,
+    "height": 2730,
+    "originalBytes": 677458,
+    "originalSha256": "29243d394b291692c384815ca5d2b85703179c9f56465d147436b5ca8d4bd7ee",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-22-480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 6014
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-22-800.webp",
+        "width": 800,
+        "height": 533,
+        "bytes": 11166
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-22-1200.webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 18906
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-23.JPG": {
+    "width": 4095,
+    "height": 2730,
+    "originalBytes": 611932,
+    "originalSha256": "2753797d559a31206afb189362f5a50d78a71a269620bbf888f0945106a279f7",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-23-480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 5916
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-23-800.webp",
+        "width": 800,
+        "height": 533,
+        "bytes": 11930
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-23-1200.webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 21408
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-24.JPG": {
+    "width": 2450,
+    "height": 1587,
+    "originalBytes": 689910,
+    "originalSha256": "8366e7cb1d655525b2b2612f9ac4932a66d00ea4740917631a8fb5bf89f71a2a",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-24-480.webp",
+        "width": 480,
+        "height": 311,
+        "bytes": 13890
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-24-800.webp",
+        "width": 800,
+        "height": 518,
+        "bytes": 27716
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-24-1200.webp",
+        "width": 1200,
+        "height": 777,
+        "bytes": 44012
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-25.JPG": {
+    "width": 4095,
+    "height": 2730,
+    "originalBytes": 1567025,
+    "originalSha256": "3a45c394bd3dbd24bc785ee84c4ed9aea1fd3b21fd3f780ae78cafe518875c89",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-25-480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 9896
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-25-800.webp",
+        "width": 800,
+        "height": 533,
+        "bytes": 18254
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-25-1200.webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 29644
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-26.JPG": {
+    "width": 3317,
+    "height": 2230,
+    "originalBytes": 974834,
+    "originalSha256": "51e26768cca558b310e5346a6aca8f9d1f589879e7ce7b89c4f744e1c1fd6f9e",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-26-480.webp",
+        "width": 480,
+        "height": 323,
+        "bytes": 6754
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-26-800.webp",
+        "width": 800,
+        "height": 538,
+        "bytes": 12534
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-26-1200.webp",
+        "width": 1200,
+        "height": 807,
+        "bytes": 21840
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-27.JPG": {
+    "width": 3931,
+    "height": 2591,
+    "originalBytes": 1837281,
+    "originalSha256": "a67b51e3476462e7cd84d8393545d833912732d216a723cd0fb23b0b16840cfa",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-27-480.webp",
+        "width": 480,
+        "height": 316,
+        "bytes": 15680
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-27-800.webp",
+        "width": 800,
+        "height": 527,
+        "bytes": 31648
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-27-1200.webp",
+        "width": 1200,
+        "height": 791,
+        "bytes": 51790
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-28.JPG": {
+    "width": 2932,
+    "height": 3664,
+    "originalBytes": 1330993,
+    "originalSha256": "f7acc3cc58d7838b7b531f1597631197a42ce93aeb7aa4a37ced1b19136e011b",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-28-480.webp",
+        "width": 480,
+        "height": 600,
+        "bytes": 8406
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-28-800.webp",
+        "width": 800,
+        "height": 1000,
+        "bytes": 18020
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-28-1200.webp",
+        "width": 1200,
+        "height": 1500,
+        "bytes": 31258
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-29.JPG": {
+    "width": 4032,
+    "height": 2647,
+    "originalBytes": 2734000,
+    "originalSha256": "36d006eaf09bdf4a5f711dc82ca5cf33829389867d9e1d7bd9fe1d8142c4d477",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-29-480.webp",
+        "width": 480,
+        "height": 315,
+        "bytes": 7100
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-29-800.webp",
+        "width": 800,
+        "height": 525,
+        "bytes": 14522
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-29-1200.webp",
+        "width": 1200,
+        "height": 788,
+        "bytes": 27188
+      }
+    ]
+  },
+  "media/photo/onstage/onstage-30.JPG": {
+    "width": 4095,
+    "height": 2730,
+    "originalBytes": 3646916,
+    "originalSha256": "9e3949e598f7be753a383e8856b5b0a2a8d568f0b78d580e40a60f1c8512c785",
+    "variants": [
+      {
+        "src": "optimized/media/photo/onstage/onstage-30-480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 11436
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-30-800.webp",
+        "width": 800,
+        "height": 533,
+        "bytes": 23322
+      },
+      {
+        "src": "optimized/media/photo/onstage/onstage-30-1200.webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 43356
+      }
+    ]
+  },
+  "media/photo/portrait/portrait-01.JPG": {
+    "width": 2730,
+    "height": 4095,
+    "originalBytes": 1021015,
+    "originalSha256": "4b6e65f70807d50de5f6ae090dc69a90cc1b015429db46bf46ae4fae9f5717ae",
+    "variants": [
+      {
+        "src": "optimized/media/photo/portrait/portrait-01-480.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 18236
+      },
+      {
+        "src": "optimized/media/photo/portrait/portrait-01-800.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 39210
+      },
+      {
+        "src": "optimized/media/photo/portrait/portrait-01-1200.webp",
+        "width": 1200,
+        "height": 1800,
+        "bytes": 69742
+      }
+    ]
+  },
+  "media/photo/portrait/portrait-02.JPG": {
+    "width": 2667,
+    "height": 4000,
+    "originalBytes": 2241675,
+    "originalSha256": "0c2f81bb44a28fb6999d7b3e9dd4aff2f4f21907e5f3da57195cfeb2ebc0329e",
+    "variants": [
+      {
+        "src": "optimized/media/photo/portrait/portrait-02-480.webp",
+        "width": 480,
+        "height": 721,
+        "bytes": 36300
+      },
+      {
+        "src": "optimized/media/photo/portrait/portrait-02-800.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 85996
+      },
+      {
+        "src": "optimized/media/photo/portrait/portrait-02-1200.webp",
+        "width": 1200,
+        "height": 1800,
+        "bytes": 179282
+      }
+    ]
+  },
+  "media/photo/portrait/portrait-03.JPG": {
+    "width": 2584,
+    "height": 3877,
+    "originalBytes": 953120,
+    "originalSha256": "932a63f2f9686038d909caac551551bb4feb13a54e66654547b0e8a6341d2899",
+    "variants": [
+      {
+        "src": "optimized/media/photo/portrait/portrait-03-480.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 11486
+      },
+      {
+        "src": "optimized/media/photo/portrait/portrait-03-800.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 24506
+      },
+      {
+        "src": "optimized/media/photo/portrait/portrait-03-1200.webp",
+        "width": 1200,
+        "height": 1800,
+        "bytes": 46126
+      }
+    ]
+  },
+  "media/photo/portrait/portrait-04.JPG": {
+    "width": 1525,
+    "height": 2287,
+    "originalBytes": 666768,
+    "originalSha256": "aa8657aa94a5ec14142f55f37463bce11edfb9430e9ac9d1617871b393899283",
+    "variants": [
+      {
+        "src": "optimized/media/photo/portrait/portrait-04-480.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 23146
+      },
+      {
+        "src": "optimized/media/photo/portrait/portrait-04-800.webp",
+        "width": 800,
+        "height": 1200,
+        "bytes": 65170
+      },
+      {
+        "src": "optimized/media/photo/portrait/portrait-04-1200.webp",
+        "width": 1200,
+        "height": 1800,
+        "bytes": 161164
+      }
+    ]
+  },
+  "media/photo/portrait/portrait-05.JPG": {
+    "width": 1280,
+    "height": 1921,
+    "originalBytes": 428191,
+    "originalSha256": "fb1f58a2e1c9cad26c93b9290480a77b5aa306f55aeb4a2e6453b40e810fbe8b",
+    "variants": [
+      {
+        "src": "optimized/media/photo/portrait/portrait-05-480.webp",
+        "width": 480,
+        "height": 720,
+        "bytes": 19100
+      },
+      {
+        "src": "optimized/media/photo/portrait/portrait-05-800.webp",
+        "width": 800,
+        "height": 1201,
+        "bytes": 40758
+      },
+      {
+        "src": "optimized/media/photo/portrait/portrait-05-1200.webp",
+        "width": 1200,
+        "height": 1801,
+        "bytes": 83982
+      }
+    ]
+  },
+  "press/eroun-peace-concert.jpg": {
+    "width": 1280,
+    "height": 1041,
+    "originalBytes": 467445,
+    "originalSha256": "1b444d8a8df122d28fd7310923ff4cac6c65f1d0f3c14d048379ae6b5bcca211",
+    "variants": [
+      {
+        "src": "optimized/press/eroun-peace-concert-480.webp",
+        "width": 480,
+        "height": 390,
+        "bytes": 57568
+      },
+      {
+        "src": "optimized/press/eroun-peace-concert-800.webp",
+        "width": 800,
+        "height": 651,
+        "bytes": 129972
+      },
+      {
+        "src": "optimized/press/eroun-peace-concert-1200.webp",
+        "width": 1200,
+        "height": 976,
+        "bytes": 241192
+      }
+    ]
+  },
+  "press/kyoposhinmun-peace-concert.jpg": {
+    "width": 768,
+    "height": 512,
+    "originalBytes": 156593,
+    "originalSha256": "33babaed9d309eaccb031253d26f5bae94dbd68900bd5e61795e4761dc89beee",
+    "variants": [
+      {
+        "src": "optimized/press/kyoposhinmun-peace-concert-480.webp",
+        "width": 480,
+        "height": 320,
+        "bytes": 60600
+      },
+      {
+        "src": "optimized/press/kyoposhinmun-peace-concert-768.webp",
+        "width": 768,
+        "height": 512,
+        "bytes": 147372
+      }
+    ]
+  }
+}

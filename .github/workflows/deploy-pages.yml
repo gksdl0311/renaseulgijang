@@ -36,6 +36,11 @@ jobs:
           ASTRO_TELEMETRY_DISABLED: '1'
           ASTRO_BASE_PATH: ${{ steps.pages.outputs.base_path }}
           ASTRO_SITE_URL: ${{ steps.pages.outputs.origin }}
+      - name: Verify multilingual pages and assets
+        run: npm run check:site
+        env:
+          ASTRO_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          ASTRO_SITE_URL: ${{ steps.pages.outputs.origin }}
       - name: Upload the website
         uses: actions/upload-pages-artifact@v3
         with:

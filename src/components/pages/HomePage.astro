@@ -1,115 +1,192 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getCopy, type Language } from "../../i18n";
-import { sitePath } from "../../site-paths";
-
+import ResponsiveImage from "../ResponsiveImage.astro";
+import { getCopy, localeConfig, type Language } from "../../i18n";
+import { localizedPath } from "../../i18n/routes";
+import { artist } from "../../data/artist";
+import schedule from "../../data/schedule.json";
+import catalogue from "../../data/videos.json";
+import descriptions from "../../data/video-descriptions.json";
+import { recordings, homeRecordingIds } from "../../data/recordings";
 interface Props { lang: Language }
 const { lang } = Astro.props;
-const copy = getCopy(lang).home;
+const content = getCopy(lang);
+const copy = content.home;
+const editorial = content.editorial.home;
+const introduction = content.biography.paragraphs[0];
+const firstSentenceEnd = introduction.indexOf(". ");
+const shortIntroduction = firstSentenceEnd >= 0 ? introduction.slice(0, firstSentenceEnd + 1) : introduction;
+const engagements = [...schedule.upcoming, ...schedule.past];
+const selectedPerformances = ["2026-03-08", "2025-11-05", "2025-06-06"].map(date => {
+  const event = engagements.find(event => event.date === date);
+  if (!event) throw new Error(`Missing selected performance: ${date}`);
+  return event;
+});
+const dates = new Intl.DateTimeFormat(localeConfig[lang].dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+const selectedRecordings = homeRecordingIds.map(id => {
+  const video = catalogue.videos.find(video => video.id === id);
+  if (!video) throw new Error(`Missing selected recording: ${id}`);
+  return { ...video, ...recordings[id], work: content.editorial.listen.workTitles[recordings[id].work as keyof typeof content.editorial.listen.workTitles] ?? recordings[id].work, description: descriptions[id][lang] };
+});
 ---
-
 <BaseLayout title={copy.metaTitle} lang={lang}>
-  <section class="hero" aria-label={copy.hero}>
-    <div class="hero-inner">
-      <div class="soprano reveal r1">{copy.voice}</div>
-
-      <figure class="portrait-wrap reveal r2">
-        <img
-          class="portrait"
-          src={sitePath("hero/portrait.jpg")}
-          alt={copy.portrait}
-          width="1638"
-          height="2048"
-          loading="eager"
-          fetchpriority="high"
-          decoding="async"
-        />
-      </figure>
-
-      <h1 class="name reveal r3">{copy.name}</h1>
+  <section class="hero shell" aria-labelledby="artist-name">
+    <div class="hero-copy">
+      <p class="eyebrow hero-voice">{copy.voice}</p>
+      <h1 id="artist-name" class="artist-name" lang="en"><span>Rena</span><span>Seulgi Jang</span></h1>
+      <p class="hero-intro">{shortIntroduction}</p>
+      <a class="text-link" href={localizedPath(lang, "biography")}>{editorial.biographyLink}<span class="arrow" aria-hidden="true">↗</span></a>
+    </div>
+    <figure class="hero-portrait">
+      <ResponsiveImage src="hero/portrait.jpg" alt={copy.portrait} sizes="(max-width: 700px) calc(100vw - 40px), (max-width: 1300px) 46vw, 560px" loading="eager" fetchpriority="high" />
+    </figure>
+  </section>
+  <section class="introduction shell" aria-labelledby="introduction-heading">
+    <div class="section-label"><span aria-hidden="true">01</span><span class="eyebrow">{editorial.introLabel}</span></div>
+    <div class="introduction-copy">
+      <h2 id="introduction-heading">{editorial.introTitle}</h2>
+      <p>{introduction}</p>
+      <a class="text-link" href={localizedPath(lang, "biography")}>{editorial.biographyLink}<span class="arrow" aria-hidden="true">↗</span></a>
     </div>
   </section>
-
-  <style>
-    .hero {
-      min-height: calc(100vh - 120px);
-      display: grid;
-      place-items: start center;
-      padding: 36px 12px 34px;
-      background: #ffffff;
-    }
-
-    .hero-inner {
-      width: min(480px, 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .soprano {
-      font-family: "Times New Roman", Times, serif;
-      letter-spacing: 0.22em;
-      font-size: 12px;
-      color: #6f6f6f;
-      margin-bottom: 18px;
-      text-transform: uppercase;
-    }
-
-    .portrait-wrap {
-      width: 100%;
-      margin: 0;
-      display: grid;
-      place-items: center;
-    }
-
-    .portrait {
-      width: 100%;
-      max-width: 420px;
-      height: auto;
-      display: block;
-      filter: grayscale(100%) contrast(1.02);
-    }
-
-    .name {
-      margin: 18px 0 0;
-      font-family: "Times New Roman", Times, serif;
-      font-weight: 400;
-      letter-spacing: 0.08em;
-      font-size: 20px;
-      line-height: 1.4;
-      color: #111111;
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(6px);
-      animation: fadeUp 0.7s ease forwards;
-    }
-
-    .r1 { animation-delay: 0.12s; }
-    .r2 { animation-delay: 0.3s; }
-    .r3 { animation-delay: 0.5s; }
-
-    @keyframes fadeUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 960px) {
-      .hero { min-height: auto; padding: 24px 0 26px; }
-      .portrait { max-width: 360px; }
-      .soprano { font-size: 14px; letter-spacing: 0.18em; }
-      .name { font-size: 20px; }
-    }
-
-    @media (max-width: 420px) {
-      .soprano { margin-bottom: 14px; }
-      .name { margin-top: 14px; }
-      .portrait { max-width: 300px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .reveal { animation: none; opacity: 1; transform: none; }
-    }
-  </style>
+  <section class="performances shell" aria-labelledby="performances-heading">
+    <div class="section-label"><span aria-hidden="true">02</span><span class="eyebrow">{editorial.performanceLabel}</span></div>
+    <div class="section-heading"><h2 id="performances-heading">{editorial.performanceTitle}</h2><a class="text-link" href={localizedPath(lang, "schedule")}>{editorial.performanceLink}<span class="arrow" aria-hidden="true">↗</span></a></div>
+    <div class="performance-list">
+      {selectedPerformances.map(event => <article class="performance">
+        <time datetime={event.date}>{dates.format(new Date(`${event.date}T12:00:00Z`))}</time>
+        <h3>{content.schedule.eventTitles[event.title] ?? event.title}</h3>
+        <p>{event.venue}<span>{content.schedule.cities[event.city] ?? event.city}</span></p>
+      </article>)}
+    </div>
+  </section>
+  <section class="recordings" aria-labelledby="recordings-heading">
+    <div class="recordings-inner shell">
+      <div class="recordings-heading">
+        <div class="section-label"><span aria-hidden="true">03</span><span class="eyebrow">{editorial.recordingLabel}</span></div>
+        <h2 id="recordings-heading">{editorial.recordingTitle}</h2>
+        <a class="text-link" href={localizedPath(lang, "media/video")}>{editorial.recordingLink}<span class="arrow" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="recording-list">
+        {selectedRecordings.map((recording, index) => <a class="recording" href={`${localizedPath(lang, "media/video")}#recording-${recording.id}`}>
+          <span class="recording-number" aria-hidden="true">0{index + 1}</span>
+          <div><p class="composer">{recording.composer}</p><h3>{recording.piece}</h3><p class="recording-work">{recording.work}</p><p class="recording-description">{recording.description}</p></div>
+          <span class="recording-arrow" aria-hidden="true">↗</span>
+        </a>)}
+      </div>
+    </div>
+  </section>
+  <section class="photography shell" aria-labelledby="photography-heading">
+    <div class="section-label"><span aria-hidden="true">04</span><span class="eyebrow">{editorial.galleryLabel}</span></div>
+    <div class="section-heading"><h2 id="photography-heading">{editorial.galleryTitle}</h2><a class="text-link" href={localizedPath(lang, "media/photo")}>{editorial.galleryLink}<span class="arrow" aria-hidden="true">↗</span></a></div>
+    <div class="photography-grid">
+      <a class="stage-photograph" href={localizedPath(lang, "media/photo/onstage")}>
+        <ResponsiveImage src="media/photo/onstage/onstage-01.JPG" alt={content.repertoire.photoAlt} sizes="(max-width: 700px) calc(100vw - 40px), 65vw" />
+        <span>{content.photo.onstage}<span aria-hidden="true">↗</span></span>
+      </a>
+      <a class="portrait-photograph" href={localizedPath(lang, "media/photo/portrait")}>
+        <ResponsiveImage src="media/photo/portrait/portrait-01.JPG" alt={copy.portrait} sizes="(max-width: 700px) 65vw, 30vw" />
+        <span>{content.photo.portrait}<span aria-hidden="true">↗</span></span>
+      </a>
+    </div>
+  </section>
+  <section class="home-contact shell" aria-labelledby="contact-heading">
+    <div class="section-label"><span aria-hidden="true">05</span><span class="eyebrow">{editorial.contactLabel}</span></div>
+    <div><h2 id="contact-heading">{editorial.contactTitle}</h2><p>{content.contact.intro}</p></div>
+    <a class="text-link" href={`mailto:${artist.email}`}>{editorial.contactLink}<span class="arrow" aria-hidden="true">↗</span></a>
+  </section>
 </BaseLayout>
+<style>
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(24px, 4vw, 64px); padding-block: 44px 80px; }
+  .hero-copy { position: relative; z-index: 1; padding-block: 35px; }
+  .hero-voice { margin: 0 0 26px; }
+  .artist-name { margin: 0 0 30px; font-size: clamp(88px, 9vw, 138px); line-height: .87; letter-spacing: -.055em; font-weight: 400; }
+  .artist-name span { display: block; }
+  .artist-name span + span { font-size: .67em; letter-spacing: -.045em; margin-top: 12px; white-space: nowrap; }
+  .hero-intro { max-width: 350px; margin: 0 0 22px; color: var(--color-muted); font-size: 16px; line-height: 1.8; }
+  .hero-portrait { align-self: stretch; max-height: 670px; aspect-ratio: 4 / 5; background: var(--color-surface); }
+  .hero-portrait :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .hero-copy, .hero-portrait { animation: arrive .8s ease both; }
+  .hero-portrait { animation-delay: .08s; }
+  .section-label { display: flex; gap: 18px; align-items: center; margin-bottom: 28px; }
+  .section-label > span:first-child { color: var(--color-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .introduction { display: grid; grid-template-columns: 1fr 2fr; gap: 60px; padding-block: 80px 110px; border-top: 1px solid var(--color-rule); }
+  .introduction h2 { margin: 0 0 26px; font-size: clamp(42px, 5vw, 64px); }
+  .introduction p { margin: 0 0 24px; font-family: var(--font-display); font-size: clamp(25px, 2.7vw, 34px); line-height: 1.45; }
+  .performances { padding-block: 0 110px; }
+  .section-heading { display: flex; gap: 30px; align-items: baseline; justify-content: space-between; margin-bottom: 42px; }
+  .section-heading h2 { margin: 0; font-size: clamp(46px, 5.5vw, 72px); }
+  .section-heading .text-link { flex-shrink: 0; }
+  .performance { display: grid; grid-template-columns: 150px minmax(0, 1fr) 235px; gap: 28px; align-items: start; padding-block: 29px; border-top: 1px solid var(--color-rule); }
+  .performance time { padding-top: 7px; color: var(--color-accent); font-size: 13px; }
+  .performance h3 { margin: 0; font-size: 30px; line-height: 1.2; }
+  .performance p { margin: 7px 0 0; font-size: 14px; line-height: 1.55; }
+  .performance p span { display: block; color: var(--color-muted); margin-top: 3px; }
+  .recordings { background: var(--color-text); color: var(--color-bg); padding-block: 86px 100px; }
+  .recordings-inner { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 75px; }
+  .recordings .eyebrow, .recordings .section-label > span:first-child { color: #d3b8bd; }
+  .recordings h2 { margin: 0 0 35px; font-size: clamp(52px, 6vw, 78px); }
+  .recordings :focus-visible { outline-color: var(--color-bg); }
+  .recordings .text-link:hover { color: #d3b8bd; }
+  .recording { display: grid; grid-template-columns: 26px minmax(0, 1fr) 20px; gap: 20px; padding-block: 26px; border-top: 1px solid #625b54; }
+  .recording:first-child { padding-top: 0; border-top: 0; }
+  .recording-number { font-size: 11px; color: #c8bfb3; padding-top: 3px; }
+  .composer { margin: 0 0 10px; color: #d3b8bd; font-size: 12px; letter-spacing: .04em; }
+  .recording h3 { margin: 0; font-size: clamp(30px, 3vw, 38px); line-height: 1.16; }
+  .recording-work { margin: 10px 0; font-size: 13px; color: #d1c8bc; }
+  .recording-description { margin: 0; color: #c8bfb3; font-size: 14px; line-height: 1.75; }
+  .recording-arrow { font-size: 22px; transition: transform .2s ease; }
+  .recording:hover .recording-arrow { transform: translate(3px, -3px); }
+  .photography { padding-block: 110px; }
+  .photography-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); align-items: end; gap: 7%; }
+  .photography-grid a { display: block; min-width: 0; }
+  .photography-grid :global(img) { width: 100%; height: auto; }
+  .photography-grid a > span { display: flex; justify-content: space-between; align-items: center; min-height: 52px; font-size: 13px; border-bottom: 1px solid var(--color-rule); }
+  .portrait-photograph { margin-top: 90px; }
+  .home-contact { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.65fr) auto; gap: 45px; align-items: start; padding-block: 72px 100px; border-top: 1px solid var(--color-rule); }
+  .home-contact h2 { margin: 0 0 20px; font-size: clamp(42px, 5vw, 65px); }
+  .home-contact p { margin: 0; max-width: 440px; color: var(--color-muted); }
+  .home-contact .text-link { margin-top: 8px; }
+  @keyframes arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @media (max-width: 1000px) {
+    .hero { padding-bottom: 64px; }
+    .artist-name { font-size: clamp(75px, 11vw, 100px); }
+    .introduction { gap: 36px; }
+    .performance { grid-template-columns: 110px minmax(0, 1fr) 185px; gap: 20px; }
+    .recordings-inner { gap: 40px; }
+    .home-contact { grid-template-columns: minmax(0, .65fr) minmax(0, 1.35fr); gap: 30px; }
+    .home-contact .text-link { grid-column: 2; justify-self: start; }
+  }
+  @media (max-width: 700px) {
+    .hero { grid-template-columns: 1fr; gap: 32px; padding-block: 36px 60px; }
+    .hero-copy { padding: 0; }
+    .hero-voice { margin-bottom: 24px; }
+    .artist-name { font-size: clamp(94px, 19vw, 135px); margin-bottom: 25px; }
+    .artist-name span + span { font-size: .69em; }
+    .hero-intro { max-width: 400px; margin-bottom: 10px; }
+    .hero-portrait { width: 100%; max-height: none; }
+    .introduction { grid-template-columns: 1fr; gap: 0; padding-block: 42px 68px; }
+    .introduction h2 { font-size: 43px; margin-bottom: 22px; }
+    .introduction p { font-size: 25px; }
+    .section-label { margin-bottom: 22px; gap: 14px; }
+    .section-heading { display: block; margin-bottom: 28px; }
+    .section-heading h2 { font-size: 48px; margin-bottom: 20px; }
+    .performances { padding-bottom: 65px; }
+    .performance { grid-template-columns: 1fr; gap: 12px; padding-block: 25px; }
+    .performance time { padding: 0; }
+    .performance h3 { font-size: 29px; }
+    .performance p { margin: 0; }
+    .performance p span { display: inline; margin-left: 12px; }
+    .recordings { padding-block: 55px 60px; }
+    .recordings-inner { grid-template-columns: 1fr; gap: 40px; }
+    .recordings h2 { font-size: 54px; margin-bottom: 24px; }
+    .recording { gap: 14px; grid-template-columns: 20px minmax(0, 1fr) 18px; }
+    .photography { padding-block: 65px; }
+    .photography-grid { grid-template-columns: 1fr; gap: 30px; }
+    .portrait-photograph { width: 72%; margin: 0 0 0 auto; }
+    .home-contact { grid-template-columns: 1fr; gap: 0; padding-block: 42px 65px; }
+    .home-contact h2 { font-size: 47px; }
+    .home-contact .text-link { grid-column: auto; justify-self: start; margin-top: 25px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero-copy, .hero-portrait { animation: none; } }
+</style>

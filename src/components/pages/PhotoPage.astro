@@ -1,110 +1,41 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ResponsiveImage from "../ResponsiveImage.astro";
 import { getCopy, type Language } from "../../i18n";
-import { sitePath } from "../../site-paths";
-
+import { localizedPath } from "../../i18n/routes";
 interface Props { lang: Language }
 const { lang } = Astro.props;
-const copy = getCopy(lang).photo;
+const content = getCopy(lang);
+const copy = content.photo;
+const editorial = content.editorial.gallery;
 ---
-
-<BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`} description={copy.description}>
-  <section class="photo-page" aria-label={copy.title}>
-    <div class="photo-grid">
-      <a class="portrait-card reveal-card reveal-left" href={sitePath(`${lang}/media/photo/portrait/`)} aria-labelledby="portrait-heading">
-        <div class="photo-image-wrap portrait-image-wrap">
-          <img src={sitePath("media/photo/portrait-cover.jpg")} alt={copy.portraitAlt} class="photo-image" width="1066" height="1600" decoding="async" />
-          <div class="photo-overlay"></div>
-        </div>
-      </a>
-
-      <div class="portrait-copy reveal-text reveal-text-left">
-        <h2 id="portrait-heading">{copy.portrait}</h2>
-        <p>{copy.portraitText}</p>
-      </div>
-
-      <a class="onstage-card reveal-card reveal-right" href={sitePath(`${lang}/media/photo/onstage/`)} aria-labelledby="onstage-heading">
-        <div class="photo-image-wrap onstage-image-wrap">
-          <img src={sitePath("media/photo/onstage-cover.jpg")} alt={copy.onstageAlt} class="photo-image" width="716" height="888" decoding="async" />
-          <div class="photo-overlay"></div>
-        </div>
-      </a>
-
-      <div class="onstage-copy reveal-text reveal-text-right">
-        <h2 id="onstage-heading">{copy.onstage}</h2>
-        <p>{copy.onstageText}</p>
-      </div>
+<BaseLayout lang={lang}>
+  <section class="gallery-page shell" aria-labelledby="gallery-title">
+    <header class="gallery-heading"><p class="eyebrow">{content.home.name}</p><h1 id="gallery-title">{editorial.title}<span aria-hidden="true">.</span></h1><p class="gallery-intro">{editorial.intro}</p></header>
+    <div class="gallery-editorial">
+      <article class="portrait-collection"><a class="collection-cover" href={localizedPath(lang, "media/photo/portrait")} aria-label={copy.portrait}><ResponsiveImage src="media/photo/portrait-cover.jpg" alt={copy.portraitAlt} sizes="(max-width: 700px) calc(100vw - 40px), 48vw" loading="eager" /></a><div class="collection-copy"><span class="collection-number" aria-hidden="true">01</span><div><h2>{copy.portrait}</h2><p>{copy.portraitText}</p><a class="text-link" href={localizedPath(lang, "media/photo/portrait")}>{editorial.viewCollection}<span class="arrow" aria-hidden="true">↗</span></a></div></div></article>
+      <article class="stage-collection"><a class="collection-cover" href={localizedPath(lang, "media/photo/onstage")} aria-label={copy.onstage}><ResponsiveImage src="media/photo/onstage/onstage-01.JPG" alt={copy.onstageAlt} sizes="(max-width: 700px) calc(100vw - 40px), 40vw" /></a><div class="collection-copy"><span class="collection-number" aria-hidden="true">02</span><div><h2>{copy.onstage}</h2><p>{copy.onstageText}</p><a class="text-link" href={localizedPath(lang, "media/photo/onstage")}>{editorial.viewCollection}<span class="arrow" aria-hidden="true">↗</span></a></div></div><figure class="stage-detail"><ResponsiveImage src="media/photo/onstage-cover.jpg" alt={content.repertoire.photoAlt} sizes="(max-width: 700px) 45vw, 22vw" /></figure></article>
     </div>
   </section>
-
-  <style>
-    .photo-page { max-width: 1100px; margin: 0 auto; padding: 40px 0 80px; }
-    .photo-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      grid-template-areas: "portrait-image onstage-copy" "portrait-copy onstage-image";
-      row-gap: 8px;
-      column-gap: 48px;
-      align-items: start;
-    }
-    .portrait-card { grid-area: portrait-image; }
-    .onstage-copy { grid-area: onstage-copy; margin: 0; }
-    .portrait-copy { grid-area: portrait-copy; padding-top: 14px; border-top: 1px solid #d9d9d9; }
-    .onstage-card { grid-area: onstage-image; padding-top: 14px; border-top: 1px solid #d9d9d9; transform: translateY(-450px); }
-    .portrait-card, .onstage-card { display: block; text-decoration: none; color: inherit; }
-    .portrait-card:focus-visible, .onstage-card:focus-visible { outline: 2px solid #111; outline-offset: 5px; }
-    .photo-image-wrap { position: relative; overflow: hidden; background: #f3f3f3; height: 520px; }
-    .photo-image { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease, filter 0.3s ease; }
-    .photo-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.14) 0%, rgba(0, 0, 0, 0.04) 32%, rgba(0, 0, 0, 0.02) 100%);
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .portrait-copy h2, .onstage-copy h2 {
-      margin: 0 0 6px;
-      font-family: "Times New Roman", Times, serif;
-      font-size: 28px;
-      font-weight: 400;
-      line-height: 1.2;
-      color: #111;
-    }
-    .portrait-copy p, .onstage-copy p { margin: 0; font-family: "Times New Roman", Times, serif; font-size: 15px; line-height: 1.5; color: #6a6a6a; }
-    .reveal-card { opacity: 0; animation-duration: 1s; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); animation-fill-mode: forwards; }
-    .reveal-left { animation-name: portraitReveal; animation-delay: 0.08s; }
-    .reveal-right { animation-name: onstageReveal; animation-delay: 0.22s; }
-    .reveal-text { opacity: 0; transform: translateY(22px); animation: textReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-    .reveal-text-left { animation-delay: 0.18s; }
-    .reveal-text-right { animation-delay: 0.32s; }
-    @keyframes portraitReveal { from { opacity: 0; transform: translateY(36px) scale(0.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    @keyframes onstageReveal { from { opacity: 0; transform: translateY(-410px) scale(0.985); } to { opacity: 1; transform: translateY(-450px) scale(1); } }
-    @keyframes textReveal { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
-
-    @media (hover: hover) and (pointer: fine) {
-      .portrait-card:hover .photo-image, .onstage-card:hover .photo-image { transform: scale(1.03); filter: brightness(0.98); }
-      .portrait-card:hover .photo-overlay, .onstage-card:hover .photo-overlay { opacity: 0.75; }
-    }
-    @media (max-width: 900px) {
-      .photo-grid {
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-areas: "portrait-image" "portrait-copy" "onstage-image" "onstage-copy";
-        row-gap: 16px;
-        column-gap: 0;
-      }
-      .photo-image-wrap { height: auto; }
-      .photo-image { height: auto; object-fit: contain; }
-      .onstage-card { padding-top: 0; border-top: none; margin-top: 20px; transform: none; animation-name: portraitReveal; }
-      .portrait-copy, .onstage-copy { padding-top: 12px; border-top: 1px solid #d9d9d9; }
-      .portrait-copy h2, .onstage-copy h2 { font-size: 26px; }
-      .portrait-copy p, .onstage-copy p { font-size: 16px; line-height: 1.6; }
-    }
-    @media (max-width: 640px) { .photo-page { padding: 28px 0 56px; } }
-    @media (prefers-reduced-motion: reduce) {
-      .reveal-card, .reveal-text { opacity: 1; transform: none; animation: none; }
-      .photo-image, .photo-overlay { transition: none; }
-      .onstage-card { transform: translateY(-450px); }
-    }
-    @media (max-width: 900px) and (prefers-reduced-motion: reduce) { .onstage-card { transform: none; } }
-  </style>
 </BaseLayout>
+<style>
+  .gallery-page { padding-block: clamp(45px, 6vw, 85px) clamp(65px, 8vw, 110px); }
+  .gallery-heading { margin-bottom: 60px; }
+  .gallery-heading .eyebrow { margin: 0 0 22px; }
+  h1 { margin: 0 0 25px; font-size: clamp(64px, 8vw, 112px); font-weight: 400; letter-spacing: -.045em; }
+  h1 span { color: var(--color-accent); }
+  .gallery-intro { color: var(--color-muted); margin: 0; font-size: 18px; }
+  .gallery-editorial { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 8%; align-items: start; }
+  .stage-collection { padding-top: 105px; }
+  .collection-cover { display: block; }
+  .collection-cover :global(img) { width: 100%; height: auto; }
+  .collection-copy { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 18px; padding-top: 22px; border-top: 1px solid var(--color-rule); margin-top: 22px; }
+  .collection-number { font-size: 12px; color: var(--color-accent); padding-top: 8px; }
+  h2 { font-size: 46px; margin: 0 0 10px; }
+  .collection-copy p { margin: 0 0 18px; color: var(--color-muted); font-size: 15px; }
+  .stage-detail { width: 60%; margin: 50px 0 0 auto; }
+  .stage-detail :global(img) { width: 100%; height: auto; }
+  @media (max-width: 700px) { .gallery-heading { margin-bottom: 35px; } h1 { font-size: 68px; } .gallery-editorial { grid-template-columns: 1fr; gap: 50px; } .stage-collection { padding-top: 0; } h2 { font-size: 42px; } .stage-detail { width: 50%; margin-top: 30px; } }
+  :global(html[lang="ko"]) h1 { font-size: clamp(50px, 6vw, 90px); line-height: 1.3; }
+  :global(html[lang="ko"]) h2 { font-size: 35px; }
+</style>

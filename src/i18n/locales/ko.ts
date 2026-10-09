@@ -1,6 +1,9 @@
 import type { LocaleCopy } from "../types";
 
+import editorial from "../editorial/ko.json";
+
 export default {
+  editorial,
   "navigation": {
     "home": "홈",
     "biography": "소개",

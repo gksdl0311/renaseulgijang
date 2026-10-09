@@ -1,0 +1,49 @@
+---
+import manifest from "../data/image-manifest.json";
+import { sitePath } from "../site-paths";
+
+interface Props {
+  src: string;
+  alt: string;
+  sizes?: string;
+  loading?: "eager" | "lazy";
+  fetchpriority?: "high" | "low" | "auto";
+  class?: string;
+  style?: string;
+  decoding?: "async" | "sync" | "auto";
+  [key: string]: unknown;
+}
+
+const {
+  src,
+  alt,
+  sizes = "100vw",
+  loading = "lazy",
+  fetchpriority = "auto",
+  class: className,
+  style,
+  decoding = "async",
+  ...attributes
+} = Astro.props;
+const key = src.replace(/^\/+/, "");
+const image = manifest[key as keyof typeof manifest];
+if (!image) throw new Error(`Image not in responsive manifest: ${key}`);
+const srcset = image.variants.map(variant => `${sitePath(variant.src)} ${variant.width}w`).join(", ");
+---
+
+<picture style="display: contents">
+  <source type="image/webp" srcset={srcset} sizes={sizes} />
+  <img
+    {...attributes}
+    src={sitePath(key)}
+    alt={alt}
+    width={image.width}
+    height={image.height}
+    sizes={sizes}
+    loading={loading}
+    fetchpriority={fetchpriority}
+    decoding={decoding}
+    class={className}
+    style={style}
+  />
+</picture>

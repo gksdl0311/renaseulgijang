@@ -23,7 +23,8 @@ checkouts; use the existing checkout rather than creating a Git worktree.
 In the GitHub repository, open **Settings → Pages** and choose **GitHub Actions**
 as the source. The workflow in `.github/workflows/deploy-pages.yml` installs the
 locked dependencies, builds the site for the address supplied by GitHub Pages,
-and publishes the resulting static files when `main` changes.
+verifies localized pages and assets, and publishes the resulting static files
+when `main` changes.
 
 After enabling Pages, use **Actions → Publish website to GitHub Pages → Run
 workflow** if the initial run happened before Pages was enabled. The successful
@@ -75,7 +76,8 @@ this project address by default; set the same `ASTRO_SITE_URL` and
 
 To add a future language:
 
-1. Create a complete `src/i18n/locales/<code>.ts` implementing `LocaleCopy`;
+1. Create a complete `src/i18n/locales/<code>.ts` implementing `LocaleCopy`,
+   including a `src/i18n/editorial/<code>.json` dictionary for the new design;
    translate UI and descriptive text while preserving facts and original titles.
 2. Import and register it in `src/i18n.ts`, including its display label, native
    name, date locale, and Open Graph locale. Do not add language arrays elsewhere.
@@ -97,7 +99,8 @@ URLs and shared templates do not need a routing migration.
 ## Content
 
 - `src/data/schedule.json`: performance dates, venues, and optional local times.
-  Dates are classified as upcoming or past when the static site is built.
+  Dates are classified using the Berlin calendar at build time and refreshed in
+  the browser on load, visibility changes, and day rollover.
 - `src/data/repertoire.json`: authoritative roles, works, and composers.
 - `src/data/videos.json`: video IDs/titles and catalogue provenance.
 - `src/data/video-descriptions.json`: short editorial explanations in all five languages,
@@ -118,8 +121,8 @@ The importer follows the public `/videos` tab's pagination and replaces the
 catalogue only after a complete, supported response. Shorts and live-stream tabs
 are outside that scope. The current catalogue contains all ten public uploads
 verified on 8 October 2026, including the four separately supplied video links.
-Add a localized explanation for any new video ID before publishing updated
-content, then rebuild the site.
+Add a localized explanation and sourced musical metadata in `src/data/recordings.ts`
+for any new video ID before publishing updated content, then rebuild the site.
 
 If cloud network access is unavailable, run **Actions → Collect public YouTube
 catalogue → Run workflow**. The manual workflow saves `videos.json` in the
@@ -135,3 +138,27 @@ UTF-8 SHA-256 digest shown in their summaries before reviewing the catalogue.
 The manual **Collect public press sources** workflow retrieves editorial evidence
 from the two original publishers for review. It does not change site content.
 Press cards link directly to those original articles in every language.
+
+## Editorial design and responsive images
+
+Read [REDESIGN_REVIEW.md](REDESIGN_REVIEW.md) for design decisions, verification,
+translation-review status and remaining artist-content questions.
+
+Shared styles live in `src/styles/global.css`. Header/footer destinations share
+`src/i18n/navigation.ts`, and approved contact details live in `src/data/artist.ts`.
+Verified image credit evidence lives in `src/data/photo-credits.json`. New
+interface copy is isolated in `src/i18n/editorial/*.json`; existing translations
+are preserved. Both galleries share `GalleryCollection.astro` and use the factual
+collection lists in `src/data/photos.ts`.
+
+```sh
+npm run optimize:images
+```
+
+This generates responsive WebP files and `src/data/image-manifest.json` using
+the pinned development tool Sharp. Original photographs are preserved. Regenerate
+the manifest and derivatives whenever approved source photographs change; the
+production verifier rejects mismatched originals or variants. `ResponsiveImage.astro`
+provides intrinsic dimensions, responsive source sets and the original fallback.
+Fonts are self-hosted, with bundled licence notices, and resolve beneath the
+deployment base.

@@ -1,107 +1,44 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCopy, type Language } from "../../i18n";
-
-interface Props {
-  lang?: Language;
-}
-
-const { lang = "en" } = Astro.props;
-const text = getCopy(lang).contact;
+import { artist } from "../../data/artist";
+interface Props { lang: Language }
+const { lang } = Astro.props;
+const content = getCopy(lang);
+const text = content.contact;
+const copy = content.editorial.contact;
 ---
-
-<BaseLayout lang={lang} current="contact" title={`${text.title} | Rena Seulgi Jang`}>
-  <section class="contact" aria-label={text.title}>
-    <p class="contact-intro">{text.intro}</p>
-
-    <div class="contact-block">
-      <p class="contact-label">{text.email}</p>
-      <a href="mailto:renajang.official@gmail.com" class="contact-email">
-        renajang.official@gmail.com
-      </a>
+<BaseLayout lang={lang} title={`${text.title} | ${artist.name}`}>
+  <section class="contact-page shell" aria-labelledby="contact-title">
+    <header class="contact-heading"><p class="eyebrow">{text.title}</p><h1 id="contact-title">{copy.headline}</h1></header>
+    <div class="contact-grid">
+      <div class="contact-invitation"><p>{text.intro}</p><span class="artist-signature" lang="en">{artist.name}</span><span class="voice">{content.home.voice}</span></div>
+      <div class="contact-details">
+        <section class="enquiries" aria-labelledby="enquiry-label"><h2 class="eyebrow" id="enquiry-label">{copy.enquiryEyebrow}</h2><a class="contact-email" href={`mailto:${artist.email}`} aria-label={`${text.email}: ${artist.email}`}>{artist.email}<span aria-hidden="true">↗</span></a><a class="text-link" href={`mailto:${artist.email}`}>{copy.emailAction}<span class="arrow" aria-hidden="true">↗</span></a></section>
+        <section class="social" aria-labelledby="social-label"><h2 class="eyebrow" id="social-label">{copy.socialEyebrow}</h2><a href={artist.instagram} target="_blank" rel="noopener noreferrer" aria-label={content.navigation.instagram}><span>Instagram<small>{copy.instagramDescription}</small></span><span aria-hidden="true">↗</span></a><a href={artist.youtube} target="_blank" rel="noopener noreferrer" aria-label={content.navigation.youtube}><span>YouTube<small>{copy.youtubeDescription}</small></span><span aria-hidden="true">↗</span></a><p class="external-note">{copy.externalNote}</p></section>
+      </div>
     </div>
-
-    <p class="contact-note">{text.note}</p>
   </section>
-
-  <style>
-    .contact {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 40px 0 60px;
-      text-align: center;
-      font-family: "Times New Roman", Times, serif;
-    }
-
-    .contact-intro {
-      font-size: 18px;
-      line-height: 1.7;
-      color: #2f2f2f;
-      margin-bottom: 36px;
-      overflow-wrap: anywhere;
-    }
-
-    .contact-block {
-      margin-bottom: 30px;
-    }
-
-    .contact-label {
-      font-size: 13px;
-      letter-spacing: 0.12em;
-      color: #8a8a8a;
-      margin-bottom: 8px;
-    }
-
-    .contact-email {
-      display: inline-block;
-      max-width: 100%;
-      font-size: 20px;
-      color: #111;
-      text-decoration: none;
-      transition: opacity 0.2s ease;
-      overflow-wrap: anywhere;
-    }
-
-    .contact-email:hover {
-      opacity: 0.6;
-    }
-
-    .contact-email:focus-visible {
-      outline: 2px solid #6a6a6a;
-      outline-offset: 4px;
-    }
-
-    .contact-note {
-      font-size: 14px;
-      color: #8a8a8a;
-      margin-top: 20px;
-      line-height: 1.7;
-      overflow-wrap: anywhere;
-    }
-
-    :global(html[lang="ko"]) .contact-intro,
-    :global(html[lang="ko"]) .contact-note {
-      word-break: keep-all;
-    }
-
-    @media (max-width: 700px) {
-      .contact {
-        padding: 24px 0 40px;
-      }
-
-      .contact-label,
-      .contact-note {
-        font-size: 16px;
-        color: #6a6a6a;
-      }
-
-      .contact-email {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 44px;
-        font-size: clamp(18px, 5.3vw, 20px);
-      }
-    }
-  </style>
 </BaseLayout>
+<style>
+  .contact-page { padding-block: clamp(55px, 8vw, 110px) clamp(75px, 10vw, 140px); }
+  .contact-heading { max-width: 950px; margin-bottom: 65px; }
+  .contact-heading .eyebrow { margin: 0 0 25px; }
+  h1 { margin: 0; font-size: clamp(64px, 8vw, 112px); font-weight: 400; letter-spacing: -.045em; line-height: .98; }
+  .contact-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(40px, 8vw, 110px); border-top: 1px solid var(--color-rule); padding-top: 50px; }
+  .contact-invitation p { margin: 0 0 55px; font-family: var(--font-display); font-size: 32px; line-height: 1.4; }
+  .artist-signature { display: block; font-family: var(--font-display); font-size: 25px; }
+  .voice { color: var(--color-muted); font-size: 12px; }
+  h2.eyebrow { margin: 0 0 25px; }
+  .contact-email { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 44px; margin-bottom: 18px; font-family: var(--font-display); font-size: clamp(24px, 2.65vw, 38px); line-height: 1.5; overflow-wrap: anywhere; }
+  .contact-email > span { font-family: var(--font-body); font-size: 25px; flex-shrink: 0; }
+  .contact-email:hover { color: var(--color-accent); }
+  .social { margin-top: 65px; }
+  .social > a { display: flex; justify-content: space-between; gap: 22px; padding-block: 22px; border-top: 1px solid var(--color-rule); min-height: 44px; font-size: 18px; }
+  .social a:hover { color: var(--color-accent); }
+  .social small { display: block; margin-top: 7px; color: var(--color-muted); font-size: 14px; line-height: 1.7; }
+  .external-note { color: var(--color-muted); font-size: 12px; }
+  @media (max-width: 700px) { .contact-heading { margin-bottom: 40px; } h1 { font-size: 66px; } .contact-grid { grid-template-columns: 1fr; gap: 40px; padding-top: 32px; } .contact-invitation p { font-size: 27px; margin-bottom: 25px; } .contact-email { font-size: clamp(20px, 6.4vw, 24px); gap: 12px; } .contact-email > span { font-size: 20px; } .social { margin-top: 40px; } }
+  :global(html[lang="ko"]) h1 { font-size: clamp(48px, 6vw, 82px); line-height: 1.3; }
+  :global(html[lang="ko"]) .contact-invitation p { font-family: var(--font-body); font-size: 21px; line-height: 1.8; }
+</style>

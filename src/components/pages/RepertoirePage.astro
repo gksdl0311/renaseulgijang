@@ -2,7 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import repertoire from "../../data/repertoire.json";
 import { getCopy, type Language } from "../../i18n";
-import { sitePath } from "../../site-paths";
+import ResponsiveImage from "../ResponsiveImage.astro";
 
 interface Props {
   lang?: Language;
@@ -10,6 +10,7 @@ interface Props {
 
 const { lang = "en" } = Astro.props;
 const copy = getCopy(lang).repertoire;
+const editorial = getCopy(lang).editorial.repertoire;
 const heading = (label: string) => copy.headings[label as keyof typeof copy.headings] ?? label;
 const workTitle = (work: string) => copy.workTitles[work as keyof typeof copy.workTitles] ?? work;
 const repertoireText = (text: string | undefined) =>
@@ -17,31 +18,30 @@ const repertoireText = (text: string | undefined) =>
 ---
 
 <BaseLayout lang={lang} title={`${copy.title} | Rena Seulgi Jang`} description={copy.description}>
-  <section class="repertoire-page">
+  <section class="repertoire-page shell">
     <header class="repertoire-lead">
       <div class="lead-copy">
-        <p class="artist-name">{copy.name}</p>
-        <h1>{copy.title}</h1>
+        <p class="eyebrow">{editorial.eyebrow}</p>
+        <h1>{copy.title}<span class="title-period" aria-hidden="true">.</span></h1>
         <p class="repertoire-intro">{copy.intro}</p>
         <nav class="repertoire-jumps" aria-label={copy.browse}>
           {repertoire.columns.map((column, index) => (
             <a href={`#repertoire-${index + 1}`}>
               <span>{heading(column.title)}</span>
-              <span class="jump-arrow" aria-hidden="true">↓</span>
+              <span aria-hidden="true">↗</span>
             </a>
           ))}
         </nav>
       </div>
       <figure class="lead-photo">
-        <img
-          src={sitePath("media/photo/onstage-cover.jpg")}
+        <ResponsiveImage
+          src="media/photo/onstage-cover.jpg"
           alt={copy.photoAlt}
-          width="716"
-          height="888"
+          sizes="(max-width: 600px) 72vw, (max-width: 900px) 32vw, 360px"
           loading="eager"
-          decoding="async"
+          class="repertoire-image"
         />
-        <figcaption>{copy.photoCaption}</figcaption>
+        <figcaption><span>{copy.name}</span><span>{copy.photoCaption}</span></figcaption>
       </figure>
     </header>
 
@@ -56,15 +56,20 @@ const repertoireText = (text: string | undefined) =>
           {column.sections.map((section) => (
             <section class="rep-section">
               <h3 class="rep-section-title">{heading(section.title)}</h3>
+              {section.items.some((item) => item.role) && (
+                <div class="rep-labels" aria-hidden="true">
+                  <span>{editorial.roleLabel}</span><span>{editorial.workLabel}</span><span>{editorial.composerLabel}</span>
+                </div>
+              )}
               <ul class:list={["rep-list", section.items.every((item) => !item.work) && "text-list"]} role="list">
                 {section.items.map((item) => (
-                  <li class:list={["rep-entry", item.role && "has-role"]}>
+                  <li class:list={["rep-entry", item.role && "has-role", !item.role && item.work && "concert-work"]}>
                     {item.role && <span class="role">{item.role}</span>}
                     {item.work ? (
-                      <div class="work-details">
+                      <>
                         <span class="work"><em>{workTitle(item.work)}</em></span>
                         {item.composer && <span class="composer">{item.composer}</span>}
-                      </div>
+                      </>
                     ) : (
                       <span class="text">{repertoireText(item.text)}</span>
                     )}
@@ -79,386 +84,72 @@ const repertoireText = (text: string | undefined) =>
   </section>
 
   <style>
-    .repertoire-page {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 26px 0 44px;
-      color: #252321;
-    }
-
-    .repertoire-lead {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 248px;
-      align-items: center;
-      gap: 64px;
-      max-width: 940px;
-      margin: 0 auto 64px;
-    }
-
-    .lead-copy {
-      min-width: 0;
-    }
-
-    .artist-name {
-      margin: 0 0 20px;
-      color: #6a6661;
-      font-size: 13px;
-      font-weight: 400;
-      letter-spacing: .16em;
-      line-height: 1.5;
-      text-transform: uppercase;
-    }
-
-    .lead-copy h1 {
-      margin: 0 0 20px;
-      font-family: "Times New Roman", Times, serif;
-      font-size: clamp(44px, 5.8vw, 68px);
-      font-weight: 400;
-      letter-spacing: -.025em;
-      line-height: 1.08;
-    }
-
-    .repertoire-intro {
-      max-width: 430px;
-      margin: 0 0 26px;
-      font-family: "Times New Roman", Times, serif;
-      font-size: 20px;
-      line-height: 1.65;
-      color: #6a6661;
-    }
-
-    .repertoire-jumps {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      gap: 10px 28px;
-    }
-
-    .repertoire-jumps a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      min-height: 44px;
-      max-width: 100%;
-      padding: 8px 0;
-      border-bottom: 1px solid #bcb4ab;
-      font-family: "Times New Roman", Times, serif;
-      font-size: 16px;
-      line-height: 1.5;
-      color: #3d3935;
-      transition: border-color .2s ease, color .2s ease;
-    }
-
-    .repertoire-jumps a:hover {
-      border-color: #252321;
-      color: #111111;
-    }
-
-    .repertoire-jumps a:focus-visible {
-      outline: 2px solid #6a6661;
-      outline-offset: 5px;
-    }
-
-    .jump-arrow {
-      flex-shrink: 0;
-      color: #8c8278;
-    }
-
-    .lead-photo {
-      margin: 0;
-      width: 100%;
-    }
-
-    .lead-photo img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-
-    .lead-photo figcaption {
-      margin-top: 10px;
-      text-align: right;
-      color: #6a6661;
-      font-family: "Times New Roman", Times, serif;
-      font-size: 14px;
-      font-style: italic;
-      line-height: 1.5;
-    }
-
-    .rep-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 52px;
-      border-top: 1px solid #cfc8c0;
-      padding-top: 34px;
-      align-items: start;
-    }
-
-    .rep-column {
-      min-width: 0;
-      scroll-margin-top: 190px;
-    }
-
-    .rep-column + .rep-column {
-      border-left: 1px solid #e8e3dd;
-      padding-left: 40px;
-    }
-
-    .rep-column-heading {
-      display: flex;
-      align-items: baseline;
-      gap: 14px;
-      margin-bottom: 34px;
-    }
-
-    .column-number {
-      flex-shrink: 0;
-      color: #9c8f80;
-      font-family: "Times New Roman", Times, serif;
-      font-size: 16px;
-      line-height: 1.5;
-    }
-
-    .rep-column-heading h2 {
-      margin: 0;
-      font-family: "Times New Roman", Times, serif;
-      font-size: 31px;
-      font-weight: 400;
-      line-height: 1.2;
-    }
-
-    .rep-section {
-      margin-bottom: 34px;
-    }
-
-    .rep-section:last-child {
-      margin-bottom: 0;
-    }
-
-    .rep-section-title {
-      margin: 0 0 9px;
-      color: #6a6661;
-      font-size: 13px;
-      font-weight: 400;
-      line-height: 1.6;
-      letter-spacing: .075em;
-      text-transform: uppercase;
-    }
-
-    .rep-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .rep-entry {
-      min-width: 0;
-      padding: 13px 0;
-      border-bottom: 1px solid #ede9e4;
-      font-family: "Times New Roman", Times, serif;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-    }
-
-    .rep-entry.has-role {
-      display: grid;
-      grid-template-columns: 105px minmax(0, 1fr);
-      gap: 15px;
-      align-items: baseline;
-    }
-
-    .role {
-      font-size: 18px;
-      color: #3d3935;
-    }
-
-    .work-details {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      min-width: 0;
-    }
-
-    .work {
-      color: #252321;
-      font-size: 20px;
-    }
-
-    .work em {
-      font-style: italic;
-    }
-
-    .composer {
-      color: #766f68;
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    .text-list {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 0 22px;
-    }
-
-    .text-list .rep-entry:only-child {
-      grid-column: 1 / -1;
-    }
-
-    .text {
-      font-size: 19px;
-      color: #3d3935;
-    }
-
-    :global(html[lang="ko"]) .repertoire-page {
-      word-break: keep-all;
-    }
-
-    :global(html[lang="ko"]) .rep-section-title {
-      letter-spacing: .025em;
-    }
-
+    .repertoire-page { padding-block: clamp(42px, 6vw, 88px) clamp(64px, 8vw, 112px); }
+    .repertoire-lead { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 360px); align-items: center; gap: clamp(36px, 7vw, 100px); margin-bottom: clamp(60px, 8vw, 108px); }
+    .lead-copy { min-width: 0; }
+    .eyebrow { margin: 0 0 22px; color: var(--color-accent); font-family: var(--font-body); font-size: 13px; font-weight: 500; line-height: 1.6; letter-spacing: .15em; text-transform: uppercase; }
+    h1 { margin: 0 0 26px; font-family: var(--font-display); font-size: clamp(60px, 7.8vw, 112px); font-weight: 400; line-height: .95; letter-spacing: -.04em; overflow-wrap: anywhere; }
+    .title-period { color: var(--color-accent); }
+    .repertoire-intro { max-width: 430px; margin: 0 0 34px; color: var(--color-muted); font-family: var(--font-body); font-size: 18px; line-height: 1.8; }
+    .repertoire-jumps { display: flex; flex-wrap: wrap; gap: 14px 28px; }
+    .repertoire-jumps a { min-height: 44px; display: inline-flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 100%; padding-block: 8px; border-bottom: 1px solid var(--color-rule); color: var(--color-accent); font-size: 15px; line-height: 1.6; transition: border-color .2s ease; }
+    .repertoire-jumps a:hover { border-color: var(--color-accent); }
+    .repertoire-jumps a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 5px; }
+    .repertoire-jumps a > span:last-child { flex-shrink: 0; }
+    .lead-photo { margin: 0; position: relative; padding: 0 0 0 18px; border-left: 1px solid var(--color-accent); }
+    .lead-photo :global(picture), .lead-photo :global(img) { display: block; width: 100%; height: auto; }
+    .lead-photo figcaption { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; margin-top: 14px; color: var(--color-muted); font-family: var(--font-body); font-size: 12px; line-height: 1.7; }
+    .rep-grid { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr); align-items: start; gap: clamp(36px, 5vw, 68px); border-top: 1px solid var(--color-rule); padding-top: 34px; }
+    .rep-column { min-width: 0; scroll-margin-top: 150px; }
+    .rep-column-heading { display: flex; align-items: baseline; gap: 18px; margin-bottom: 42px; }
+    .column-number { color: var(--color-accent); font-family: var(--font-body); font-size: 13px; line-height: 1.6; }
+    h2 { margin: 0; font-family: var(--font-display); font-size: clamp(34px, 3.3vw, 48px); font-weight: 400; line-height: 1.14; letter-spacing: -.015em; }
+    .rep-section { margin-bottom: 38px; }
+    .rep-section:last-child { margin-bottom: 0; }
+    .rep-section-title { margin: 0 0 16px; color: var(--color-accent); font-family: var(--font-body); font-size: 13px; font-weight: 500; line-height: 1.6; letter-spacing: .1em; text-transform: uppercase; }
+    .rep-labels { display: grid; grid-template-columns: 85px minmax(0, 1fr) 92px; gap: 14px; padding-bottom: 10px; color: var(--color-muted); font-size: 11px; line-height: 1.6; letter-spacing: .08em; text-transform: uppercase; }
+    .rep-list { list-style: none; margin: 0; padding: 0; }
+    .rep-entry { min-width: 0; padding-block: 18px; border-top: 1px solid var(--color-rule); font-family: var(--font-display); line-height: 1.5; overflow-wrap: anywhere; }
+    .rep-entry.has-role { display: grid; grid-template-columns: 85px minmax(0, 1fr) 92px; align-items: baseline; gap: 14px; }
+    .rep-entry.concert-work { display: grid; grid-template-columns: minmax(0, 1fr) 110px; gap: 14px; align-items: baseline; }
+    .role { color: var(--color-text); font-size: 22px; }
+    .work { color: var(--color-text); font-size: 23px; }
+    .work em { font-style: italic; }
+    .composer { color: var(--color-muted); font-family: var(--font-body); font-size: 13px; line-height: 1.7; }
+    .text-list { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 26px; }
+    .text-list .rep-entry:only-child { grid-column: 1 / -1; }
+    .text { font-size: 24px; color: var(--color-text); }
+    :global(html[lang="ko"]) h1 { font-size: clamp(50px, 6vw, 88px); line-height: 1.1; }
+    :global(html[lang="ko"]) .rep-section-title { letter-spacing: .02em; }
     @media (max-width: 1000px) {
-      .repertoire-lead {
-        grid-template-columns: minmax(0, 1fr) 216px;
-        gap: 40px;
-      }
-
-      .rep-grid {
-        gap: 32px;
-      }
-
-      .rep-column + .rep-column {
-        padding-left: 28px;
-      }
-
-      .rep-entry.has-role {
-        grid-template-columns: 90px minmax(0, 1fr);
-        gap: 12px;
-      }
+      .rep-grid { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+      .rep-column + .rep-column { border-top: 1px solid var(--color-rule); padding-top: 34px; }
+      .rep-entry.has-role, .rep-labels { grid-template-columns: 130px minmax(0, 1fr) 150px; }
+      .rep-entry.concert-work { grid-template-columns: minmax(0, 1fr) 150px; }
+      .composer { font-size: 15px; }
     }
-
-    @media (max-width: 900px) {
-      .repertoire-page {
-        padding-top: 18px;
-      }
-
-      .repertoire-lead {
-        margin-bottom: 44px;
-      }
-
-      .rep-grid {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 40px;
-        padding-top: 28px;
-      }
-
-      .rep-column + .rep-column {
-        border-left: 0;
-        border-top: 1px solid #cfc8c0;
-        padding: 28px 0 0;
-      }
-
-      .rep-column {
-        scroll-margin-top: 150px;
-      }
-
-      .rep-entry.has-role {
-        grid-template-columns: 140px minmax(0, 1fr);
-        gap: 20px;
-      }
-
-      .artist-name,
-      .rep-section-title,
-      .composer,
-      .lead-photo figcaption {
-        font-size: 16px;
-      }
+    @media (max-width: 700px) {
+      .repertoire-lead { grid-template-columns: minmax(0, 1fr); gap: 36px; margin-bottom: 54px; }
+      .lead-photo { width: min(72%, 300px); justify-self: end; }
+      h1 { font-size: clamp(54px, 13vw, 78px); margin-bottom: 22px; }
+      .eyebrow { font-size: 13px; }
+      .repertoire-intro { font-size: 16px; margin-bottom: 24px; }
+      .repertoire-jumps a { font-size: 16px; }
+      .lead-photo figcaption { font-size: 13px; }
+      .rep-column-heading { gap: 14px; margin-bottom: 30px; }
+      h2 { font-size: 38px; }
+      .rep-section-title { font-size: 14px; }
+      .rep-labels { display: none; }
+      .rep-entry.has-role { grid-template-columns: minmax(0, 1fr) auto; gap: 5px 12px; }
+      .role { grid-column: 1; font-family: var(--font-body); font-size: 16px; color: var(--color-accent); }
+      .has-role .work { grid-column: 1 / -1; grid-row: 2; }
+      .has-role .composer { grid-column: 2; grid-row: 1; text-align: right; }
+      .composer { font-size: 14px; }
+      .rep-entry.concert-work { grid-template-columns: minmax(0, 1fr); gap: 5px; }
+      .work, .text { font-size: 25px; }
+      .text-list { gap: 0 20px; }
+      .rep-column { scroll-margin-top: 120px; }
     }
-
-    @media (max-width: 640px) {
-      .repertoire-lead {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 28px;
-      }
-
-      .lead-copy {
-        text-align: center;
-      }
-
-      .artist-name {
-        margin-bottom: 14px;
-        letter-spacing: .1em;
-      }
-
-      .lead-copy h1 {
-        margin-bottom: 14px;
-        font-size: 44px;
-      }
-
-      .repertoire-intro {
-        margin: 0 auto 18px;
-        font-size: 18px;
-      }
-
-      .repertoire-jumps {
-        justify-content: center;
-        gap: 8px 22px;
-      }
-
-      .lead-photo {
-        max-width: 180px;
-        justify-self: center;
-      }
-
-      .lead-photo figcaption {
-        text-align: center;
-      }
-
-      .rep-column {
-        scroll-margin-top: 170px;
-      }
-
-      .rep-column-heading {
-        gap: 12px;
-        margin-bottom: 26px;
-      }
-
-      .rep-column-heading h2 {
-        font-size: 28px;
-      }
-
-      .rep-section-title {
-        letter-spacing: .04em;
-      }
-
-      .rep-entry.has-role {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 4px;
-        padding: 15px 0;
-      }
-
-      .role {
-        font-size: 17px;
-      }
-
-      .work {
-        font-size: 19px;
-      }
-
-      .work-details {
-        gap: 3px;
-      }
-
-      .text-list {
-        gap: 0 20px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .repertoire-jumps a {
-        transition: none;
-      }
-    }
+    @media (prefers-reduced-motion: reduce) { .repertoire-jumps a { transition: none; } }
   </style>
 </BaseLayout>

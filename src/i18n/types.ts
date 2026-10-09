@@ -1,3 +1,5 @@
+import type editorial from "./editorial/en.json";
+
 export interface NavigationCopy {
   home: string; biography: string; repertoire: string; schedule: string;
   media: string; video: string; photo: string; onstage: string; portrait: string;
@@ -9,6 +11,7 @@ export interface NavigationCopy {
 interface PageCopy { description: string }
 
 export interface LocaleCopy {
+  editorial: typeof editorial;
   navigation: NavigationCopy;
   home: PageCopy & { voice: string; name: string; hero: string; portrait: string; metaTitle: string };
   biography: PageCopy & {
@@ -44,7 +47,7 @@ export interface LocaleCopy {
   };
 }
 
-export type PageKey = Exclude<keyof LocaleCopy, "navigation">;
+export type PageKey = Exclude<keyof LocaleCopy, "navigation" | "editorial">;
 
 /** Fail the build rather than silently publishing incomplete translations. */
 export function validateCopy(reference: unknown, value: unknown, path: string): void {

@@ -22,16 +22,22 @@ interface ScheduleEvent {
 
 const { lang = "en" } = Astro.props;
 const copy = getCopy(lang).schedule;
+const editorial = getCopy(lang).editorial.schedule;
 
-// The source groups are editorial records. Dates determine the displayed
-// chronology whenever this static site is built.
-const today = new Date().toISOString().slice(0, 10);
+// Source dates remain authoritative. The Berlin calendar date determines
+// upcoming/past groups at build time; a small client enhancement keeps a
+// long-lived static deployment current without replacing its readable HTML.
+const calendarDate = (date: Date) => {
+  const parts = new Intl.DateTimeFormat("en", { timeZone: "Europe/Berlin", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(date);
+  return ["year", "month", "day"].map((part) => parts.find((entry) => entry.type === part)?.value).join("-");
+};
+const today = calendarDate(new Date());
 const events: ScheduleEvent[] = [...scheduleData.upcoming, ...scheduleData.past];
 const upcoming = events.filter((event) => event.date >= today).sort((a, b) => a.date.localeCompare(b.date));
 const past = events.filter((event) => event.date < today).sort((a, b) => b.date.localeCompare(a.date));
 const sections = [
-  { title: copy.upcoming, empty: copy.noUpcoming, events: upcoming },
-  { title: copy.past, empty: copy.noPast, events: past },
+  { id: "upcoming", title: copy.upcoming, empty: copy.noUpcoming, events: upcoming },
+  { id: "past", title: copy.past, empty: copy.noPast, events: past },
 ];
 
 const formatDate = (dateString: string) =>
@@ -53,29 +59,42 @@ const eventLocation = (event: ScheduleEvent) => {
 ---
 
 <BaseLayout title={`${copy.title} | Rena Seulgi Jang`} lang={lang} description={copy.description}>
-  <section class="schedule-page">
-    {sections.map((section) => (
-      <section class="schedule-section">
-        <h2 class="section-title">{section.title}</h2>
+  <section class="schedule-page shell">
+    <header class="schedule-lead">
+      <div>
+        <p class="eyebrow">{editorial.eyebrow}</p>
+        <h1>{copy.title}<span aria-hidden="true">.</span></h1>
+      </div>
+      <div class="schedule-introduction">
+        <p>{editorial.intro}</p>
+        <p class="timezone-note">{editorial.timeZoneLabel}</p>
+      </div>
+    </header>
 
-        {section.events.length === 0 ? (
-          <p class="empty-state">{section.empty}</p>
-        ) : (
-          <div class="schedule-list">
+    {sections.map((section, index) => (
+      <section class:list={["schedule-section", section.id]} data-schedule-group={section.id} aria-labelledby={`schedule-${section.id}`}>
+        <header class="section-heading">
+          <span class="section-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+          <h2 class="section-title" id={`schedule-${section.id}`}>{section.title}</h2>
+        </header>
+        <div class="section-content">
+          <p class="empty-state" hidden={section.events.length > 0}>{section.empty}</p>
+          <div class="schedule-list" hidden={section.events.length === 0}>
             {section.events.map((event) => (
-              <article class="schedule-item">
-                <time class="schedule-date" datetime={event.date}>{formatDate(event.date)}</time>
+              <article class="schedule-item" data-event-date={event.date}>
+                <div class="date-column">
+                  <span class="date-year" aria-hidden="true">{event.date.slice(0, 4)}</span>
+                  <time class="schedule-date" datetime={event.date}>{formatDate(event.date)}</time>
+                </div>
                 <div class="schedule-details">
                   <h3>{eventTitle(event.title)}</h3>
-                  {eventLocation(event) && <p>{eventLocation(event)}</p>}
+                  {eventLocation(event) && <p class="event-location">{eventLocation(event)}</p>}
                   {event.role && <p>{event.role}</p>}
                   {event.programme && <p>{event.programme}</p>}
                   {event.link && (
-                    <p>
-                      <a href={event.link} target="_blank" rel="noopener noreferrer">
-                        {copy.more}
-                      </a>
-                    </p>
+                    <a class="event-link" href={event.link} target="_blank" rel="noopener noreferrer">
+                      {copy.more}<span aria-hidden="true">↗</span>
+                    </a>
                   )}
                 </div>
                 {event.time && (
@@ -86,128 +105,99 @@ const eventLocation = (event: ScheduleEvent) => {
               </article>
             ))}
           </div>
-        )}
+        </div>
       </section>
     ))}
   </section>
 
+  <script>
+    const page = document.querySelector<HTMLElement>(".schedule-page");
+    const records = [...(page?.querySelectorAll<HTMLElement>(".schedule-item") ?? [])];
+    let rolloverTimer: ReturnType<typeof setTimeout> | undefined;
+    const berlinDate = () => {
+      const parts = new Intl.DateTimeFormat("en", { timeZone: "Europe/Berlin", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+      return ["year", "month", "day"].map((part) => parts.find((entry) => entry.type === part)?.value).join("-");
+    };
+    const refreshSchedule = () => {
+      if (!page) return;
+      if (rolloverTimer) clearTimeout(rolloverTimer);
+      const today = berlinDate();
+      let futureCount = 0;
+      for (const group of ["upcoming", "past"]) {
+        const section = page.querySelector<HTMLElement>(`[data-schedule-group="${group}"]`);
+        const list = section?.querySelector<HTMLElement>(".schedule-list");
+        const empty = section?.querySelector<HTMLElement>(".empty-state");
+        if (!list || !empty) continue;
+        const matching = records.filter((record) => group === "upcoming" ? record.dataset.eventDate! >= today : record.dataset.eventDate! < today)
+          .sort((a, b) => group === "upcoming" ? a.dataset.eventDate!.localeCompare(b.dataset.eventDate!) : b.dataset.eventDate!.localeCompare(a.dataset.eventDate!));
+        if (matching.some((record, index) => list.children[index] !== record)) matching.forEach((record) => list.append(record));
+        empty.hidden = matching.length > 0;
+        list.hidden = matching.length === 0;
+        if (group === "upcoming") futureCount = matching.length;
+      }
+      // Only upcoming dates need a timer. Past-only archives use no polling.
+      if (futureCount > 0) rolloverTimer = setTimeout(refreshSchedule, 60_000);
+    };
+    refreshSchedule();
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") refreshSchedule();
+      else if (rolloverTimer) clearTimeout(rolloverTimer);
+    });
+  </script>
+
   <style>
-    .schedule-page {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 20px 0 40px;
+    .schedule-page { padding-block: clamp(42px, 6vw, 88px) clamp(64px, 8vw, 112px); }
+    .schedule-lead { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 380px); gap: 64px; align-items: end; margin-bottom: clamp(52px, 7vw, 96px); }
+    .eyebrow { margin: 0 0 22px; color: var(--color-accent); font-family: var(--font-body); font-size: 13px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; line-height: 1.6; }
+    h1 { margin: 0; font-family: var(--font-display); font-size: clamp(60px, 8vw, 110px); font-weight: 400; line-height: 1; letter-spacing: -.04em; }
+    h1 > span { color: var(--color-accent); }
+    .schedule-introduction p { margin: 0; color: var(--color-muted); font-family: var(--font-body); font-size: 17px; line-height: 1.8; }
+    .schedule-introduction .timezone-note { margin-top: 18px; font-size: 12px; line-height: 1.7; }
+    .schedule-section { display: grid; grid-template-columns: minmax(180px, .65fr) minmax(0, 2fr); gap: 52px; padding-block: 34px 48px; border-top: 1px solid var(--color-rule); }
+    .section-heading { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+    .section-number { color: var(--color-accent); font-family: var(--font-body); font-size: 13px; line-height: 1.6; }
+    .section-title { margin: 0; font-family: var(--font-display); font-size: 38px; font-weight: 400; line-height: 1.15; }
+    .section-content { min-width: 0; }
+    .schedule-list { display: flex; flex-direction: column; }
+    .schedule-item { display: grid; grid-template-columns: 116px minmax(0, 1fr) 50px; gap: 24px; padding-block: 24px; border-bottom: 1px solid var(--color-rule); }
+    .schedule-item:first-child { padding-top: 0; }
+    .schedule-item:last-child { border-bottom: 0; padding-bottom: 0; }
+    .date-column { display: flex; flex-direction: column; gap: 8px; }
+    .date-year { font-family: var(--font-display); font-size: 30px; line-height: 1; color: var(--color-accent); }
+    .schedule-date { font-family: var(--font-body); font-size: 13px; line-height: 1.75; color: var(--color-muted); }
+    .schedule-time { font-family: var(--font-body); font-size: 14px; line-height: 1.7; text-align: right; color: var(--color-accent); font-variant-numeric: tabular-nums; }
+    .schedule-details { min-width: 0; overflow-wrap: anywhere; }
+    .schedule-details h3 { margin: 0 0 10px; font-family: var(--font-display); font-size: 29px; font-weight: 400; line-height: 1.25; }
+    .schedule-details p { margin: 0 0 6px; color: var(--color-muted); font-family: var(--font-body); font-size: 14px; line-height: 1.8; }
+    .event-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 44px; margin-top: 10px; color: var(--color-accent); font-size: 14px; line-height: 1.6; border-bottom: 1px solid var(--color-accent); }
+    .event-link:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 5px; }
+    .empty-state { margin: 0; max-width: 580px; padding: 22px 26px; border-left: 2px solid var(--color-accent); background: var(--color-surface); color: var(--color-muted); font-family: var(--font-body); font-size: 17px; line-height: 1.8; }
+    .schedule-list[hidden], .empty-state[hidden] { display: none; }
+    :global(html[lang="ko"]) h1 { font-size: clamp(50px, 6vw, 88px); line-height: 1.1; }
+    @media (max-width: 1000px) {
+      .schedule-lead { gap: 36px; }
+      .schedule-section { grid-template-columns: 170px minmax(0, 1fr); gap: 32px; }
+      .schedule-item { grid-template-columns: 92px minmax(0, 1fr) 44px; gap: 18px; }
+      .schedule-details h3 { font-size: 27px; }
     }
-
-    .schedule-section {
-      margin-bottom: 48px;
-    }
-
-    .section-title {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 22px;
-      font-weight: 400;
-      margin: 0 0 20px;
-      color: #111111;
-      border-bottom: 1px solid #d9d9d9;
-      padding-bottom: 8px;
-    }
-
-    .schedule-list {
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-    }
-
-    .schedule-item {
-      display: grid;
-      grid-template-columns: 140px minmax(0, 1fr) 64px;
-      gap: 24px;
-      padding-bottom: 18px;
-      border-bottom: 1px solid #e5e5e5;
-    }
-
-    .schedule-date {
-      font-size: 14px;
-      color: #6f6f6f;
-      padding-top: 2px;
-      line-height: 1.6;
-    }
-
-    .schedule-time {
-      padding-top: 2px;
-      text-align: right;
-      font-size: 16px;
-      line-height: 1.6;
-      color: #4f4f4f;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .schedule-details {
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-
-    .schedule-details h3 {
-      margin: 0 0 8px;
-      font-family: "Times New Roman", Times, serif;
-      font-size: 22px;
-      font-weight: 400;
-      color: #111111;
-      line-height: 1.4;
-    }
-
-    .schedule-details p {
-      margin: 0 0 6px;
-      color: #4f4f4f;
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    .schedule-details a {
-      color: #111111;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    .empty-state {
-      color: #6f6f6f;
-      margin: 0;
-      font-size: 16px;
-      line-height: 1.65;
-    }
-
-    @media (max-width: 700px) {
-      .schedule-item {
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 10px 14px;
-      }
-
-      .schedule-date {
-        font-size: 16px;
-        grid-column: 1;
-        grid-row: 1;
-      }
-
-      .schedule-time {
-        grid-column: 2;
-        grid-row: 1;
-      }
-
-      .schedule-details {
-        grid-column: 1 / -1;
-        grid-row: 2;
-      }
-
-      .schedule-details h3 {
-        font-size: 20px;
-      }
-
-      .schedule-details a {
-        display: inline-flex;
-        align-items: center;
-        min-height: 44px;
-        padding: 8px 0;
-      }
+    @media (max-width: 760px) {
+      .schedule-lead { grid-template-columns: minmax(0, 1fr); gap: 28px; margin-bottom: 48px; }
+      h1 { font-size: clamp(58px, 12vw, 80px); }
+      .schedule-introduction p { font-size: 16px; }
+      .schedule-introduction .timezone-note { font-size: 13px; }
+      .schedule-section { grid-template-columns: minmax(0, 1fr); gap: 30px; padding-block: 28px 38px; }
+      .section-heading { flex-direction: row; align-items: baseline; gap: 16px; }
+      .section-title { font-size: 34px; }
+      .schedule-item { grid-template-columns: minmax(0, 1fr) auto; gap: 14px; padding-block: 24px; }
+      .date-column { grid-column: 1; grid-row: 1; flex-direction: row; align-items: baseline; gap: 12px; }
+      .date-year { display: none; }
+      .schedule-date { font-size: 16px; color: var(--color-accent); }
+      .schedule-time { grid-column: 2; grid-row: 1; font-size: 16px; }
+      .schedule-details { grid-column: 1 / -1; grid-row: 2; }
+      .schedule-details h3 { font-size: 30px; }
+      .schedule-details p { font-size: 16px; }
+      .event-link { font-size: 16px; }
+      .empty-state { padding: 20px 22px; font-size: 16px; }
     }
   </style>
 </BaseLayout>
