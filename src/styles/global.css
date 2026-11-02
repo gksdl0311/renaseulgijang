@@ -31,12 +31,12 @@
   unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0300-0301,U+0303,U+0305-0307,U+0309-0328,U+032A-036F,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
 }
 :root {
-  --color-bg: #f7f3ec;
-  --color-surface: #efe8de;
-  --color-text: #24211e;
-  --color-muted: #6d645c;
-  --color-accent: #6b2c3e;
-  --color-rule: #d8cfc3;
+  --color-bg: #ffffff;
+  --color-surface: #f4f4f4;
+  --color-text: #111111;
+  --color-muted: #626262;
+  --color-accent: #111111;
+  --color-rule: #dedede;
   --font-display: "Cormorant Garamond", "Noto Serif CJK KR", "Noto Serif KR", "AppleMyungjo", "Batang", Georgia, serif;
   --font-body: "DM Sans", "Apple SD Gothic Neo", "Noto Sans CJK KR", "Malgun Gothic", system-ui, sans-serif;
   --gutter: clamp(20px, 4vw, 64px);
@@ -56,9 +56,10 @@ button { color: inherit; }
 a { color: inherit; text-decoration: none; }
 a, button { touch-action: manipulation; }
 :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 5px; }
-::selection { background: #6b2c3e; color: #fff; }
+::selection { background: #111111; color: #fff; }
 img, video { max-width: 100%; height: auto; }
-img { display: block; }
+/* Monochrome presentation preserves the original downloadable photographs. */
+img { display: block; filter: grayscale(1); }
 figure { margin: 0; }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 500; line-height: 1.06; text-wrap: balance; }
 p { text-wrap: pretty; }
