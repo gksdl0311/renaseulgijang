@@ -93,14 +93,14 @@ const alt = content[kind].alt;
   .enlarge-mark { position: absolute; right: 12px; bottom: 12px; width: 34px; height: 34px; display: grid; place-items: center; background: var(--color-bg); color: var(--color-accent); font-size: 18px; opacity: 0; transition: opacity .2s ease; }
   .gallery-open:hover .enlarge-mark, .gallery-open:focus-visible .enlarge-mark { opacity: 1; }
   figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 15px; margin-top: 10px; color: var(--color-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-  .photograph-dialog { position: fixed; inset: 0; width: 100%; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 20px 30px; border: 0; background: #24211e; color: #f7f3ec; }
+  .photograph-dialog { position: fixed; inset: 0; width: 100%; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 20px 30px; border: 0; background: #111111; color: #ffffff; }
   .photograph-dialog[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 15px; }
-  .photograph-dialog::backdrop { background: #24211e; }
+  .photograph-dialog::backdrop { background: #111111; }
   .dialog-toolbar { display: flex; align-items: center; gap: 25px; min-width: 0; }
   .photo-counter { font-size: 13px; flex-shrink: 0; }
   .photo-original { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; margin-left: auto; font-size: 13px; }
-  .photo-close, .dialog-navigation button { width: 48px; min-height: 48px; background: transparent; color: #f7f3ec; border: 1px solid #817970; cursor: pointer; font-size: 25px; flex-shrink: 0; }
-  .photograph-dialog :focus-visible { outline-color: #f7f3ec; }
+  .photo-close, .dialog-navigation button { width: 48px; min-height: 48px; background: transparent; color: #ffffff; border: 1px solid #888888; cursor: pointer; font-size: 25px; flex-shrink: 0; }
+  .photograph-dialog :focus-visible { outline-color: #ffffff; }
   .dialog-image { min-height: 0; display: flex; justify-content: center; align-items: center; }
   .full-photograph { width: 100%; height: 100%; object-fit: contain; }
   .dialog-navigation { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
