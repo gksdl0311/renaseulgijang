@@ -15,15 +15,23 @@ const links = getNavigationLinks(lang);
 
 <footer class="site-footer">
   <div class="footer-shell shell">
-    <a class="footer-name" href={localizedPath(lang)} aria-label={`${artist.name} — ${copy.home}`}>{artist.name}</a>
+    {pagePath === "" ? (
+      <div class="closing-note">
+        <p class="programme-kicker eyebrow"><span aria-hidden="true">04</span>{editorial.home.contactLabel}</p>
+        <h2>{editorial.home.contactTitle}</h2>
+        <p class="closing-intro">{content.contact.intro}</p>
+      </div>
+    ) : (
+      <a class="footer-name" href={localizedPath(lang)} aria-label={`${artist.name} — ${copy.home}`}>{artist.name}</a>
+    )}
 
     <div class="footer-main">
       <div class="footer-contact">
         <p class="footer-label">{editorial.footer.enquiries}</p>
-        <a class="footer-email" href={`mailto:${artist.email}`}>{artist.email}<span aria-hidden="true">↗</span></a>
+        <a class="footer-email" href={`mailto:${artist.email}`}>{artist.email}</a>
         <div class="footer-social">
-          <a href={artist.instagram} target="_blank" rel="noopener noreferrer" aria-label={copy.instagram}>Instagram <span aria-hidden="true">↗</span></a>
-          <a href={artist.youtube} target="_blank" rel="noopener noreferrer" aria-label={copy.youtube}>YouTube <span aria-hidden="true">↗</span></a>
+          <a href={artist.instagram} target="_blank" rel="noopener noreferrer" aria-label={copy.instagram}>Instagram</a>
+          <a href={artist.youtube} target="_blank" rel="noopener noreferrer" aria-label={copy.youtube}>YouTube</a>
         </div>
       </div>
 
@@ -47,7 +55,7 @@ const links = getNavigationLinks(lang);
 
     <div class="footer-bottom">
       <p>© {new Date().getUTCFullYear()} {artist.name}</p>
-      <a class="back-top" href="#site-top">{editorial.footer.backToTop}<span aria-hidden="true">↑</span></a>
+      <a class="back-top" href="#site-top">{editorial.footer.backToTop}</a>
     </div>
   </div>
 </footer>
@@ -74,31 +82,34 @@ const links = getNavigationLinks(lang);
 </script>
 
 <style>
-  .site-footer { background: var(--color-text, #24211e); color: var(--color-bg, #f7f3ec); }
-  .footer-shell { padding-top: clamp(48px, 7vw, 100px); }
-  .footer-name { display: block; width: fit-content; max-width: 100%; color: inherit; font-family: var(--font-display, serif); font-size: clamp(42px, 7.6vw, 110px); font-weight: 500; letter-spacing: -.035em; line-height: 1.08; text-decoration: none; overflow-wrap: anywhere; }
-  .footer-main { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, .8fr); gap: clamp(24px, 4vw, 64px); margin-top: clamp(36px, 5vw, 64px); padding-bottom: clamp(36px, 5vw, 64px); }
-  .footer-label { margin: 0 0 12px; color: rgb(247 243 236 / 65%); font-family: var(--font-body, sans-serif); font-size: 12px; font-weight: 500; line-height: 1.5; letter-spacing: .10em; text-transform: uppercase; }
-  .footer-email { display: flex; align-items: center; gap: 10px; min-height: 44px; width: fit-content; max-width: 100%; color: inherit; font-family: var(--font-display, serif); font-size: clamp(20px, 1.8vw, 27px); line-height: 1.4; text-decoration: none; overflow-wrap: anywhere; }
-  .footer-email span { font-family: var(--font-body, sans-serif); font-size: 18px; flex-shrink: 0; }
+  .site-footer { background: var(--color-text, #111111); color: var(--color-bg, #ffffff); }
+  .footer-shell { padding-top: clamp(42px, 5vw, 68px); }
+  .closing-note { border-bottom: 1px solid rgb(255 255 255 / 20%); padding-bottom: clamp(23px, 4vw, 48px); }
+  .closing-note .eyebrow { color: #c8c8c8; }
+  .closing-note h2 { margin: 0; font-size: clamp(44px, 7vw, 92px); line-height: .98; font-weight: 400; letter-spacing: -.045em; }
+  .closing-intro { margin: 15px 0 0; max-width: 42ch; color: #d2d2d2; font-size: 15px; }
+  .footer-name { display: block; width: fit-content; max-width: 100%; color: inherit; font-family: var(--font-display, serif); font-size: clamp(40px, 5vw, 68px); font-weight: 500; letter-spacing: -.035em; line-height: 1.08; text-decoration: none; overflow-wrap: anywhere; }
+  .footer-main { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, .8fr); gap: clamp(24px, 4vw, 64px); margin-top: clamp(24px, 3vw, 42px); padding-bottom: clamp(28px, 4vw, 52px); }
+  .footer-label { margin: 0 0 12px; color: rgb(255 255 255 / 65%); font-family: var(--font-body, sans-serif); font-size: 12px; font-weight: 500; line-height: 1.5; letter-spacing: .10em; text-transform: uppercase; }
+  .footer-email { display: flex; align-items: center; min-height: 44px; width: fit-content; max-width: 100%; color: inherit; font-family: var(--font-display, serif); font-size: clamp(20px, 1.8vw, 27px); line-height: 1.4; text-decoration: none; overflow-wrap: anywhere; }
   .footer-social { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 12px; }
-  .footer-social a { display: inline-flex; align-items: center; gap: 8px; min-width: 44px; min-height: 44px; color: rgb(247 243 236 / 78%); font-family: var(--font-body, sans-serif); font-size: 13px; text-decoration: none; }
+  .footer-social a { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; color: rgb(255 255 255 / 78%); font-family: var(--font-body, sans-serif); font-size: 13px; text-decoration: none; }
+  .footer-email:hover, .footer-social a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
   .footer-nav-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
-  .footer-nav a { display: flex; align-items: center; min-width: 44px; min-height: 44px; padding-block: 6px; color: rgb(247 243 236 / 78%); font-family: var(--font-body, sans-serif); font-size: 14px; line-height: 1.5; text-decoration: none; overflow-wrap: anywhere; }
-  .footer-nav a[aria-current="page"] { color: var(--color-bg, #f7f3ec); text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+  .footer-nav a { display: flex; align-items: center; min-width: 44px; min-height: 44px; padding-block: 6px; color: rgb(255 255 255 / 78%); font-family: var(--font-body, sans-serif); font-size: 14px; line-height: 1.5; text-decoration: none; overflow-wrap: anywhere; }
+  .footer-nav a[aria-current="page"] { color: var(--color-bg, #ffffff); text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
   .footer-lang-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0; }
-  .footer-lang-row > span { color: rgb(247 243 236 / 30%); font-size: 10px; }
-  .footer-lang-link { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 8px 4px; color: rgb(247 243 236 / 65%); font-family: var(--font-body, sans-serif); font-size: 13px; font-weight: 450; line-height: 1.2; letter-spacing: .06em; white-space: nowrap; text-decoration: none; }
+  .footer-lang-row > span { color: rgb(255 255 255 / 30%); font-size: 10px; }
+  .footer-lang-link { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 8px 4px; color: rgb(255 255 255 / 65%); font-family: var(--font-body, sans-serif); font-size: 13px; font-weight: 450; line-height: 1.2; letter-spacing: .06em; white-space: nowrap; text-decoration: none; }
   .footer-lang-link[lang="ko"] { font-size: 14px; letter-spacing: 0; }
-  .footer-lang-link.is-active { color: var(--color-bg, #f7f3ec); }
+  .footer-lang-link.is-active { color: var(--color-bg, #ffffff); }
   .footer-lang-link.is-active::after { content: ""; position: absolute; right: 13px; bottom: 7px; left: 13px; height: 1px; background: currentColor; }
-  .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid rgb(247 243 236 / 20%); padding-block: 18px; }
-  .footer-bottom p { margin: 0; color: rgb(247 243 236 / 65%); font-family: var(--font-body, sans-serif); font-size: 11px; letter-spacing: .03em; line-height: 1.6; }
-  .back-top { display: inline-flex; align-items: center; justify-content: flex-end; gap: 14px; min-height: 44px; color: rgb(247 243 236 / 78%); font-family: var(--font-body, sans-serif); font-size: 12px; line-height: 1.5; text-decoration: none; white-space: nowrap; }
-  .back-top span { font-size: 20px; }
+  .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid rgb(255 255 255 / 20%); padding-block: 18px; }
+  .footer-bottom p { margin: 0; color: rgb(255 255 255 / 65%); font-family: var(--font-body, sans-serif); font-size: 11px; letter-spacing: .03em; line-height: 1.6; }
+  .back-top { display: inline-flex; align-items: center; justify-content: flex-end; min-height: 44px; color: rgb(255 255 255 / 78%); font-family: var(--font-body, sans-serif); font-size: 12px; line-height: 1.5; text-decoration: underline; text-underline-offset: .25em; white-space: nowrap; }
   .site-footer a { transition: color 180ms ease; }
   .site-footer a:hover { color: #ffffff; }
-  .site-footer :is(a, button):focus-visible { outline-color: var(--color-bg, #f7f3ec); }
+  .site-footer :is(a, button):focus-visible { outline-color: var(--color-bg, #ffffff); }
   @media (max-width: 1100px) {
     .footer-main { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
     .footer-languages { grid-column: 1 / -1; }
@@ -112,7 +123,6 @@ const links = getNavigationLinks(lang);
     .footer-social a { font-size: 13px; }
     .footer-bottom { align-items: flex-start; }
     .footer-bottom p { max-width: 50%; padding-top: 12px; }
-    .back-top { gap: 8px; }
   }
   @media (prefers-reduced-motion: reduce) { .site-footer a { transition: none; } }
 </style>
