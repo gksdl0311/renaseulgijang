@@ -93,7 +93,7 @@ const eventLocation = (event: ScheduleEvent) => {
                   {event.programme && <p>{event.programme}</p>}
                   {event.link && (
                     <a class="event-link" href={event.link} target="_blank" rel="noopener noreferrer">
-                      {copy.more}<span aria-hidden="true">↗</span>
+                      {copy.more}
                     </a>
                   )}
                 </div>
@@ -169,7 +169,7 @@ const eventLocation = (event: ScheduleEvent) => {
     .schedule-details { min-width: 0; overflow-wrap: anywhere; }
     .schedule-details h3 { margin: 0 0 10px; font-family: var(--font-display); font-size: 29px; font-weight: 400; line-height: 1.25; }
     .schedule-details p { margin: 0 0 6px; color: var(--color-muted); font-family: var(--font-body); font-size: 14px; line-height: 1.8; }
-    .event-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 44px; margin-top: 10px; color: var(--color-accent); font-size: 14px; line-height: 1.6; border-bottom: 1px solid var(--color-accent); }
+    .event-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: 10px; color: var(--color-accent); font-size: 14px; line-height: 1.6; border-bottom: 1px solid var(--color-accent); }
     .event-link:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 5px; }
     .empty-state { margin: 0; max-width: 580px; padding: 22px 26px; border-left: 2px solid var(--color-accent); background: var(--color-surface); color: var(--color-muted); font-family: var(--font-body); font-size: 17px; line-height: 1.8; }
     .schedule-list[hidden], .empty-state[hidden] { display: none; }

@@ -27,8 +27,7 @@ const repertoireText = (text: string | undefined) =>
         <nav class="repertoire-jumps" aria-label={copy.browse}>
           {repertoire.columns.map((column, index) => (
             <a href={`#repertoire-${index + 1}`}>
-              <span>{heading(column.title)}</span>
-              <span aria-hidden="true">↗</span>
+              {heading(column.title)}
             </a>
           ))}
         </nav>
@@ -92,10 +91,9 @@ const repertoireText = (text: string | undefined) =>
     .title-period { color: var(--color-accent); }
     .repertoire-intro { max-width: 430px; margin: 0 0 34px; color: var(--color-muted); font-family: var(--font-body); font-size: 18px; line-height: 1.8; }
     .repertoire-jumps { display: flex; flex-wrap: wrap; gap: 14px 28px; }
-    .repertoire-jumps a { min-height: 44px; display: inline-flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 100%; padding-block: 8px; border-bottom: 1px solid var(--color-rule); color: var(--color-accent); font-size: 15px; line-height: 1.6; transition: border-color .2s ease; }
+    .repertoire-jumps a { min-height: 44px; display: inline-flex; align-items: center; max-width: 100%; padding-block: 8px; border-bottom: 1px solid var(--color-rule); color: var(--color-accent); font-size: 15px; line-height: 1.6; transition: border-color .2s ease; }
     .repertoire-jumps a:hover { border-color: var(--color-accent); }
     .repertoire-jumps a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 5px; }
-    .repertoire-jumps a > span:last-child { flex-shrink: 0; }
     .lead-photo { margin: 0; position: relative; padding: 0 0 0 18px; border-left: 1px solid var(--color-accent); }
     .lead-photo :global(picture), .lead-photo :global(img) { display: block; width: 100%; height: auto; }
     .lead-photo figcaption { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; margin-top: 14px; color: var(--color-muted); font-family: var(--font-body); font-size: 12px; line-height: 1.7; }

@@ -47,7 +47,6 @@ const isActive = (page: string) => isCurrent(page) || pagePath.startsWith(`${pag
       {links.map(({ page, label }, index) => <a class:list={["m-link", isActive(page) && "is-active"]} href={localizedPath(currentLang, page)} aria-current={isCurrent(page) ? "page" : undefined}>
         <span class="m-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
         <span class="m-label">{label}</span>
-        <span class="m-arrow" aria-hidden="true">↗</span>
       </a>)}
     </div>
   </nav>
@@ -86,16 +85,10 @@ const isActive = (page: string) => isCurrent(page) || pagePath.startsWith(`${pag
     } else if (restoreFocus) burger.focus({ preventScroll: true });
   }
 
-  function updateScrolledState() {
-    chrome?.classList.toggle("is-scrolled", window.scrollY > 12);
-  }
-
   updateLanguageLinks();
   syncHeaderHeight();
-  updateScrolledState();
   window.addEventListener("hashchange", updateLanguageLinks);
   window.addEventListener("popstate", updateLanguageLinks);
-  window.addEventListener("scroll", updateScrolledState, { passive: true });
   burger?.addEventListener("click", () => setMobile(burger.getAttribute("aria-expanded") !== "true"));
   chrome?.querySelectorAll<HTMLAnchorElement>("a").forEach(link => link.addEventListener("click", () => setMobile(false)));
   document.addEventListener("keydown", (event) => {
@@ -123,11 +116,11 @@ const isActive = (page: string) => isCurrent(page) || pagePath.startsWith(`${pag
     background: var(--color-bg, #ffffff);
     border-bottom: 1px solid var(--color-rule, #dedede);
   }
-  .masthead { min-height: 88px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(16px, 1.6vw, 24px); align-items: center; }
+  .masthead { min-height: 74px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(16px, 1.6vw, 24px); align-items: center; }
   .brand-link { width: 116px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
   .brand-logo { width: 116px; height: auto; display: block; mix-blend-mode: multiply; }
   .nav { display: flex; align-items: center; justify-content: center; gap: clamp(12px, 1.2vw, 19px); min-width: 0; }
-  .nav-link { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; color: var(--color-text, #111111); font-family: var(--font-body, sans-serif); font-size: 14px; font-weight: 450; letter-spacing: .015em; white-space: nowrap; text-decoration: none; transition: color 180ms ease; }
+  .nav-link { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; color: var(--color-text, #111111); font-family: var(--font-body, sans-serif); font-size: 13px; font-weight: 500; letter-spacing: .015em; white-space: nowrap; text-decoration: none; transition: color 180ms ease; }
   .nav-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: 6px; height: 1px; background: var(--color-accent, #111111); transform: scaleX(0); transform-origin: left; transition: transform 180ms ease; }
   .nav-link:hover, .nav-link.is-active { color: var(--color-accent, #111111); }
   .nav-link:hover::after, .nav-link.is-active::after { transform: scaleX(1); }
@@ -145,15 +138,13 @@ const isActive = (page: string) => isCurrent(page) || pagePath.startsWith(`${pag
   .burger[aria-expanded="true"] span:last-child { transform: translateY(-3.5px) rotate(-45deg); }
   .mobile { display: none; border-top: 1px solid var(--color-rule, #dedede); background: var(--color-bg, #ffffff); max-height: calc(100vh - var(--top-height, 100px)); max-height: calc(100dvh - var(--top-height, 100px)); overflow-y: auto; overscroll-behavior: contain; }
   .mobile-inner { display: flex; flex-direction: column; padding-block: 12px 24px; }
-  .m-link { display: grid; grid-template-columns: 24px minmax(0, 1fr) 22px; align-items: center; gap: 16px; min-height: 66px; padding-block: 14px; border-bottom: 1px solid var(--color-rule, #dedede); color: var(--color-text, #111111); text-decoration: none; }
+  .m-link { display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 16px; min-height: 66px; padding-block: 14px; border-bottom: 1px solid var(--color-rule, #dedede); color: var(--color-text, #111111); text-decoration: none; }
   .m-index { font-family: var(--font-body, sans-serif); font-size: 10px; letter-spacing: .04em; color: var(--color-muted, #626262); }
   .m-label { font-family: var(--font-display, serif); font-size: clamp(27px, 4vw, 35px); font-weight: 500; line-height: 1.15; overflow-wrap: anywhere; }
-  .m-arrow { font-size: 20px; color: var(--color-accent, #111111); transition: transform 180ms ease; }
-  .m-link:hover, .m-link.is-active { color: var(--color-accent, #111111); }
-  .m-link:hover .m-arrow { transform: translate(2px, -2px); }
+  .m-link:hover .m-label, .m-link.is-active .m-label { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .16em; }
   [hidden] { display: none !important; }
   @media (max-width: 1100px) {
-    .masthead { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); min-height: 82px; gap: 16px; }
+    .masthead { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); min-height: 74px; gap: 16px; }
     .brand-link { justify-self: start; }
     .nav { display: none; }
     .burger { display: inline-flex; justify-self: end; }
@@ -170,6 +161,6 @@ const isActive = (page: string) => isCurrent(page) || pagePath.startsWith(`${pag
     .m-link { min-height: 60px; gap: 12px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .chrome, .nav-link, .nav-link::after, .lang-link, .lang-link::after, .burger, .burger span, .m-arrow { transition: none; }
+    .chrome, .nav-link, .nav-link::after, .lang-link, .lang-link::after, .burger, .burger span { transition: none; }
   }
 </style>

@@ -25,5 +25,3 @@ export const recordings: Record<string, RecordingInfo> = {
   "WYXIK4-Rm4c": { composer: "Bellini", work: "I puritani", piece: "Qui la voce… Vien, diletto", image: portrait, category: "opera" },
   H0MKllDxjs8: { composer: "Verdi", work: "La forza del destino", piece: "Pace, pace, mio Dio", image: portrait, category: "opera" },
 };
-
-export const homeRecordingIds = ["V124lEJWrf0", "KlVq2Q6wltc", "2uaQSSuPw80"] as const;

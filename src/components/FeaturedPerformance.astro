@@ -1,0 +1,105 @@
+---
+import ResponsiveImage from "./ResponsiveImage.astro";
+import { getCopy, type Language } from "../i18n";
+import { localizedPath } from "../i18n/routes";
+import { recitalCopy } from "../i18n/recital";
+import descriptions from "../data/video-descriptions.json";
+import { recordings } from "../data/recordings";
+
+interface Props { lang: Language }
+const { lang } = Astro.props;
+const content = getCopy(lang);
+const recital = recitalCopy[lang];
+const videoId = "KlVq2Q6wltc";
+const { piece, work, composer } = recordings[videoId];
+---
+
+<section
+  class="feature"
+  id="listen"
+  aria-labelledby="featured-title"
+  data-featured-performance
+  data-video-id={videoId}
+  data-play={recital.play}
+  data-pause={recital.pause}
+  data-loading={recital.loading}
+  data-buffering={recital.buffering}
+  data-start-in-player={recital.startInPlayer}
+  data-unavailable={recital.unavailable}
+>
+  <div class="feature-spread shell">
+    <div class="feature-copy">
+      <p class="programme-kicker eyebrow"><span aria-hidden="true">01</span>{content.editorial.biography.videoEyebrow}</p>
+      <h2 id="featured-title" lang="it"><em>{piece}</em></h2>
+      <p class="work-line"><span lang="it">{work}</span><span aria-hidden="true">·</span><span>{composer}</span></p>
+      <p class="programme-note">{descriptions[videoId][lang]}</p>
+      <div class="feature-actions">
+        <button class="recording-toggle" type="button" aria-controls="featured-screen" data-toggle hidden>{recital.play}</button>
+        <a class="text-link" href={"https://www.youtube.com/watch?v=" + videoId} target="_blank" rel="noopener noreferrer">{content.editorial.listen.external}</a>
+      </div>
+      <p class="player-message" role="status" data-status></p>
+    </div>
+
+    <figure class="feature-media">
+      <div class="feature-screen" id="featured-screen">
+        <div class="feature-still" data-still>
+          <ResponsiveImage
+            src="media/photo/onstage/onstage-29.JPG"
+            alt={content.repertoire.photoAlt}
+            sizes="(max-width: 700px) calc(100vw - 40px), 44vw"
+          />
+        </div>
+        <div class="feature-player" data-player hidden></div>
+      </div>
+      <figcaption class="feature-caption">
+        <span data-caption>{content.photo.onstage}</span>
+        <span class="feature-progress" data-progress hidden>
+          <progress aria-label={recital.progress} value="0" max="1"></progress>
+          <span class="progress-time" data-time aria-hidden="true"></span>
+        </span>
+        <a href={localizedPath(lang, "media/video")}>{content.editorial.home.recordingLink}</a>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<script>
+  import "../client/featured-performance";
+</script>
+
+<style>
+  .feature { background: var(--color-text); color: var(--color-bg); }
+  .feature-spread { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr); align-items: center; gap: clamp(32px, 6.2vw, 88px); padding-block: clamp(55px, 7.5vw, 106px); }
+  .feature :focus-visible { outline-color: var(--color-bg); }
+  .feature .programme-kicker { color: #c8c8c8; }
+  .feature-copy h2 { margin: 0; font-size: clamp(54px, 7.35vw, 108px); font-weight: 400; letter-spacing: -.055em; line-height: .9; text-wrap: balance; }
+  .work-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 7px 12px; margin: 25px 0 0; font-size: 13px; letter-spacing: .07em; }
+  .work-line span:first-child { font-family: var(--font-display); font-style: italic; font-size: 25px; letter-spacing: 0; }
+  .programme-note { color: #d2d2d2; max-width: 36ch; font-size: 15px; margin: 17px 0 20px; }
+  .feature-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 27px; }
+  .recording-toggle { min-height: 44px; padding: 0; background: transparent; border: 0; border-bottom: 1px solid currentColor; color: inherit; font-size: 15px; font-weight: 650; text-align: left; cursor: pointer; }
+  .recording-toggle:hover { box-shadow: inset 0 -1px currentColor; }
+  .recording-toggle:disabled { cursor: wait; color: #c8c8c8; box-shadow: none; }
+  .feature-actions .text-link { color: #d2d2d2; font-size: 13px; }
+  .player-message { margin: 8px 0 0; color: #e4e4e4; font-size: 13px; }
+  .player-message:empty { margin: 0; }
+  .feature-screen { position: relative; width: 100%; aspect-ratio: 16 / 10; min-height: 200px; background: #000; }
+  .feature-still, .feature-player { position: absolute; inset: 0; }
+  .feature-still :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 46% center; }
+  .feature-player :global(iframe) { width: 100%; height: 100%; display: block; border: 0; }
+  .feature-caption { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-between; gap: 0 18px; border-top: 1px solid #626262; margin-top: 9px; padding-top: 4px; color: #ccc; font-size: 11px; }
+  .feature-caption a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-decoration-color: #929292; text-underline-offset: 4px; }
+  .feature-caption a:hover { color: #fff; text-decoration-color: currentColor; }
+  .feature-progress { display: grid; grid-template-columns: minmax(55px, 1fr) auto; align-items: center; gap: 9px; flex: 1 1 145px; }
+  .feature-progress progress { appearance: none; width: 100%; height: 2px; border: 0; background: #626262; color: #eee; }
+  .feature-progress progress::-webkit-progress-bar { background: #626262; }
+  .feature-progress progress::-webkit-progress-value { background: #eee; }
+  .feature-progress progress::-moz-progress-bar { background: #eee; }
+  .progress-time { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  @media (max-width: 700px) {
+    .feature-spread { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .feature-copy h2 { font-size: clamp(51px, 12.9vw, 82px); }
+    .work-line { margin-top: 18px; }
+    .feature-caption { gap: 0 13px; }
+  }
+</style>
